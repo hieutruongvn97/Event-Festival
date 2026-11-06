@@ -1157,9 +1157,9 @@
         <button type="button" class="view-toggle-btn" id="btnViewTable" onclick="setViewMode('table')">📋 Dạng Bảng</button>
       </div>
       <select id="sortSelect" class="sort-select" onchange="renderTable()" title="Chọn cách sắp xếp danh sách lễ hội">
-        <option value="region">Sắp xếp: Theo Vùng miền</option>
-        <option value="date_asc">Sắp xếp: Ngày Dương lịch (T1 → T12)</option>
-        <option value="upcoming">Sắp xếp: Sắp diễn ra gần nhất</option>
+        <option value="upcoming" selected>⏳ Sắp xếp: Sắp diễn ra gần nhất (Mặc định)</option>
+        <option value="date_asc">📅 Sắp xếp: Ngày Dương lịch (T1 → T12)</option>
+        <option value="region">🗺️ Sắp xếp: Theo Vùng miền</option>
       </select>
       <label style="font-size:0.84rem;color:var(--text-muted);">Tháng Dương:</label>
       <select id="solarMonthSelect" class="month-select" onchange="renderTable()">
@@ -3524,7 +3524,7 @@
     const year = parseInt(document.getElementById("yearSelect").value, 10);
     const monthFilterVal = document.getElementById("solarMonthSelect") ? document.getElementById("solarMonthSelect").value : "all";
     const selectedSolarMonth = monthFilterVal === "all" ? null : parseInt(monthFilterVal, 10);
-    const sortMode = document.getElementById("sortSelect") ? document.getElementById("sortSelect").value : "region";
+    const sortMode = document.getElementById("sortSelect") ? document.getElementById("sortSelect").value : "upcoming";
     const rawKeyword = document.getElementById("searchInput").value.trim();
     const normKeyword = removeVietnameseTones(rawKeyword);
 
