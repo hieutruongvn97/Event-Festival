@@ -1498,6 +1498,125 @@
   const DEFAULT_CUSTOM_REGIONS = [];
   const DEFAULT_GUEST_TOKEN = "";
 
+  // ==========================================================================
+  // TÍNH NĂNG MỚI: LỊCH VẠN NIÊN HÔM NAY, YÊU THÍCH (FAVORITES) & CHẾ ĐỘ XEM (CARDS)
+  // ==========================================================================
+  const CAN_NAMES = ["Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ", "Canh", "Tân", "Nhâm", "Quý"];
+  const CHI_NAMES = ["Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"];
+  const DAY_NAMES = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+
+  function getCanChiYear(lunarYear) {
+    const can = CAN_NAMES[(lunarYear + 6) % 10];
+    const chi = CHI_NAMES[(lunarYear + 8) % 12];
+    return `${can} ${chi}`;
+  }
+
+  function updateTodayBanner() {
+    try {
+      const bannerEl = document.getElementById("todayCalendarBanner");
+      if (!bannerEl) return;
+      const now = new Date();
+      const solarD = now.getDate();
+      const solarM = now.getMonth() + 1;
+      const solarY = now.getFullYear();
+      const dayOfWeek = DAY_NAMES[now.getDay()];
+
+      const lunar = convertSolar2Lunar(solarD, solarM, solarY, TIME_ZONE);
+      const canChi = getCanChiYear(lunar.year);
+      const leapText = lunar.leap ? " (Nhuận)" : "";
+
+      bannerEl.innerHTML = `
+        <span>🏮 <strong>Hôm nay:</strong> ${dayOfWeek}, <span class="solar-hl">${String(solarD).padStart(2, "0")}/${String(solarM).padStart(2, "0")}/${solarY} (Dương lịch)</span></span>
+        <span>•</span>
+        <span>Nhằm ngày <span class="lunar-hl">${String(lunar.day).padStart(2, "0")}/${String(lunar.month).padStart(2, "0")}${leapText}</span> năm <strong>${canChi}</strong> (Âm lịch)</span>
+      `;
+    } catch (e) {
+      console.warn("Lỗi cập nhật banner hôm nay:", e);
+    }
+  }
+
+  // Quản lý danh sách Yêu thích
+  let favorites = [];
+  try {
+    favorites = JSON.parse(safeGetStorage("vn_festivals_favorites") || "[]");
+    if (!Array.isArray(favorites)) favorites = [];
+  } catch (e) {
+    favorites = [];
+  }
+
+  function isFavorite(id) {
+    return favorites.includes(String(id));
+  }
+
+  function toggleFavorite(e, id) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const sId = String(id);
+    const idx = favorites.indexOf(sId);
+    if (idx >= 0) {
+      favorites.splice(idx, 1);
+      showToast("Đã bỏ khỏi danh sách Yêu thích", "info");
+    } else {
+      favorites.push(sId);
+      showToast("❤️ Đã thêm vào Lễ hội Yêu thích!", "success");
+    }
+    safeSetStorage("vn_festivals_favorites", JSON.stringify(favorites));
+    updateFavBadges();
+    renderTable();
+  }
+
+  function updateFavBadges() {
+    const badge = document.getElementById("favCountBadge");
+    if (badge) badge.textContent = String(favorites.length);
+  }
+
+  // Quản lý chế độ xem (Dạng Thẻ vs Dạng Bảng)
+  let currentViewMode = safeGetStorage("vn_festivals_view_mode") || "card";
+
+  function setViewMode(mode) {
+    currentViewMode = mode;
+    safeSetStorage("vn_festivals_view_mode", mode);
+    updateViewModeUI();
+  }
+
+  function updateViewModeUI() {
+    const btnCard = document.getElementById("btnViewCard");
+    const btnTable = document.getElementById("btnViewTable");
+    const gridEl = document.getElementById("festGrid");
+    const tableEl = document.getElementById("tableWrap");
+
+    if (currentViewMode === "card") {
+      if (btnCard) btnCard.classList.add("active");
+      if (btnTable) btnTable.classList.remove("active");
+      if (gridEl) gridEl.style.display = "grid";
+      if (tableEl) tableEl.style.display = "none";
+    } else {
+      if (btnCard) btnCard.classList.remove("active");
+      if (btnTable) btnTable.classList.add("active");
+      if (gridEl) gridEl.style.display = "none";
+      if (tableEl) tableEl.style.display = "block";
+    }
+  }
+
+  function toggleCardDetail(e, id) {
+    if (e) e.stopPropagation();
+    const drawer = document.getElementById(`card-drawer-${id}`);
+    const grid = document.getElementById(`card-grid-${id}`);
+    if (!drawer) return;
+    const isOpen = drawer.classList.contains("open");
+    if (isOpen) {
+      drawer.classList.remove("open");
+    } else {
+      drawer.classList.add("open");
+      if (grid && grid.children.length === 0) {
+        renderTenYearGrid(id, `card-grid-${id}`);
+      }
+    }
+  }
+
+
   // Mã nguồn Google Apps Script nhúng sẵn để người dùng sao chép 1 chạm
   const EMBEDDED_APPS_SCRIPT = "/**\n * ============================================================================\n * MÃ NGUỒN GOOGLE APPS SCRIPT ĐỒNG BỘ DỮ LIỆU: TRA CỨU LỄ HỘI VIỆT NAM (2026-2099)\n * ============================================================================\n * Đặc điểm an toàn:\n * 1. Xác thực Chủ sở hữu (Admin Secret Key) cho mọi thao tác Thêm / Sửa / Xóa / Gộp.\n * 2. Cơ chế Gộp thông minh 2 chiều (Safe Merge) theo ID và thời gian (updatedAt):\n *    - Không bao giờ xóa trắng bảng để ghi đè.\n *    - Giữ nguyên các dòng được thêm từ thiết bị khác hoặc sửa trực tiếp trên Sheet.\n * 3. Khóa đồng thời (LockService) chống xung đột khi lưu cùng lúc.\n * 4. Tự động sao lưu trước mọi thay đổi vào trang tính \"Backup_LichSu\" (tối đa 100 bản).\n * ============================================================================\n */\n\n// BƯỚC CẤU HÌNH DUY NHẤT: Đổi mã khóa bí mật của riêng bạn tại dòng dưới đây:\nconst DEFAULT_ADMIN_KEY = \"HIEUADMIN\";\n\nconst SHEET_MAIN = \"LeHoi\";\nconst SHEET_BACKUP = \"Backup_LichSu\";\nconst MAX_BACKUPS = 100;\n\n// 12 lễ hội mặc định khởi tạo lần đầu nếu bảng tính hoàn toàn trống\nconst INITIAL_FESTIVALS = [\n  { id: 1, name: \"Hội Xuân & Vía Bà Đen\", location: \"Tây Ninh\", region: \"Miền Nam\", lunarDay: 5, lunarMonth: 5, lunarLabel: \"05/05 ÂL\", duration: \"Hội Xuân 30 ngày; Vía 3 ngày\", highlights: \"Hành hương đỉnh núi Bà Đen, dâng hương Linh Sơn Thánh Mẫu (04–06/05 ÂL) và đêm hội hoa đăng.\" },\n  { id: 2, name: \"Tết Nguyên Tiêu Chợ Lớn\", location: \"TP. Hồ Chí Minh\", region: \"Miền Nam\", lunarDay: 15, lunarMonth: 1, lunarLabel: \"15/01 ÂL\", duration: \"4 ngày\", highlights: \"Diễu hành nghệ thuật đường phố, lân sư rồng qua các hội quán người Hoa Quận 5 (12–15/01 ÂL).\" },\n  { id: 3, name: \"Lễ hội Vía Bà Chúa Xứ Núi Sam\", location: \"An Giang\", region: \"Miền Nam\", lunarDay: 24, lunarMonth: 4, lunarLabel: \"24/04 ÂL\", duration: \"6 ngày\", highlights: \"Lễ Tắm Bà đêm 23 rạng 24/4 ÂL (kéo dài 22–27/04 ÂL), lễ hội tín ngưỡng lớn nhất miền Tây Nam Bộ.\" },\n  { id: 4, name: \"Lễ hội Nghinh Ông Cần Giờ\", location: \"TP. Hồ Chí Minh\", region: \"Miền Nam\", lunarDay: 16, lunarMonth: 8, lunarLabel: \"16/08 ÂL\", duration: \"3 ngày\", highlights: \"Rước kiệu Nam Hải Tướng Quân trên biển Cần Giờ (15–17/08 ÂL), cầu ngư dân bình an và mùa biển bội thu.\" },\n  { id: 5, name: \"Lễ hội Ok Om Bok – Đua Ghe Ngo\", location: \"Sóc Trăng & Trà Vinh\", region: \"Miền Nam\", lunarDay: 15, lunarMonth: 10, lunarLabel: \"15/10 ÂL\", duration: \"2 – 3 ngày\", highlights: \"Lễ Cúng Trăng của đồng bào Khmer Nam Bộ, đua ghe Ngo trên sông Maspéro và thả đèn nước hoa đăng.\" },\n  { id: 6, name: \"Lễ hội Chùa Bà Thiên Hậu\", location: \"Bình Dương\", region: \"Miền Nam\", lunarDay: 15, lunarMonth: 1, lunarLabel: \"15/01 ÂL\", duration: \"3 ngày\", highlights: \"Lễ rước kiệu Bà Thiên Hậu qua các tuyến phố Thủ Dầu Một vào chiều Rằm tháng Giêng (13–15/01 ÂL).\" },\n  { id: 11, name: \"Lễ hội Quán Thế Âm Ngũ Hành Sơn\", location: \"Đà Nẵng\", region: \"Miền Trung\", lunarDay: 19, lunarMonth: 2, lunarLabel: \"19/02 ÂL\", duration: \"3 ngày\", highlights: \"Lễ rước ánh sáng, rước tôn tượng Quán Thế Âm và hội hoa đăng trên sông Cổ Cò (17–19/02 ÂL).\" },\n  { id: 12, name: \"Lễ hội Điện Hòn Chén\", location: \"Thừa Thiên Huế\", region: \"Miền Trung\", lunarDay: 3, lunarMonth: 3, lunarLabel: \"03/03 ÂL\", duration: \"2 ngày\", highlights: \"Rước sắc bằng thuyền rồng trên sông Hương, tôn vinh Thiên Y A Na Thánh Mẫu.\" },\n  { id: 7, name: \"Lễ hội Chùa Hương\", location: \"Hà Nội\", region: \"Miền Bắc\", lunarDay: 6, lunarMonth: 1, lunarLabel: \"06/01 ÂL\", duration: \"80 – 90 ngày\", highlights: \"Khai hội Mùng 6 Tết, hành hương suối Yến - động Hương Tích kéo dài suốt 3 tháng mùa xuân.\" },\n  { id: 8, name: \"Hội Gióng Đền Sóc\", location: \"Hà Nội\", region: \"Miền Bắc\", lunarDay: 6, lunarMonth: 1, lunarLabel: \"06/01 ÂL\", duration: \"3 ngày\", highlights: \"Tưởng nhớ Thánh Gióng (06–08/01 ÂL), nghi lễ dâng hoa tre và rước voi truyền thống.\" },\n  { id: 9, name: \"Hội Lim (Quan họ)\", location: \"Bắc Ninh\", region: \"Miền Bắc\", lunarDay: 13, lunarMonth: 1, lunarLabel: \"13/01 ÂL\", duration: \"3 ngày\", highlights: \"Hát giao duyên Quan họ Bắc Ninh trên thuyền rồng và đồi Lim (12–14/01 ÂL).\" },\n  { id: 10, name: \"Lễ hội Yên Tử\", location: \"Quảng Ninh\", region: \"Miền Bắc\", lunarDay: 10, lunarMonth: 1, lunarLabel: \"10/01 ÂL\", duration: \"~80 ngày\", highlights: \"Hành hương về đất Phật Trúc Lâm Yên Tử và đỉnh chùa Đồng từ 10 tháng Giêng đến hết tháng 3 ÂL.\" }\n];\n\n// Tạo menu tiện ích ngay trên thanh công cụ Google Sheets cho Chủ sở hữu\nfunction onOpen() {\n  SpreadsheetApp.getUi()\n    .createMenu(\"🏮 Quản lý Lễ Hội\")\n    .addItem(\"1. Khởi tạo bảng & Nạp 12 lễ hội gốc\", \"setupInitialSheet\")\n    .addItem(\"2. Đổi Mã khóa Chủ sở hữu (Admin Key)\", \"promptChangeAdminKey\")\n    .addItem(\"3. Khôi phục bản sao lưu gần nhất\", \"restoreLatestBackupFromMenu\")\n    .addToUi();\n}\n\n// Tự động cập nhật cột updatedAt khi Chủ sở hữu sửa trực tiếp trên Google Sheets\nfunction onEdit(e) {\n  if (!e || !e.range) return;\n  const sheet = e.range.getSheet();\n  if (sheet.getName() !== SHEET_MAIN) return;\n  const row = e.range.getRow();\n  if (row <= 1) return;\n\n  const nowIso = new Date().toISOString();\n  const idCell = sheet.getRange(row, 1);\n  if (!idCell.getValue()) {\n    idCell.setValue(Date.now() + row);\n  }\n  const dayVal = Number(sheet.getRange(row, 5).getValue() || 15);\n  const monthVal = Number(sheet.getRange(row, 6).getValue() || 1);\n  const labelCell = sheet.getRange(row, 7);\n  if (!labelCell.getValue() && dayVal && monthVal) {\n    labelCell.setValue(String(dayVal).padStart(2, \"0\") + \"/\" + String(monthVal).padStart(2, \"0\") + \" ÂL\");\n  }\n  const delCell = sheet.getRange(row, 11);\n  if (delCell.getValue() === \"\") {\n    delCell.setValue(false);\n  }\n  sheet.getRange(row, 10).setValue(nowIso);\n}\n\nfunction getAdminKey() {\n  const savedKey = PropertiesService.getScriptProperties().getProperty(\"ADMIN_SECRET_KEY\");\n  return savedKey ? savedKey : DEFAULT_ADMIN_KEY;\n}\n\nfunction verifyKey(inputKey) {\n  const actual = String(getAdminKey()).trim();\n  const provided = String(inputKey || \"\").trim();\n  if (!actual || !provided || actual.length !== provided.length) return false;\n  let diff = 0;\n  for (let i = 0; i < actual.length; i++) {\n    diff |= actual.charCodeAt(i) ^ provided.charCodeAt(i);\n  }\n  return diff === 0;\n}\n\nfunction promptChangeAdminKey() {\n  const ui = SpreadsheetApp.getUi();\n  const res = ui.prompt(\n    \"Đổi Mã khóa Chủ sở hữu (Admin Key)\",\n    \"Nhập mã khóa bí mật mới (dùng để mở khóa chỉnh sửa trên ứng dụng web):\",\n    ui.ButtonSet.OK_CANCEL\n  );\n  if (res.getSelectedButton() === ui.Button.OK) {\n    const newKey = res.getResponseText().trim();\n    if (newKey.length < 4) {\n      ui.alert(\"Mã khóa phải có ít nhất 4 ký tự!\");\n      return;\n    }\n    PropertiesService.getScriptProperties().setProperty(\"ADMIN_SECRET_KEY\", newKey);\n    ui.alert(\"Đã lưu Mã khóa Chủ sở hữu mới thành công!\");\n  }\n}\n\nfunction ensureSheetsExist() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  let mainSheet = ss.getSheetByName(SHEET_MAIN);\n  if (!mainSheet) {\n    mainSheet = ss.insertSheet(SHEET_MAIN);\n    const headers = [\n      \"id\", \"name\", \"location\", \"region\",\n      \"lunarDay\", \"lunarMonth\", \"lunarLabel\",\n      \"duration\", \"highlights\", \"updatedAt\", \"deleted\"\n    ];\n    mainSheet.getRange(1, 1, 1, headers.length).setValues([headers]);\n    mainSheet.getRange(1, 1, 1, headers.length)\n      .setFontWeight(\"bold\")\n      .setBackground(\"#1e3a8a\")\n      .setFontColor(\"#ffffff\");\n    mainSheet.setFrozenRows(1);\n\n    const initIso = \"2026-01-01T00:00:00.000Z\";\n    const rows = INITIAL_FESTIVALS.map(item => [\n      item.id, item.name, item.location, item.region,\n      item.lunarDay, item.lunarMonth, item.lunarLabel,\n      item.duration, item.highlights, initIso, false\n    ]);\n    mainSheet.getRange(2, 1, rows.length, headers.length).setValues(rows);\n  }\n\n  let backupSheet = ss.getSheetByName(SHEET_BACKUP);\n  if (!backupSheet) {\n    backupSheet = ss.insertSheet(SHEET_BACKUP);\n    const bHeaders = [\"Thời gian sao lưu\", \"Thao tác\", \"Số lượng lễ hội\", \"Dữ liệu JSON (Snapshot)\"];\n    backupSheet.getRange(1, 1, 1, bHeaders.length).setValues([bHeaders]);\n    backupSheet.getRange(1, 1, 1, bHeaders.length)\n      .setFontWeight(\"bold\")\n      .setBackground(\"#334155\")\n      .setFontColor(\"#ffffff\");\n    backupSheet.setFrozenRows(1);\n  }\n  return { ss, mainSheet, backupSheet };\n}\n\nfunction setupInitialSheet() {\n  ensureSheetsExist();\n  return \"Đã khởi tạo bảng LeHoi và Backup_LichSu thành công!\";\n}\n\nfunction readAllRecords(mainSheet) {\n  const lastRow = mainSheet.getLastRow();\n  if (lastRow <= 1) return [];\n  const values = mainSheet.getRange(2, 1, lastRow - 1, 11).getValues();\n  const records = [];\n  for (let i = 0; i < values.length; i++) {\n    const r = values[i];\n    const name = String(r[1] || \"\").trim();\n    const location = String(r[2] || \"\").trim();\n    if (!name && !location) continue;\n    const lunarDay = Number(r[4]) || 15;\n    const lunarMonth = Number(r[5]) || 1;\n    const id = r[0] !== \"\" && r[0] !== null ? r[0] : (Date.now() + i);\n    const lunarLabel = String(r[6] || \"\").trim() || (String(lunarDay).padStart(2, \"0\") + \"/\" + String(lunarMonth).padStart(2, \"0\") + \" ÂL\");\n    const updatedAt = r[9] ? String(r[9]) : \"2026-01-01T00:00:00.000Z\";\n    const deleted = r[10] === true || String(r[10]).toUpperCase() === \"TRUE\";\n    records.push({\n      id: Number.isFinite(Number(id)) ? Number(id) : String(id),\\n      name: name,\\n      location: location,\\n      region: String(r[3] || \"Miền Nam\").trim(),\\n      lunarDay: lunarDay,\\n      lunarMonth: lunarMonth,\\n      lunarLabel: lunarLabel,\\n      duration: String(r[7] || \"1 – 3 ngày\").trim(),\\n      highlights: String(r[8] || \"\").trim(),\\n      updatedAt: updatedAt,\\n      deleted: deleted\n    });\n  }\n  return records;\n}\n\nfunction writeAllRecords(mainSheet, records) {\n  const lastRow = mainSheet.getLastRow();\n  if (lastRow > 1) {\n    mainSheet.getRange(2, 1, lastRow - 1, 11).clearContent();\n  }\n  if (records.length === 0) return;\n  const rows = records.map(item => [\n    item.id,\n    item.name,\n    item.location,\n    item.region || \"Miền Nam\",\n    Number(item.lunarDay) || 15,\n    Number(item.lunarMonth) || 1,\n    item.lunarLabel || (String(item.lunarDay || 15).padStart(2, \"0\") + \"/\" + String(item.lunarMonth || 1).padStart(2, \"0\") + \" ÂL\"),\n    item.duration || \"1 – 3 ngày\",\n    item.highlights || \"\",\n    item.updatedAt || new Date().toISOString(),\n    Boolean(item.deleted)\n  ]);\n  mainSheet.getRange(2, 1, rows.length, 11).setValues(rows);\n}\n\nfunction saveBackupSnapshot(backupSheet, actionName, currentRecords) {\n  const activeCount = currentRecords.filter(r => !r.deleted).length;\n  backupSheet.appendRow([\n    new Date().toISOString(),\n    actionName,\n    activeCount,\n    JSON.stringify(currentRecords)\n  ]);\n  const totalRows = backupSheet.getLastRow();\n  if (totalRows > MAX_BACKUPS + 1) {\n    backupSheet.deleteRows(2, totalRows - (MAX_BACKUPS + 1));\n  }\n}\n\nfunction makeFingerprint(item) {\n  return [\n    String(item.name || \"\").trim().toLowerCase(),\n    String(item.location || \"\").trim().toLowerCase(),\n    Number(item.lunarDay) || 0,\n    Number(item.lunarMonth) || 0\n  ].join(\"|\");\n}\n\nfunction parseTimeMs(isoStr) {\n  const t = Date.parse(isoStr || \"\");\n  return Number.isFinite(t) ? t : 0;\n}\n\nfunction jsonResponse(obj) {\n  return ContentService\n    .createTextOutput(JSON.stringify(obj))\n    .setMimeType(ContentService.MimeType.JSON);\n}\n\n// API ĐỌC DỮ LIỆU (Ai có link đều tra cứu được danh sách mới nhất)\nfunction doGet(e) {\n  try {\n    const { mainSheet } = ensureSheetsExist();\n    const allRecords = readAllRecords(mainSheet);\n    const activeItems = allRecords.filter(r => !r.deleted);\n    const deletedIds = allRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }));\n    return jsonResponse({\n      ok: true,\n      serverTime: new Date().toISOString(),\n      items: activeItems,\n      deletedIds: deletedIds\n    });\n  } catch (err) {\n    return jsonResponse({ ok: false, error: String(err.message || err) });\n  }\n}\n\n// API GHI & ĐỒNG BỘ DỮ LIỆU (Chỉ Chủ sở hữu có Mã khóa mới thực hiện được)\nfunction doPost(e) {\n  const lock = LockService.getScriptLock();\n  try {\n    lock.waitLock(15000);\n  } catch (lockErr) {\n    return jsonResponse({ ok: false, error: \"Hệ thống đang bận xử lý đồng bộ khác, vui lòng thử lại sau vài giây.\" });\n  }\n\n  try {\n    const payload = JSON.parse(e.postData.contents || \"{}\");\n    const action = payload.action || \"\";\n    const adminKey = payload.adminKey || \"\";\n\n    // Cho phép Khách gửi đề xuất lễ hội mới vào Hàng chờ xét duyệt ([CHỜ DUYỆT])\n    if (action === \"submitPending\") {\n      const { mainSheet, backupSheet } = ensureSheetsExist();\n      const currentRecords = readAllRecords(mainSheet);\n      const incoming = payload.item;\n      if (!incoming || !incoming.name || !incoming.location) {\n        return jsonResponse({ ok: false, error: \"Dữ liệu lễ hội đề xuất không hợp lệ.\" });\n      }\n      saveBackupSnapshot(backupSheet, \"GUEST_PROPOSE: \" + incoming.name, currentRecords);\n      const nowIso = new Date().toISOString();\n      const rawLabel = String(incoming.lunarLabel || \"15/01 ÂL\").replace(/^\\[CHỜ DUYỆT\\]\\s*/i, \"\").trim();\n      const pendingLabel = \"[CHỜ DUYỆT] \" + rawLabel;\n      currentRecords.push({\n        id: incoming.id || Date.now(),\n        name: String(incoming.name).trim(),\n        location: String(incoming.location).trim(),\n        region: incoming.region || \"Miền Nam\",\n        lunarDay: Number(incoming.lunarDay) || 15,\n        lunarMonth: Number(incoming.lunarMonth) || 1,\n        lunarLabel: pendingLabel,\n        duration: incoming.duration || \"1 – 3 ngày\",\n        highlights: incoming.highlights || \"\",\n        updatedAt: nowIso,\n        deleted: false\n      });\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\n        ok: true,\n        serverTime: nowIso,\n        items: currentRecords.filter(r => !r.deleted),\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    if (!verifyKey(adminKey)) {\n      return jsonResponse({\n        ok: false,\n        authError: true,\n        error: \"Mã khóa Chủ sở hữu không chính xác! Từ chối quyền chỉnh sửa.\"\n      });\n    }\n\n    const { mainSheet, backupSheet } = ensureSheetsExist();\n    const currentRecords = readAllRecords(mainSheet);\n\n    if (action === \"verifyAuth\") {\n      return jsonResponse({\n        ok: true,\n        message: \"Xác thực Chủ sở hữu thành công!\",\n        serverTime: new Date().toISOString()\n      });\n    }\n\n    // 1. Thêm hoặc cập nhật 1 lễ hội đơn lẻ (Không đụng chạm các dòng khác)\n    if (action === \"upsert\") {\n      const incoming = payload.item;\n      if (!incoming || !incoming.name || !incoming.location) {\n        return jsonResponse({ ok: false, error: \"Dữ liệu lễ hội không hợp lệ.\" });\n      }\n      saveBackupSnapshot(backupSheet, \"UPSERT: \" + incoming.name, currentRecords);\n\n      const nowIso = incoming.updatedAt || new Date().toISOString();\n      const targetId = String(incoming.id);\n      const targetFp = makeFingerprint(incoming);\n      let found = false;\n\n      for (let i = 0; i < currentRecords.length; i++) {\n        if (String(currentRecords[i].id) === targetId || (!currentRecords[i].deleted && makeFingerprint(currentRecords[i]) === targetFp)) {\n          currentRecords[i] = {\n            id: currentRecords[i].id,\n            name: String(incoming.name).trim(),\n            location: String(incoming.location).trim(),\n            region: incoming.region || \"Miền Nam\",\n            lunarDay: Number(incoming.lunarDay) || 15,\n            lunarMonth: Number(incoming.lunarMonth) || 1,\n            lunarLabel: incoming.lunarLabel || (String(incoming.lunarDay).padStart(2, \"0\") + \"/\" + String(incoming.lunarMonth).padStart(2, \"0\") + \" ÂL\"),\n            duration: incoming.duration || \"1 – 3 ngày\",\n            highlights: incoming.highlights || \"\",\n            updatedAt: nowIso,\n            deleted: false\n          };\n          found = true;\n          break;\n        }\n      }\n\n      if (!found) {\n        currentRecords.push({\n          id: incoming.id || Date.now(),\n          name: String(incoming.name).trim(),\n          location: String(incoming.location).trim(),\n          region: incoming.region || \"Miền Nam\",\n          lunarDay: Number(incoming.lunarDay) || 15,\n          lunarMonth: Number(incoming.lunarMonth) || 1,\n          lunarLabel: incoming.lunarLabel || (String(incoming.lunarDay).padStart(2, \"0\") + \"/\" + String(incoming.lunarMonth).padStart(2, \"0\") + \" ÂL\"),\n          duration: incoming.duration || \"1 – 3 ngày\",\n          highlights: incoming.highlights || \"\",\n          updatedAt: nowIso,\n          deleted: false\n        });\n      }\n\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\n        ok: true,\n        serverTime: new Date().toISOString(),\n        items: currentRecords.filter(r => !r.deleted),\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    // 2. Xóa mềm 1 lễ hội (Có lưu vào Backup_LichSu trước khi xóa)\n    if (action === \"delete\") {\n      const targetId = String(payload.id);\n      saveBackupSnapshot(backupSheet, \"DELETE ID: \" + targetId, currentRecords);\n      const nowIso = new Date().toISOString();\n      for (let i = 0; i < currentRecords.length; i++) {\n        if (String(currentRecords[i].id) === targetId) {\n          currentRecords[i].deleted = true;\n          currentRecords[i].updatedAt = nowIso;\n        }\n      }\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\\n        ok: true,\\n        serverTime: nowIso,\\n        items: currentRecords.filter(r => !r.deleted),\\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\\n      });\n    }\n\n    // 3. Đồng bộ Gộp 2 Chiều (Safe Merge: Không làm mất dữ liệu trên Sheet lẫn trên máy)\n    if (action === \"syncMerge\") {\n      const incomingList = Array.isArray(payload.items) ? payload.items : [];\n      saveBackupSnapshot(backupSheet, \"SYNC_MERGE (\" + incomingList.length + \" mục từ trình duyệt)\", currentRecords);\n\n      const byId = {};\n      const byFp = {};\n      currentRecords.forEach(rec => {\n        byId[String(rec.id)] = rec;\n        if (!rec.deleted) {\n          byFp[makeFingerprint(rec)] = rec;\n        }\n      });\n\n      let addedCount = 0;\n      let updatedCount = 0;\n\n      incomingList.forEach(inc => {\n        if (!inc || !inc.name || !inc.location) return;\n        const incId = String(inc.id);\n        const incFp = makeFingerprint(inc);\n        const incTime = parseTimeMs(inc.updatedAt);\n        const existing = byId[incId] || byFp[incFp];\n\n        if (!existing) {\n          const newRec = {\n            id: inc.id || Date.now(),\n            name: String(inc.name).trim(),\n            location: String(inc.location).trim(),\n            region: inc.region || \"Miền Nam\",\n            lunarDay: Number(inc.lunarDay) || 15,\n            lunarMonth: Number(inc.lunarMonth) || 1,\n            lunarLabel: inc.lunarLabel || (String(inc.lunarDay).padStart(2, \"0\") + \"/\" + String(inc.lunarMonth).padStart(2, \"0\") + \" ÂL\"),\n            duration: inc.duration || \"1 – 3 ngày\",\n            highlights: inc.highlights || \"\",\n            updatedAt: inc.updatedAt || new Date().toISOString(),\n            deleted: false\n          };\n          currentRecords.push(newRec);\n          byId[String(newRec.id)] = newRec;\n          byFp[incFp] = newRec;\n          addedCount++;\n        } else {\n          const sheetTime = parseTimeMs(existing.updatedAt);\n          if (existing.deleted && sheetTime >= incTime) {\n            return;\n          }\n          if (incTime > sheetTime) {\n            existing.name = String(inc.name).trim();\n            existing.location = String(inc.location).trim();\n            existing.region = inc.region || existing.region || \"Miền Nam\";\n            existing.lunarDay = Number(inc.lunarDay) || existing.lunarDay || 15;\n            existing.lunarMonth = Number(inc.lunarMonth) || existing.lunarMonth || 1;\n            existing.lunarLabel = inc.lunarLabel || (String(existing.lunarDay).padStart(2, \"0\") + \"/\" + String(existing.lunarMonth).padStart(2, \"0\") + \" ÂL\");\n            existing.duration = inc.duration || existing.duration || \"1 – 3 ngày\";\n            existing.highlights = inc.highlights !== undefined ? inc.highlights : existing.highlights;\n            existing.updatedAt = inc.updatedAt || new Date().toISOString();\n            existing.deleted = false;\n            updatedCount++;\n          }\n        }\n      });\n\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\n        ok: true,\n        addedCount: addedCount,\n        updatedCount: updatedCount,\n        serverTime: new Date().toISOString(),\n        items: currentRecords.filter(r => !r.deleted),\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    // 4. Khôi phục từ bản sao lưu gần nhất trong trang tính Backup_LichSu\n    if (action === \"restoreBackup\") {\n      const bLastRow = backupSheet.getLastRow();\n      if (bLastRow <= 1) {\n        return jsonResponse({ ok: false, error: \"Chưa có bản sao lưu nào trong sheet Backup_LichSu.\" });\n      }\n      const snapshotJson = backupSheet.getRange(bLastRow, 4).getValue();\n      const restoredRecords = JSON.parse(snapshotJson || \"[]\");\n      if (!Array.isArray(restoredRecords) || restoredRecords.length === 0) {\n        return jsonResponse({ ok: false, error: \"Bản sao lưu gần nhất trống hoặc không hợp lệ.\" });\n      }\n      backupSheet.deleteRow(bLastRow);\n      writeAllRecords(mainSheet, restoredRecords);\n      return jsonResponse({\n        ok: true,\n        serverTime: new Date().toISOString(),\n        items: restoredRecords.filter(r => !r.deleted),\n        deletedIds: restoredRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    return jsonResponse({ ok: false, error: \"Hành động không được hỗ trợ: \" + action });\n  } catch (err) {\n    return jsonResponse({ ok: false, error: String(err.message || err) });\n  } finally {\n    lock.releaseLock();\n  }\n}\n\nfunction restoreLatestBackupFromMenu() {\n  const ui = SpreadsheetApp.getUi();\n  const { mainSheet, backupSheet } = ensureSheetsExist();\n  const bLastRow = backupSheet.getLastRow();\n  if (bLastRow <= 1) {\n    ui.alert(\"Chưa có bản sao lưu nào trong trang tính Backup_LichSu!\");\n    return;\n  }\n  const snapshotJson = backupSheet.getRange(bLastRow, 4).getValue();\n  const restoredRecords = JSON.parse(snapshotJson || \"[]\");\n  backupSheet.deleteRow(bLastRow);\n  writeAllRecords(mainSheet, restoredRecords);\n  ui.alert(\"Đã khôi phục thành công bản sao lưu gần nhất!\");\n}\n";
 
@@ -4204,135 +4323,22 @@
       renderTable();
     }
   });
-
-  // Khởi chạy ban đầu
-  reloadFestivalsFromLocalStorage();
-  updateCloudStatusUI();
-  renderRegionControls();
-  updateTodayBanner();
-  updateViewModeUI();
-  updateFavBadges();
-  renderTable();
-  if (cloudConfig.scriptUrl && cloudConfig.autoSync !== false) {
-    pullFromCloud(false);
-  }
-
   // ==========================================================================
-  // TÍNH NĂNG MỚI: LỊCH VẠN NIÊN HÔM NAY, YÊU THÍCH (FAVORITES) & CHẾ ĐỘ XEM (CARDS)
+  // KHỞI CHẠY HỆ THỐNG BAN ĐẦU (Đặt ở cuối cùng sau khi nạp toàn bộ biến & hàm)
   // ==========================================================================
-  const CAN_NAMES = ["Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ", "Canh", "Tân", "Nhâm", "Quý"];
-  const CHI_NAMES = ["Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"];
-  const DAY_NAMES = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
-
-  function getCanChiYear(lunarYear) {
-    const can = CAN_NAMES[(lunarYear + 6) % 10];
-    const chi = CHI_NAMES[(lunarYear + 8) % 12];
-    return `${can} ${chi}`;
-  }
-
-  function updateTodayBanner() {
-    try {
-      const bannerEl = document.getElementById("todayCalendarBanner");
-      if (!bannerEl) return;
-      const now = new Date();
-      const solarD = now.getDate();
-      const solarM = now.getMonth() + 1;
-      const solarY = now.getFullYear();
-      const dayOfWeek = DAY_NAMES[now.getDay()];
-
-      const lunar = convertSolar2Lunar(solarD, solarM, solarY, TIME_ZONE);
-      const canChi = getCanChiYear(lunar.year);
-      const leapText = lunar.leap ? " (Nhuận)" : "";
-
-      bannerEl.innerHTML = `
-        <span>🏮 <strong>Hôm nay:</strong> ${dayOfWeek}, <span class="solar-hl">${String(solarD).padStart(2, "0")}/${String(solarM).padStart(2, "0")}/${solarY} (Dương lịch)</span></span>
-        <span>•</span>
-        <span>Nhằm ngày <span class="lunar-hl">${String(lunar.day).padStart(2, "0")}/${String(lunar.month).padStart(2, "0")}${leapText}</span> năm <strong>${canChi}</strong> (Âm lịch)</span>
-      `;
-    } catch (e) {
-      console.warn("Lỗi cập nhật banner hôm nay:", e);
-    }
-  }
-
-  // Quản lý danh sách Yêu thích
-  let favorites = [];
   try {
-    favorites = JSON.parse(safeGetStorage("vn_festivals_favorites") || "[]");
-    if (!Array.isArray(favorites)) favorites = [];
-  } catch (e) {
-    favorites = [];
-  }
-
-  function isFavorite(id) {
-    return favorites.includes(String(id));
-  }
-
-  function toggleFavorite(e, id) {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    const sId = String(id);
-    const idx = favorites.indexOf(sId);
-    if (idx >= 0) {
-      favorites.splice(idx, 1);
-      showToast("Đã bỏ khỏi danh sách Yêu thích", "info");
-    } else {
-      favorites.push(sId);
-      showToast("❤️ Đã thêm vào Lễ hội Yêu thích!", "success");
-    }
-    safeSetStorage("vn_festivals_favorites", JSON.stringify(favorites));
+    reloadFestivalsFromLocalStorage();
+    updateCloudStatusUI();
+    renderRegionControls();
+    updateTodayBanner();
+    updateViewModeUI();
     updateFavBadges();
     renderTable();
-  }
-
-  function updateFavBadges() {
-    const badge = document.getElementById("favCountBadge");
-    if (badge) badge.textContent = String(favorites.length);
-  }
-
-  // Quản lý chế độ xem (Dạng Thẻ vs Dạng Bảng)
-  let currentViewMode = safeGetStorage("vn_festivals_view_mode") || "card";
-
-  function setViewMode(mode) {
-    currentViewMode = mode;
-    safeSetStorage("vn_festivals_view_mode", mode);
-    updateViewModeUI();
-  }
-
-  function updateViewModeUI() {
-    const btnCard = document.getElementById("btnViewCard");
-    const btnTable = document.getElementById("btnViewTable");
-    const gridEl = document.getElementById("festGrid");
-    const tableEl = document.getElementById("tableWrap");
-
-    if (currentViewMode === "card") {
-      if (btnCard) btnCard.classList.add("active");
-      if (btnTable) btnTable.classList.remove("active");
-      if (gridEl) gridEl.style.display = "grid";
-      if (tableEl) tableEl.style.display = "none";
-    } else {
-      if (btnCard) btnCard.classList.remove("active");
-      if (btnTable) btnTable.classList.add("active");
-      if (gridEl) gridEl.style.display = "none";
-      if (tableEl) tableEl.style.display = "block";
+    if (cloudConfig.scriptUrl && cloudConfig.autoSync !== false) {
+      pullFromCloud(false);
     }
-  }
-
-  function toggleCardDetail(e, id) {
-    if (e) e.stopPropagation();
-    const drawer = document.getElementById(`card-drawer-${id}`);
-    const grid = document.getElementById(`card-grid-${id}`);
-    if (!drawer) return;
-    const isOpen = drawer.classList.contains("open");
-    if (isOpen) {
-      drawer.classList.remove("open");
-    } else {
-      drawer.classList.add("open");
-      if (grid && grid.children.length === 0) {
-        renderTenYearGrid(id, `card-grid-${id}`);
-      }
-    }
+  } catch (err) {
+    console.error("Lỗi khởi chạy ứng dụng:", err);
   }
 
 </script>
