@@ -711,7 +711,8 @@ function doPost(e) {
       const byId = {};
       const byFp = {};
       currentRecords.forEach(rec => {
-        byId[String(rec.id)] = rec;\n        if (!rec.deleted) {
+        byId[String(rec.id)] = rec;
+        if (!rec.deleted) {
           byFp[makeFingerprint(rec)] = rec;
         }
       });
