@@ -114,6 +114,11 @@
   - Xóa bỏ toàn bộ các ghi chú công khai về tài khoản/mật khẩu quản trị mặc định trên giao diện web, modal đăng nhập, placeholder và thông báo toast.
 - **Đồng bộ Android Assets:**
   - Cập nhật 100% mã nguồn sang `android/app/src/main/assets/www/index.html`.
+- **Nâng cấp Bộ công cụ 1-Click Sync (Pull & Push) qua PowerShell Engine:**
+  - Chuyển toàn bộ lõi xử lý của `1_PULL_TRUOC_KHI_LAM.bat` và `2_PUSH_TRUOC_KHI_VE.bat` sang PowerShell script (`scripts/sync_pull.ps1` và `scripts/sync_push.ps1`).
+  - Khắc phục triệt để lỗi kinh điển của Windows `cmd.exe`: lỗi nhảy lệch vị trí byte (`chcp 65001 byte offset desync`) làm văng các ký tự vụn `'p") do if'`, `'Ba'`, `'---------------'`.
+  - Cải tiến tự động phát hiện cả các bản commit cục bộ chưa push để đẩy lên GitHub ngay cả khi thư mục làm việc đã sạch sẽ.
+  - Tự động đồng bộ và làm mới 2 shortcut trên Desktop.
 
 ---
 
