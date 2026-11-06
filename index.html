@@ -1521,14 +1521,19 @@
       const solarY = now.getFullYear();
       const dayOfWeek = DAY_NAMES[now.getDay()];
 
-      const lunar = convertSolar2Lunar(solarD, solarM, solarY, TIME_ZONE);
-      const canChi = getCanChiYear(lunar.year);
-      const leapText = lunar.leap ? " (Nhuận)" : "";
+      const lunarRes = convertSolar2Lunar(solarD, solarM, solarY, TIME_ZONE);
+      const lunarDay = Array.isArray(lunarRes) ? lunarRes[0] : (lunarRes.day || 1);
+      const lunarMonth = Array.isArray(lunarRes) ? lunarRes[1] : (lunarRes.month || 1);
+      const lunarYear = Array.isArray(lunarRes) ? lunarRes[2] : (lunarRes.year || solarY);
+      const lunarLeap = Array.isArray(lunarRes) ? lunarRes[3] : (lunarRes.leap ? 1 : 0);
+
+      const canChi = getCanChiYear(lunarYear);
+      const leapText = lunarLeap === 1 ? " (Nhuận)" : "";
 
       bannerEl.innerHTML = `
         <span>🏮 <strong>Hôm nay:</strong> ${dayOfWeek}, <span class="solar-hl">${String(solarD).padStart(2, "0")}/${String(solarM).padStart(2, "0")}/${solarY} (Dương lịch)</span></span>
         <span>•</span>
-        <span>Nhằm ngày <span class="lunar-hl">${String(lunar.day).padStart(2, "0")}/${String(lunar.month).padStart(2, "0")}${leapText}</span> năm <strong>${canChi}</strong> (Âm lịch)</span>
+        <span>Nhằm ngày <span class="lunar-hl">${String(lunarDay).padStart(2, "0")}/${String(lunarMonth).padStart(2, "0")}${leapText}</span> năm <strong>${canChi}</strong> (Âm lịch)</span>
       `;
     } catch (e) {
       console.warn("Lỗi cập nhật banner hôm nay:", e);
