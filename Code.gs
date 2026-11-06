@@ -171,7 +171,7 @@ function ensureSheetsExist() {
     usersSheet = ss.insertSheet(SHEET_USERS);
     const uHeaders = [
       "id", "username", "displayName", "passwordHash",
-      "salt", "role", "status", "createdAt", "lastLogin"
+      "salt", "role", "status", "createdAt", "lastLogin", "failedAttempts", "lockUntil"
     ];
     usersSheet.getRange(1, 1, 1, uHeaders.length).setValues([uHeaders]);
     usersSheet.getRange(1, 1, 1, uHeaders.length)
@@ -180,15 +180,25 @@ function ensureSheetsExist() {
       .setFontColor("#ffffff");
     usersSheet.setFrozenRows(1);
 
-    // Tạo sẵn tài khoản Admin đầu tiên cho Chủ sở hữu
+    // Tạo sẵn tài khoản Admin tối cao đầu tiên cho Chủ sở hữu
     const adminSalt = generateRandomSalt();
     const adminHash = hashPasswordWithSalt("HIEUADMIN", adminSalt);
     const initAdminRow = [
       "u_admin", "admin", "Chủ sở hữu (MH-SAMA)",
-      adminHash, adminSalt, "admin", "active",
-      new Date().toISOString(), new Date().toISOString()
+      adminHash, adminSalt, "superadmin", "active",
+      new Date().toISOString(), new Date().toISOString(),
+      0, 0
     ];
     usersSheet.getRange(2, 1, 1, initAdminRow.length).setValues([initAdminRow]);
+  } else {
+    // Tự động kiểm tra và nâng cấp 2 cột kiểm soát đăng nhập nếu chưa có
+    if (usersSheet.getLastColumn() < 11) {
+      usersSheet.getRange(1, 10, 1, 2).setValues([["failedAttempts", "lockUntil"]]);
+      usersSheet.getRange(1, 10, 1, 2)
+        .setFontWeight("bold")
+        .setBackground("#065f46")
+        .setFontColor("#ffffff");
+    }
   }
 
   return { ss, mainSheet, backupSheet, usersSheet };
@@ -236,21 +246,30 @@ function readAllRecords(mainSheet) {
 function readAllUsers(usersSheet) {
   const lastRow = usersSheet.getLastRow();
   if (lastRow <= 1) return [];
-  const values = usersSheet.getRange(2, 1, lastRow - 1, 9).getValues();
+  const lastCol = Math.max(usersSheet.getLastColumn(), 11);
+  const values = usersSheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
   const users = [];
   for (let i = 0; i < values.length; i++) {
     const r = values[i];
     if (!r[1]) continue; // Không có username
+    const rawUsername = String(r[1]).trim().toLowerCase();
+    let rawRole = String(r[5] || "member").trim().toLowerCase();
+    // Tài khoản gốc admin luôn giữ quyền tối cao superadmin
+    if (rawUsername === "admin" && (rawRole === "admin" || !rawRole)) {
+      rawRole = "superadmin";
+    }
     users.push({
       id: String(r[0] || ("u_" + i)),
-      username: String(r[1]).trim().toLowerCase(),
+      username: rawUsername,
       displayName: String(r[2] || r[1]).trim(),
       passwordHash: String(r[3] || ""),
       salt: String(r[4] || ""),
-      role: String(r[5] || "member").trim().toLowerCase(),
+      role: rawRole,
       status: String(r[6] || "active").trim().toLowerCase(),
       createdAt: String(r[7] || new Date().toISOString()),
-      lastLogin: String(r[8] || "")
+      lastLogin: String(r[8] || ""),
+      failedAttempts: Number(r[9]) || 0,
+      lockUntil: Number(r[10]) || 0
     });
   }
   return users;
@@ -259,7 +278,7 @@ function readAllUsers(usersSheet) {
 function writeAllUsers(usersSheet, users) {
   const lastRow = usersSheet.getLastRow();
   if (lastRow > 1) {
-    usersSheet.getRange(2, 1, lastRow - 1, 9).clearContent();
+    usersSheet.getRange(2, 1, lastRow - 1, 11).clearContent();
   }
   if (users.length === 0) return;
   const rows = users.map(u => [
@@ -271,9 +290,11 @@ function writeAllUsers(usersSheet, users) {
     u.role || "member",
     u.status || "active",
     u.createdAt || new Date().toISOString(),
-    u.lastLogin || ""
+    u.lastLogin || "",
+    Number(u.failedAttempts) || 0,
+    Number(u.lockUntil) || 0
   ]);
-  usersSheet.getRange(2, 1, rows.length, 9).setValues(rows);
+  usersSheet.getRange(2, 1, rows.length, 11).setValues(rows);
 }
 
 function writeAllRecords(mainSheet, records) {
@@ -403,7 +424,9 @@ function doPost(e) {
         role: "member",
         status: "active",
         createdAt: nowIso,
-        lastLogin: nowIso
+        lastLogin: nowIso,
+        failedAttempts: 0,
+        lockUntil: 0
       };
 
       users.push(newUser);
@@ -421,53 +444,109 @@ function doPost(e) {
         },
         token: "tk_" + newUser.id + "_" + Utilities.getUuid()
       });
-    }
-
-    // 2. Đăng nhập tài khoản
+    }    // 2. Đăng nhập tài khoản (Giới hạn sai tối đa 5 lần, khóa 60 giây)
     if (action === "login") {
       const { usersSheet } = ensureSheetsExist();
       const users = readAllUsers(usersSheet);
       const rawUser = String(payload.username || "").trim().toLowerCase();
       const rawPass = String(payload.password || "");
+      const nowMs = Date.now();
 
-      // Hỗ trợ trường hợp đăng nhập bằng username 'admin' hoặc mã bí mật HIEUADMIN
-      if (rawUser === "admin" && (rawPass === getAdminKey() || verifyKey(rawPass))) {
-        return jsonResponse({
-          ok: true,
-          message: "Đăng nhập Chủ sở hữu thành công!",
-          user: {
-            id: "u_admin",
-            username: "admin",
-            displayName: "Chủ sở hữu (MH-SAMA)",
-            role: "admin",
-            status: "active"
-          },
-          adminKey: getAdminKey(),
-          token: "tk_admin_" + Utilities.getUuid()
-        });
+      if (!rawUser || !rawPass) {
+        return jsonResponse({ ok: false, error: "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!" });
       }
 
-      const target = users.find(u => u.username === rawUser);
+      // Tìm tài khoản người dùng
+      let target = users.find(u => u.username === rawUser);
+
+      // Nếu là tài khoản admin nhưng chưa có trong danh sách sheet
+      if (rawUser === "admin" && !target) {
+        const adminSalt = generateRandomSalt();
+        const adminHash = hashPasswordWithSalt("HIEUADMIN", adminSalt);
+        target = {
+          id: "u_admin",
+          username: "admin",
+          displayName: "Chủ sở hữu (MH-SAMA)",
+          passwordHash: adminHash,
+          salt: adminSalt,
+          role: "superadmin",
+          status: "active",
+          createdAt: new Date().toISOString(),
+          lastLogin: "",
+          failedAttempts: 0,
+          lockUntil: 0
+        };
+        users.push(target);
+      }
+
       if (!target) {
         return jsonResponse({ ok: false, error: "Tên đăng nhập hoặc mật khẩu không chính xác!" });
       }
 
+      // Kiểm tra tài khoản bị quản trị viên khóa vĩnh viễn
       if (target.status === "locked") {
-        return jsonResponse({ ok: false, error: "Tài khoản của bạn đang bị khóa. Vui lòng liên hệ Admin!" });
+        return jsonResponse({ ok: false, error: "Tài khoản của bạn đang bị khóa bởi Quản trị viên. Vui lòng liên hệ Admin!" });
       }
 
-      const computedHash = hashPasswordWithSalt(rawPass, target.salt);
-      if (computedHash !== target.passwordHash) {
-        return jsonResponse({ ok: false, error: "Tên đăng nhập hoặc mật khẩu không chính xác!" });
+      // Kiểm tra thời gian tạm khóa 60 giây do nhập sai quá 5 lần
+      if (target.lockUntil && target.lockUntil > nowMs) {
+        const remainingSec = Math.ceil((target.lockUntil - nowMs) / 1000);
+        return jsonResponse({
+          ok: false,
+          locked: true,
+          retryAfter: remainingSec,
+          error: "Tài khoản tạm thời bị khóa do nhập sai mật khẩu 5 lần. Vui lòng thử lại sau " + remainingSec + " giây."
+        });
       }
 
+      // Nếu đã hết hạn khóa 60 giây, reset số lần sai
+      if (target.lockUntil && nowMs >= target.lockUntil) {
+        target.lockUntil = 0;
+        target.failedAttempts = 0;
+      }
+
+      // Xác thực mật khẩu
+      let isValidPass = false;
+      if (target.username === "admin") {
+        const computedHash = target.salt ? hashPasswordWithSalt(rawPass, target.salt) : "";
+        isValidPass = (computedHash === target.passwordHash) || (rawPass === getAdminKey()) || verifyKey(rawPass);
+      } else {
+        const computedHash = hashPasswordWithSalt(rawPass, target.salt);
+        isValidPass = (computedHash === target.passwordHash);
+      }
+
+      if (!isValidPass) {
+        target.failedAttempts = (Number(target.failedAttempts) || 0) + 1;
+        if (target.failedAttempts >= 5) {
+          target.lockUntil = nowMs + 60000; // Khóa 60 giây
+          target.failedAttempts = 0;
+          writeAllUsers(usersSheet, users);
+          return jsonResponse({
+            ok: false,
+            locked: true,
+            retryAfter: 60,
+            error: "Bạn đã nhập sai mật khẩu 5 lần liên tiếp! Tài khoản bị tạm khóa trong 60 giây."
+          });
+        }
+        const attemptsLeft = 5 - target.failedAttempts;
+        writeAllUsers(usersSheet, users);
+        return jsonResponse({
+          ok: false,
+          attemptsLeft: attemptsLeft,
+          error: "Mật khẩu không chính xác! Bạn còn " + attemptsLeft + " lần thử trước khi bị khóa 60 giây."
+        });
+      }
+
+      // Đăng nhập thành công -> Reset số lần sai và thời gian khóa
+      target.failedAttempts = 0;
+      target.lockUntil = 0;
       target.lastLogin = new Date().toISOString();
       writeAllUsers(usersSheet, users);
 
-      const isAdmin = target.role === "admin";
+      const isPrivileged = (target.role === "superadmin" || target.role === "moderator" || target.role === "admin");
       return jsonResponse({
         ok: true,
-        message: "Đăng nhập thành công!",
+        message: target.role === "superadmin" ? "Đăng nhập Chủ sở hữu thành công!" : "Đăng nhập thành công!",
         user: {
           id: target.id,
           username: target.username,
@@ -475,18 +554,19 @@ function doPost(e) {
           role: target.role,
           status: target.status
         },
-        adminKey: isAdmin ? getAdminKey() : "",
+        adminKey: isPrivileged ? getAdminKey() : "",
         token: "tk_" + target.id + "_" + Utilities.getUuid()
       });
     }
 
-    // 3. Lấy danh sách thành viên (Chỉ Admin mới có quyền)
+    // 3. Lấy danh sách thành viên (Chỉ Super Admin và Kiểm duyệt viên mới có quyền)
     if (action === "getUsersList") {
       if (!verifyKey(adminKey)) {
-        return jsonResponse({ ok: false, error: "Từ chối truy cập! Chỉ Admin mới có quyền xem danh sách thành viên." });
+        return jsonResponse({ ok: false, error: "Từ chối truy cập! Chỉ Quản trị viên mới có quyền xem danh sách thành viên." });
       }
       const { usersSheet } = ensureSheetsExist();
       const users = readAllUsers(usersSheet);
+      const nowMs = Date.now();
       const safeUsers = users.map(u => ({
         id: u.id,
         username: u.username,
@@ -494,7 +574,9 @@ function doPost(e) {
         role: u.role,
         status: u.status,
         createdAt: u.createdAt,
-        lastLogin: u.lastLogin
+        lastLogin: u.lastLogin,
+        failedAttempts: u.failedAttempts || 0,
+        isLockedUntil: (u.lockUntil && u.lockUntil > nowMs) ? Math.ceil((u.lockUntil - nowMs) / 1000) : 0
       }));
       return jsonResponse({
         ok: true,
@@ -502,28 +584,55 @@ function doPost(e) {
       });
     }
 
-    // 4. Cập nhật trạng thái thành viên (Khóa/Mở khóa hoặc Cấp quyền Admin)
+    // 4. Cập nhật trạng thái thành viên (Khóa/Mở khóa hoặc Phân quyền)
     if (action === "updateUserStatus") {
       if (!verifyKey(adminKey)) {
-        return jsonResponse({ ok: false, error: "Từ chối truy cập! Chỉ Admin mới có quyền cập nhật thành viên." });
+        return jsonResponse({ ok: false, error: "Từ chối truy cập! Chỉ Quản trị viên mới có quyền cập nhật thành viên." });
       }
       const { usersSheet } = ensureSheetsExist();
       const users = readAllUsers(usersSheet);
       const targetUserId = String(payload.userId || "");
       const newStatus = payload.status; // 'active' hoặc 'locked'
-      const newRole = payload.role;     // 'admin' hoặc 'member'
+      const newRole = payload.role;     // 'moderator' hoặc 'member'
+      const callerRole = String(payload.callerRole || "").toLowerCase();
 
       const user = users.find(u => u.id === targetUserId);
       if (!user) {
         return jsonResponse({ ok: false, error: "Không tìm thấy người dùng này." });
       }
 
-      if (user.username === "admin" && newStatus === "locked") {
-        return jsonResponse({ ok: false, error: "Không thể khóa tài khoản Admin tối cao gốc!" });
+      // BẢO VỆ TUYỆT ĐỐI: Tài khoản Chủ sở hữu tối cao không thể bị khóa hoặc hạ quyền
+      if (user.username === "admin" || user.role === "superadmin") {
+        if (newStatus === "locked" || (newRole && newRole !== "superadmin")) {
+          return jsonResponse({ ok: false, error: "Không thể khóa hoặc thay đổi quyền của Chủ sở hữu tối cao!" });
+        }
       }
 
-      if (newStatus) user.status = newStatus;
-      if (newRole) user.role = newRole;
+      // Kiểm tra quyền của người gọi thao tác:
+      if (callerRole === "moderator") {
+        // Kiểm duyệt viên KHÔNG được quyền phân vai trò
+        if (newRole) {
+          return jsonResponse({ ok: false, error: "Kiểm duyệt viên không có quyền thay đổi vai trò tài khoản!" });
+        }
+        // Kiểm duyệt viên không được can thiệp vào tài khoản kiểm duyệt khác hoặc superadmin
+        if (user.role === "superadmin" || user.role === "moderator") {
+          return jsonResponse({ ok: false, error: "Bạn không có quyền can thiệp vào tài khoản quản trị cấp cao!" });
+        }
+      }
+
+      // Xử lý Khóa / Mở khóa
+      if (newStatus) {
+        user.status = newStatus;
+        if (newStatus === "active") {
+          user.failedAttempts = 0;
+          user.lockUntil = 0;
+        }
+      }
+
+      // Xử lý Phân quyền (Chỉ Super Admin mới đổi được vai trò)
+      if (newRole && (newRole === "moderator" || newRole === "member")) {
+        user.role = newRole;
+      }
 
       writeAllUsers(usersSheet, users);
       return jsonResponse({
@@ -556,13 +665,24 @@ function doPost(e) {
         return jsonResponse({ ok: false, error: "Không tìm thấy tài khoản người dùng." });
       }
 
-      const checkOld = hashPasswordWithSalt(oldPass, user.salt);
-      if (checkOld !== user.passwordHash) {
+      // Xác thực mật khẩu cũ
+      let isOldValid = false;
+      if (user.username === "admin") {
+        const computedOld = user.salt ? hashPasswordWithSalt(oldPass, user.salt) : "";
+        isOldValid = (computedOld === user.passwordHash) || (oldPass === getAdminKey()) || verifyKey(oldPass);
+      } else {
+        const computedOld = hashPasswordWithSalt(oldPass, user.salt);
+        isOldValid = (computedOld === user.passwordHash);
+      }
+
+      if (!isOldValid) {
         return jsonResponse({ ok: false, error: "Mật khẩu cũ không chính xác!" });
       }
 
       user.salt = generateRandomSalt();
       user.passwordHash = hashPasswordWithSalt(newPass, user.salt);
+      user.failedAttempts = 0;
+      user.lockUntil = 0;
       writeAllUsers(usersSheet, users);
 
       return jsonResponse({
@@ -570,6 +690,7 @@ function doPost(e) {
         message: "Đã đổi mật khẩu thành công!"
       });
     }
+
 
 
     // Cho phép Khách gửi đề xuất lễ hội mới vào Hàng chờ xét duyệt ([CHỜ DUYỆT])

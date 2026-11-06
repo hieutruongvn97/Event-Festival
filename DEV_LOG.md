@@ -96,9 +96,31 @@
 
 ---
 
+### [Phiên bản 3.5.0] Phân Cấp Quyền 3 Tầng, Giới Hạn 5 Lần Sai Khóa 60s, Icon Mắt & Xóa Ghi Chú Admin
+- **Hệ thống phân quyền gia đình 3 cấp (RBAC - Role-Based Access Control):**
+  - **👑 Chủ sở hữu (Super Admin):** Tài khoản `admin` của MH-SAMA là cao nhất. Toàn quyền tối cao, duyệt/sửa/xóa lễ hội, khóa/mở khóa mọi thành viên, phân quyền hoặc hạ quyền Kiểm duyệt viên. Tài khoản `superadmin` được bảo vệ cố định bất khả xâm phạm (không thể bị khóa hoặc hạ quyền).
+  - **🛡️ Kiểm duyệt viên (Moderator):** Cấp phó quản trị dưới quyền Chủ sở hữu. Có quyền duyệt các đề xuất lễ hội mới (`[CHỜ DUYỆT]`), thêm/sửa/xóa ngày hội, xem danh sách thành viên và khóa/mở khóa thành viên vi phạm. Không thể can thiệp tài khoản Super Admin hoặc tự phân quyền.
+  - **🌱 Thành viên (Member):** Tài khoản người thân trong gia đình tự đăng ký. Tra cứu lễ hội, lưu danh sách yêu thích cá nhân (`❤️`), gửi đề xuất lễ hội quê hương vào hàng chờ và tự đổi mật khẩu.
+- **Bảo vệ chống dò quét mật khẩu (Brute-Force Rate Limiting):**
+  - Giới hạn nhập sai tối đa 5 lần liên tiếp.
+  - Sau 5 lần nhập sai, tài khoản tự động bị khóa trong đúng 60 giây.
+  - Đồng hồ đếm ngược trực tiếp trên giao diện (`⏳ Vui lòng đợi (59s)...`), vô hiệu hóa nút đăng nhập và hiển thị thông báo cảnh báo thời gian chờ thực tế.
+  - Lưu trạng thái vào `sessionStorage` để chống bypass qua F5/reload trình duyệt.
+  - Server tự động kiểm soát 2 cột `failedAttempts` và `lockUntil` trên sheet `NguoiDung`.
+- **Nút Con mắt (👁️) kiểm tra mật khẩu:**
+  - Tích hợp nút icon con mắt SVG tương tác mượt mà trong tất cả các ô nhập mật khẩu: Đăng nhập, Đăng ký (mật khẩu & xác nhận), Đổi mật khẩu cá nhân (cũ, mới, xác nhận) và Xác thực mã khóa offline.
+  - 1 chạm chuyển đổi nhanh giữa dạng dấu chấm ẩn (`password`) và ký tự rõ ràng (`text`).
+- **Bảo mật tuyệt đối – Xóa sạch các gợi ý dữ liệu Admin:**
+  - Xóa bỏ toàn bộ các ghi chú công khai về tài khoản/mật khẩu quản trị mặc định trên giao diện web, modal đăng nhập, placeholder và thông báo toast.
+- **Đồng bộ Android Assets:**
+  - Cập nhật 100% mã nguồn sang `android/app/src/main/assets/www/index.html`.
+
+---
+
 ## 📌 TRẠNG THÁI HIỆN TẠI & KẾ HOẠCH BƯỚC TIẾP THEO
 
 - [x] Đã hoàn thành Bước 1: Giao diện Đêm Hội Hoa Đăng, Thẻ bài di động, Lịch Vạn Niên & Yêu thích (v3.3.0).
-- [x] Đã hoàn thành Bước 2: Hệ thống Tài khoản gia đình (20-100 người) & Phân quyền Admin trên Google Sheets (v3.4.0).
-- [ ] Admin copy mã `Code.gs` mới dán vào Google Apps Script và Deploy phiên bản mới để kích hoạt sheet `NguoiDung`.
-- [ ] Trải nghiệm thực tế đăng ký, đăng nhập và quản lý thành viên.
+- [x] Đã hoàn thành Bước 2: Hệ thống Tài khoản gia đình & Phân quyền Admin cơ bản (v3.4.0).
+- [x] Đã hoàn thành Nâng cấp v3.5.0: Phân quyền 3 cấp (Super Admin, Moderator, Member), Khóa 60s khi sai 5 lần, Icon mắt xem mật khẩu & Bảo mật xóa sạch gợi ý Admin.
+- [ ] Chủ sở hữu copy mã `Code.gs` mới nhất dán vào Google Apps Script và Deploy Phiên bản Mới (New Version) để cập nhật bảng `NguoiDung` (11 cột).
+- [ ] Trải nghiệm thực tế phân quyền và tính năng đếm ngược 60s.
