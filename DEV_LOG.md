@@ -59,10 +59,26 @@
 
 ---
 
+### [Phiên bản 3.3.0] Nâng Cấp Giao Diện Toàn Diện (Đêm Hội Hoa Đăng, Thẻ Bài & Yêu Thích)
+- **Thiết kế Visual "Đêm Hội Hoa Đăng":**
+  - Cặp lồng đèn Hội An chuyển động đung đưa nhịp nhàng 2 bên góc Header (`CSS keyframes sway`).
+  - Tiêu đề mạ vàng ánh kim lấp lánh (`Gold foil text shimmer`) và huy hiệu tác giả `MH-SAMA` sang trọng.
+  - Tự động hiển thị Lịch Vạn Niên Hôm Nay (Thứ, Ngày/Tháng/Năm Dương lịch song hành cùng Ngày/Tháng/Năm Can Chi Âm lịch chuẩn xác).
+  - Huy hiệu `🎉 Diễn ra hôm nay` với hiệu ứng phát sáng nhịp tim (`Pulse Glow`) rực rỡ.
+- **Chế độ xem Kép (Dual View):**
+  - **Dạng Thẻ Bài (Card Grid View):** Tối ưu hoàn hảo cho màn hình cảm ứng điện thoại, bố cục trực quan, hiển thị song song mốc Âm & Dương lịch, tích hợp drawer xem đối chiếu các năm 2026–2099 ngay trong thẻ.
+  - **Dạng Bảng (Table View):** Giữ nguyên bảng tra cứu chi tiết 5 cột dành cho màn hình máy tính lớn.
+  - Nút chuyển đổi nhanh `[🎴 Dạng Thẻ] ↔ [📋 Dạng Bảng]` lưu trạng thái vào `localStorage`.
+- **Tính năng Lễ Hội Gia Đình Yêu Thích (❤️ Favorites):**
+  - Biểu tượng thả tim ❤️ trên từng thẻ bài và hàng bảng dữ liệu.
+  - Tab lọc nhanh `❤️ Yêu thích` kèm bộ đếm số lượng, giúp các thành viên trong gia đình đánh dấu các ngày hội định đi.
+- **Đồng bộ Android Assets:**
+  - Đồng bộ ngay mã nguồn mới nhất sang `android/app/src/main/assets/www/index.html`.
+
+---
+
 ## 📌 TRẠNG THÁI HIỆN TẠI & KẾ HOẠCH BƯỚC TIẾP THEO
 
-- [x] Đã hoàn thiện toàn bộ mã nguồn Frontend (`index.html`, `TraCuuLeHoi_v1.8.html`).
-- [x] Đã hoàn thiện backend Google Apps Script (`Code.gs`).
-- [x] Đã thiết lập cấu hình môi trường chuẩn hóa (`antigravity_env_config.json`, `ANTIGRAVITY_PROJECT_DOCS.md`).
-- [x] Đã cấu hình dự án Android và GitHub Actions workflow.
-- [ ] Tiếp tục theo yêu cầu của bạn: kiểm tra, mở rộng tính năng mới, hoặc tinh chỉnh theo định hướng tiếp theo.
+- [x] Đã hoàn thành Bước 1: Lột xác giao diện "Đêm Hội Hoa Đăng", Thẻ bài di động, Lịch Vạn Niên & Yêu thích (v3.3.0).
+- [ ] Chờ Admin kiểm tra, trải nghiệm giao diện mới trên máy tính và điện thoại.
+- [ ] Chuẩn bị triển khai Bước 2: Hệ thống Tài khoản gia đình (Đăng ký/Đăng nhập, phân quyền Admin trên Google Sheets).
