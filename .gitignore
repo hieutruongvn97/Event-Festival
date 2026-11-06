@@ -1,0 +1,25 @@
+# OS metadata
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Logs & temp
+*.log
+.temp/
+
+# Android build outputs & local config
+.gradle/
+build/
+app/build/
+*.apk
+*.aab
+local.properties
+.cxx/
+
+# Node dependencies (if using Capacitor / web tools)
+node_modules/
+package-lock.json
+
+# IDE files
+.idea/
+*.iml

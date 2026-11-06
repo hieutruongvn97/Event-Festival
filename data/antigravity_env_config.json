@@ -1,0 +1,60 @@
+{
+  "project_metadata": {
+    "project_name": "Tra Cứu Lễ Hội Địa Phương Việt Nam (2026–2099)",
+    "author": "MH-SAMA",
+    "version": "3.2.0",
+    "last_updated": "2026-11-06",
+    "architecture": "Single-File Serverless Web App (HTML5 + CSS3 + Vanilla JS) with Google Sheets & Apps Script Backend",
+    "primary_entry_file": "TraCuuLeHoi_THU.html",
+    "guest_export_file": "TraCuuLeHoi_THU_KhachXem.html",
+    "backend_script_file": "Code.gs"
+  },
+  "environment_constants": {
+    "START_YEAR": 2026,
+    "END_YEAR": 2099,
+    "TIME_ZONE": 7,
+    "DEFAULT_LOCAL_ADMIN_KEY": "HIEUADMIN",
+    "DEFAULT_SCRIPT_URL": "https://script.google.com/macros/s/AKfycbyMt6wB6XjTpKS6F05HsNvmg90HHwtqFXE4Sfi9rTgF7Euy_MANLUH_0tuvavJystw2Hw/exec",
+    "CORE_REGIONS": [
+      "Miền Nam",
+      "Miền Trung",
+      "Miền Bắc"
+    ],
+    "PENDING_PREFIX": "[CHỜ DUYỆT] "
+  },
+  "google_sheets_schema": {
+    "main_sheet_name": "LeHoi",
+    "backup_sheet_name": "Backup_LichSu",
+    "max_backups": 100,
+    "columns": [
+      { "index": 1, "letter": "A", "name": "id", "type": "number|string", "description": "Unique festival ID (timestamp or integer)" },
+      { "index": 2, "letter": "B", "name": "name", "type": "string", "description": "Festival or event name" },
+      { "index": 3, "letter": "C", "name": "location", "type": "string", "description": "Province or city name" },
+      { "index": 4, "letter": "D", "name": "region", "type": "string", "description": "Region name (Miền Nam, Miền Trung, Miền Bắc, or custom region)" },
+      { "index": 5, "letter": "E", "name": "lunarDay", "type": "number", "description": "Day of month (1-30 for Lunar, 1-31 for Solar)" },
+      { "index": 6, "letter": "F", "name": "lunarMonth", "type": "number", "description": "Month of year (1-12)" },
+      { "index": 7, "letter": "G", "name": "lunarLabel", "type": "string", "description": "Formatted date label (e.g., '15/01 ÂL', '30/04 DL', or '[CHỜ DUYỆT] 15/08 ÂL')" },
+      { "index": 8, "letter": "H", "name": "duration", "type": "string", "description": "Duration description (e.g., '3 ngày')" },
+      { "index": 9, "letter": "I", "name": "highlights", "type": "string", "description": "Cultural highlights and optional guest contributor info" },
+      { "index": 10, "letter": "J", "name": "updatedAt", "type": "string", "description": "ISO 8601 timestamp for 2-way Safe Merge conflict resolution" },
+      { "index": 11, "letter": "K", "name": "deleted", "type": "boolean", "description": "Soft-delete tombstone flag (true/false)" }
+    ]
+  },
+  "local_storage_keys": {
+    "vn_festivals_2026_2099": "Main JSON array of all festival objects (both approved and pending)",
+    "vn_festivals_pending_queue": "Dedicated JSON array of pending guest proposals awaiting Admin approval",
+    "vn_festivals_resolved_pending_ids": "JSON array of pending item IDs already approved or rejected by Admin",
+    "vn_festivals_custom_regions": "JSON array of user-created custom regions beyond the 3 core regions",
+    "vn_festivals_cloud_config": "Cloud sync settings object { scriptUrl, autoSync, lastSync }",
+    "vn_festivals_owner_key": "Persisted Admin Secret Key when 'Remember me' is checked",
+    "vn_festivals_last_verified_key": "Cached verified Admin key for backward-compatible cloud operations",
+    "vn_festivals_undo_snapshot": "JSON snapshot of festivals prior to the last local modification"
+  },
+  "ai_agent_Guardrails": [
+    "NEVER use native alert(), confirm(), or prompt() — always use showToast() and openConfirmModal().",
+    "ALWAYS wrap localStorage access using safeGetStorage(), safeSetStorage(), and safeRemoveStorage().",
+    "PRESERVE author credit 'MH-SAMA' in both .author-badge and .app-footer.",
+    "PRESERVE DEFAULT_SCRIPT_URL and 11-column Google Sheets schema compatibility.",
+    "ENSURE all admin-only UI elements carry class 'owner-only' and guest-only elements carry class 'guest-only'."
+  ]
+}

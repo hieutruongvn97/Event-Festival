@@ -1,0 +1,3770 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tra Cứu Lễ Hội Địa Phương Việt Nam (2026–2099)</title>
+  <style>
+    :root {
+      --bg-main: #0d0f12;
+      --bg-card: #15181e;
+      --bg-panel: #1b1f27;
+      --border: #282e3a;
+      --text-main: #f0f4f8;
+      --text-muted: #94a3b8;
+      --accent-blue: #60a5fa;
+      --btn-active: #1e3a8a;
+      --badge-nam-bg: rgba(16, 185, 129, 0.15);
+      --badge-nam-text: #34d399;
+      --badge-trung-bg: rgba(139, 92, 246, 0.15);
+      --badge-trung-text: #a78bfa;
+      --badge-bac-bg: rgba(245, 158, 11, 0.15);
+      --badge-bac-text: #fbbf24;
+      --badge-other-bg: rgba(56, 189, 248, 0.15);
+      --badge-other-text: #38bdf8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg-main); color: var(--text-main); padding: 24px 16px; line-height: 1.5; }
+    .container { max-width: 1050px; margin: 0 auto; }
+
+    /* Tự động ẩn các nút Thêm / Sửa / Xóa / Quản trị khi ở Chế độ Khách (Chỉ xem) */
+    body.guest-mode .owner-only {
+      display: none !important;
+    }
+    body:not(.guest-mode) .guest-only {
+      display: none !important;
+    }
+
+    .btn-propose {
+      background: rgba(16, 185, 129, 0.16);
+      border-color: rgba(16, 185, 129, 0.45);
+      color: #34d399;
+    }
+    .btn-propose:hover {
+      background: rgba(16, 185, 129, 0.28);
+      border-color: #10b981;
+    }
+    .btn-queue {
+      background: rgba(245, 158, 11, 0.16);
+      border-color: rgba(245, 158, 11, 0.45);
+      color: #fbbf24;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-queue:hover {
+      background: rgba(245, 158, 11, 0.28);
+      border-color: #f59e0b;
+    }
+    .btn-queue.has-items {
+      background: rgba(245, 158, 11, 0.25);
+      border-color: #fbbf24;
+      color: #fde68a;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+    }
+    .queue-badge {
+      background: #f59e0b;
+      color: #090b0e;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .pending-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 55vh;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-top: 10px;
+    }
+    .pending-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-left: 4px solid #f59e0b;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pending-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .pending-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .pending-card-meta {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .pending-card-desc {
+      font-size: 0.86rem;
+      color: #cbd5e1;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px 10px;
+      border-radius: 6px;
+    }
+    .pending-card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 4px;
+    }
+
+    h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 4px; }
+    .subtitle { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 20px; }
+    .author-badge {
+      display: inline-block;
+      margin-top: -10px;
+      margin-bottom: 16px;
+      padding: 4px 12px;
+      background: rgba(96, 165, 250, 0.12);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      border-radius: 999px;
+      color: var(--accent-blue);
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+    .app-footer {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    .app-footer strong { color: var(--accent-blue); }
+
+    /* Thanh trạng thái Đồng bộ Google Sheets & Quyền Chủ sở hữu */
+    .sync-status-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .sync-info {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: #1f242d;
+      color: var(--text-muted);
+    }
+    .status-pill.connected {
+      background: rgba(16, 185, 129, 0.14);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.35);
+    }
+    .status-pill.syncing {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+    .status-pill.error {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border-color: rgba(239, 68, 68, 0.35);
+    }
+    .auth-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.12);
+      color: #fbbf24;
+    }
+    .auth-pill.unlocked {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+    }
+    .sync-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* Thanh công cụ điều khiển */
+    .toolbar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .region-tabs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .tab-btn {
+      background: #1f242d;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 8px 15px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.86rem;
+      font-weight: 600;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab-btn:hover { border-color: var(--accent-blue); }
+    .tab-btn.active { background: var(--btn-active); color: var(--accent-blue); border-color: #2563eb; }
+    .tab-count {
+      font-size: 0.74rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+    }
+    .tab-btn.active .tab-count {
+      background: rgba(96, 165, 250, 0.22);
+      color: #fff;
+    }
+    .tab-btn-add {
+      background: rgba(56, 189, 248, 0.12);
+      color: #38bdf8;
+      border: 1px dashed rgba(56, 189, 248, 0.45);
+      padding: 7px 13px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.84rem;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .tab-btn-add:hover {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: #38bdf8;
+    }
+
+    .right-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .search-input, .year-select, .month-select, .sort-select {
+      background: #1f242d;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 13px;
+      font-size: 0.86rem;
+      outline: none;
+    }
+    .search-input { min-width: 210px; }
+    .search-input:focus, .year-select:focus, .month-select:focus, .sort-select:focus { border-color: var(--accent-blue); }
+
+    /* Thanh nút hành động */
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .btn {
+      background: #1e293b;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .btn-primary { background: #2563eb; border-color: #3b82f6; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-cloud { background: rgba(16, 185, 129, 0.16); border-color: rgba(16, 185, 129, 0.4); color: #34d399; }
+    .btn-cloud:hover { background: rgba(16, 185, 129, 0.26); border-color: #34d399; }
+    .btn-share { background: rgba(139, 92, 246, 0.18); border-color: rgba(139, 92, 246, 0.45); color: #c4b5fd; }
+    .btn-share:hover { background: rgba(139, 92, 246, 0.28); border-color: #a78bfa; }
+    .btn:hover { border-color: var(--accent-blue); }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    /* Bảng dữ liệu */
+    .table-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow-x: auto;
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 680px; }
+    th {
+      text-align: left;
+      padding: 14px 16px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      background: #12151a;
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.92rem;
+      vertical-align: middle;
+    }
+    tr.main-row { cursor: pointer; transition: background 0.15s; }
+    tr.main-row:hover { background: rgba(255, 255, 255, 0.03); }
+
+    .fest-name { font-weight: 600; color: #fff; display: flex; align-items: center; gap: 6px; }
+    .fest-loc { color: var(--text-muted); font-size: 0.83rem; margin-top: 2px; }
+    .solar-date { color: var(--accent-blue); font-weight: 700; font-size: 0.95rem; }
+    .solar-subnote { color: #fbbf24; font-size: 0.75rem; font-weight: 500; margin-top: 2px; }
+
+    /* Nhãn đếm ngược ngày diễn ra */
+    .countdown-tag {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 600;
+    }
+    .countdown-tag.today {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .countdown-tag.upcoming {
+      background: rgba(59, 130, 246, 0.15);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .countdown-tag.passed {
+      background: rgba(148, 163, 184, 0.1);
+      color: #64748b;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .badge-nam { background: var(--badge-nam-bg); color: var(--badge-nam-text); }
+    .badge-trung { background: var(--badge-trung-bg); color: var(--badge-trung-text); }
+    .badge-bac { background: var(--badge-bac-bg); color: var(--badge-bac-text); }
+    .badge-other { background: var(--badge-other-bg); color: var(--badge-other-text); }
+
+    /* Hàng chi tiết các năm */
+    tr.detail-row { display: none; background: #101318; }
+    tr.detail-row.open { display: table-row; }
+    .detail-box { padding: 14px 18px; }
+    .detail-desc { color: #cbd5e1; font-size: 0.88rem; margin-bottom: 12px; }
+    .decade-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .decade-Note { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 8px; }
+    .ten-year-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+      gap: 8px;
+      max-height: 240px;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-bottom: 12px;
+    }
+    .year-chip {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+    }
+    .year-chip.highlight { border-color: var(--accent-blue); background: rgba(37, 99, 235, 0.15); }
+    .year-chip strong { color: var(--accent-blue); }
+    .detail-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .cal-btn {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .cal-btn:hover { background: rgba(16, 185, 129, 0.25); }
+    .cal-multi-btn {
+      background: rgba(56, 189, 248, 0.16);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .cal-multi-btn:hover {
+      background: rgba(56, 189, 248, 0.28);
+      border-color: #38bdf8;
+    }
+    .year-chip {
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .year-chip:hover {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+    }
+    .preset-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .preset-pill {
+      background: #1f242d;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 5px 11px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.79rem;
+      font-weight: 600;
+      transition: 0.15s;
+    }
+    .preset-pill:hover, .preset-pill.active {
+      background: var(--btn-active);
+      color: var(--accent-blue);
+      border-color: #3b82f6;
+    }
+    .mc-preview-list {
+      max-height: 210px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #101318;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .mc-preview-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      font-size: 0.83rem;
+    }
+    .edit-btn {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .delete-btn {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* Hệ thống Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+      overflow-y: auto;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      max-width: 560px;
+      width: 100%;
+      padding: 22px;
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+    .modal.modal-wide { max-width: 780px; }
+    .modal h2 { font-size: 1.22rem; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: flex; align-items: center; justify-content: space-between; font-size: 0.84rem; color: var(--text-muted); margin-bottom: 4px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      background: #1f242d;
+      color: #fff;
+      border: 1px solid var(--border);
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .modal-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+
+    .custom-region-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .custom-region-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: #1f242d;
+      border: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--text-main);
+    }
+    .custom-region-chip button {
+      background: none;
+      border: none;
+      color: #f87171;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0 2px;
+    }
+
+    /* Hộp thông tin hướng dẫn & Code.gs */
+    .info-callout {
+      background: rgba(37, 99, 235, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 0.84rem;
+      color: #cbd5e1;
+      margin-bottom: 14px;
+    }
+    .info-callout.warn {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.35);
+      color: #fde68a;
+    }
+    .info-callout.guest-box {
+      background: rgba(139, 92, 246, 0.12);
+      border-color: rgba(139, 92, 246, 0.4);
+      color: #ddd6fe;
+    }
+    .step-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      font-size: 0.87rem;
+    }
+    .step-card h3 {
+      font-size: 0.94rem;
+      color: var(--accent-blue);
+      margin-bottom: 6px;
+    }
+    .step-card ol, .step-card ul {
+      padding-left: 20px;
+      color: #cbd5e1;
+    }
+    .step-card li { margin-bottom: 4px; }
+    .code-box {
+      background: #090b0e;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 0.78rem;
+      color: #93c5fd;
+      max-height: 240px;
+      overflow: auto;
+      white-space: pre;
+      margin-top: 8px;
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      cursor: pointer;
+    }
+    .checkbox-row input { width: auto; }
+
+    /* Thông báo Toast góc màn hình */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 380px;
+    }
+    .toast-item {
+      background: #1e293b;
+      color: #f8fafc;
+      border-left: 4px solid var(--accent-blue);
+      border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+      animation: fadeIn 0.2s ease-out;
+    }
+    .toast-item.success { border-left-color: #10b981; }
+    .toast-item.error { border-left-color: #ef4444; }
+    .toast-item.warn { border-left-color: #f59e0b; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="guest-mode">
+<div class="container">
+  <h1>Tra Cứu Lễ Hội Địa Phương Việt Nam</h1>
+  <p class="subtitle">Đối chiếu Âm - Dương lịch &amp; thời gian diễn ra lễ hội tiêu biểu (2026–2099) • Hỗ trợ đồng bộ Google Sheets an toàn</p>
+  <p class="subtitle" style="margin-top:-12px;color:#fbbf24;">Ngày dương lịch là kết quả quy đổi ngày âm truyền thống; không thay thế lịch tổ chức chính thức của địa phương. Tháng nhuận chưa được chọn riêng cho từng lễ hội.</p>
+  <!-- ★ VỊ TRÍ 1 (ĐẦU TRANG): Sửa tên tác giả ở dòng dưới đây ★ -->
+  <div class="author-badge">✨ Phát triển &amp; Biên soạn: <strong>MH-SAMA</strong></div>
+
+  <!-- Thanh trạng thái Đồng bộ Google Sheets & Phân quyền Chủ sở hữu -->
+  <div class="sync-status-bar">
+    <div class="sync-info">
+      <span id="cloudStatusPill" class="status-pill">☁️ Chưa kết nối Google Sheets (Lưu cục bộ)</span>
+      <button type="button" id="authStatusBtn" class="auth-pill" onclick="handleAuthPillClick()" title="Bấm để mở khóa hoặc khóa quyền chỉnh sửa của Chủ sở hữu">
+        🔒 Chế độ: Khách (Chỉ xem)
+      </button>
+      <button type="button" id="pendingNotifyPill" class="auth-pill" style="display:none;border-color:rgba(56,189,248,0.45);background:rgba(56,189,248,0.14);color:#38bdf8;" onclick="openPendingQueueModal()" title="Bấm để mở Hàng chờ xét duyệt các lễ hội do Khách đề xuất">
+        ⏳ 0 chờ duyệt
+      </button>
+      <span id="lastSyncTimeText" style="color:var(--text-muted);font-size:0.8rem;"></span>
+    </div>
+    <div class="sync-actions">
+      <button type="button" class="btn btn-cloud" onclick="syncNowButton()">🔄 Đồng bộ ngay</button>
+      <button type="button" class="btn btn-share owner-only" onclick="exportGuestHTML()" title="Tải ra 1 file HTML đã nhúng sẵn link Google Sheets của bạn để gửi cho Khách mở xem ngay không cần cài đặt">📤 Xuất file cho Khách</button>
+      <button type="button" class="btn owner-only" onclick="openCloudConfigModal()">⚙️ Cấu hình Google Sheets</button>
+      <button type="button" class="btn owner-only" onclick="openGuideModal()">📖 Hướng dẫn &amp; Mã Apps Script</button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <!-- Khu vực Vùng miền: Tự động hiển thị các miền mặc định + miền tự tạo + nút Thêm miền mới -->
+    <div class="region-tabs" id="regionTabs">
+      <button class="tab-btn active" onclick="setRegion('Tất cả')">Tất cả</button>
+      <button class="tab-btn" onclick="setRegion('Miền Nam')">Miền Nam</button>
+      <button class="tab-btn" onclick="setRegion('Miền Trung')">Miền Trung</button>
+      <button class="tab-btn" onclick="setRegion('Miền Bắc')">Miền Bắc</button>
+      <button type="button" class="tab-btn-add owner-only" onclick="openManageRegionsModal()" title="Tạo hoặc quản lý thêm vùng miền mới">+ Thêm miền</button>
+    </div>
+    <div class="right-controls">
+      <input type="text" id="searchInput" class="search-input" placeholder="Tìm tên, tỉnh thành (có/không dấu)..." oninput="renderTable()" />
+      <select id="sortSelect" class="sort-select" onchange="renderTable()" title="Chọn cách sắp xếp danh sách lễ hội">
+        <option value="region">Sắp xếp: Theo Vùng miền</option>
+        <option value="date_asc">Sắp xếp: Ngày Dương lịch (T1 → T12)</option>
+        <option value="upcoming">Sắp xếp: Sắp diễn ra gần nhất</option>
+      </select>
+      <label style="font-size:0.84rem;color:var(--text-muted);">Tháng Dương:</label>
+      <select id="solarMonthSelect" class="month-select" onchange="renderTable()">
+        <option value="all">Tất cả tháng</option>
+        <option value="1">Tháng 01</option>
+        <option value="2">Tháng 02</option>
+        <option value="3">Tháng 03</option>
+        <option value="4">Tháng 04</option>
+        <option value="5">Tháng 05</option>
+        <option value="6">Tháng 06</option>
+        <option value="7">Tháng 07</option>
+        <option value="8">Tháng 08</option>
+        <option value="9">Tháng 09</option>
+        <option value="10">Tháng 10</option>
+        <option value="11">Tháng 11</option>
+        <option value="12">Tháng 12</option>
+      </select>
+      <label style="font-size:0.84rem;color:var(--text-muted);">Năm Dương lịch:</label>
+      <select id="yearSelect" class="year-select" onchange="renderTable()"></select>
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <button class="btn btn-primary owner-only" onclick="openModal()">+ Thêm lễ hội mới</button>
+    <button class="btn btn-propose guest-only" onclick="openGuestProposalModal()" title="Đề xuất thêm ngày lễ hội mới vào hàng chờ để Admin xét duyệt">📝 Đề xuất lễ hội mới</button>
+    <button class="btn btn-queue owner-only" id="pendingQueueBtn" onclick="openPendingQueueModal()" title="Xem và xét duyệt các lễ hội do Khách truy cập đề xuất">⏳ Hàng chờ duyệt <span class="queue-badge" id="pendingQueueCountBadge">0</span></button>
+    <button class="btn owner-only" onclick="openManageRegionsModal()">🗺️ Quản lý Vùng miền</button>
+    <button class="btn" onclick="exportCSV()">📥 Xuất bảng ra Excel (CSV)</button>
+    <button class="btn" onclick="exportJSON()">💾 Sao lưu dữ liệu (.json)</button>
+    <button class="btn owner-only" onclick="triggerImportJSON()">📂 Khôi phục dữ liệu (.json)</button>
+    <button class="btn owner-only" onclick="resetDefaults()" title="Khôi phục lại 12 lễ hội gốc">🔄 Mặc định</button>
+    <button class="btn owner-only" id="undoLocalBtn" style="display:none;" onclick="undoLastLocalChange()" title="Hoàn tác thao tác thay đổi vừa rồi trên trình duyệt">↩️ Hoàn tác</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)" />
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Tên Lễ Hội &amp; Tỉnh Thành</th>
+          <th>Vùng Miền</th>
+          <th>Mốc Lịch</th>
+          <th>Thời Gian</th>
+          <th id="solarHeader">Chính Hội Dương Lịch (2027)</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- ★ VỊ TRÍ 2 (CUỐI TRANG - FOOTER): Sửa tên người làm phần mềm ở dòng dưới đây ★ -->
+  <footer class="app-footer">
+    Phần mềm Tra Cứu Lễ Hội Địa Phương Việt Nam • Tác giả: <strong>MH-SAMA</strong>
+  </footer>
+</div>
+
+<!-- Modal thêm / sửa lễ hội (Dùng cho cả Admin & Khách đề xuất) -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <h2 id="festivalModalTitle">Thêm Lễ Hội / Sự Kiện Mới</h2>
+    <input type="hidden" id="fEditId" value="" />
+    <input type="hidden" id="fModalMode" value="owner" />
+    <div id="guestProposalBanner" class="info-callout" style="display:none;">
+      💡 <strong>Đóng góp lễ hội mới:</strong> Thông tin bạn nhập sẽ được đưa vào <strong>Hàng chờ xét duyệt</strong>. Sau khi Admin (<strong>MH-SAMA</strong>) kiểm tra và phê duyệt, lễ hội sẽ hiển thị chính thức trên bảng tra cứu!
+    </div>
+    <div class="form-group">
+      <label>Tên lễ hội hoặc sự kiện *</label>
+      <input type="text" id="fName" placeholder="VD: Lễ hội Nghinh Ông Vũng Tàu / Festival Hoa Đà Lạt..." />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tỉnh / Thành phố *</label>
+        <input type="text" id="fLocation" placeholder="VD: Bà Rịa - Vũng Tàu" />
+      </div>
+      <div class="form-group">
+        <label>
+          <span>Vùng miền *</span>
+          <button type="button" onclick="toggleCustomRegionInput(true)" style="background:none;border:none;color:#38bdf8;font-size:0.78rem;font-weight:600;cursor:pointer;">+ Tạo miền mới</button>
+        </label>
+        <select id="fRegion" onchange="handleRegionSelectChange()">
+          <option value="Miền Nam">Miền Nam</option>
+          <option value="Miền Trung">Miền Trung</option>
+          <option value="Miền Bắc">Miền Bắc</option>
+          <option value="__custom__">+ Nhập vùng miền khác...</option>
+        </select>
+        <div id="customRegionInputWrap" style="display:none;margin-top:8px;">
+          <input type="text" id="fCustomRegion" placeholder="Nhập tên miền mới (VD: Tây Nguyên, Miền Tây...)" />
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Loại lịch tính ngày Chính hội *</label>
+      <select id="fCalendarType" onchange="handleCalendarTypeChange()">
+        <option value="lunar">Âm lịch truyền thống (Tự động đổi sang Dương lịch từng năm)</option>
+        <option value="solar">Dương lịch cố định hàng năm (VD: Sự kiện, Kỷ niệm, Festival...)</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label id="lblDayInput">Ngày Chính hội (Âm lịch: 1–30) *</label>
+        <input type="number" id="fLunarDay" min="1" max="31" value="15" />
+      </div>
+      <div class="form-group">
+        <label id="lblMonthInput">Tháng Chính hội (Âm lịch: 1–12) *</label>
+        <input type="number" id="fLunarMonth" min="1" max="12" value="1" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Thời gian kéo dài *</label>
+      <input type="text" id="fDuration" placeholder="VD: 3 ngày (từ 15/8 đến 17/8 ÂL)" />
+    </div>
+    <div class="form-group">
+      <label>Ghi chú / Đặc trưng văn hóa</label>
+      <textarea id="fHighlights" rows="2" placeholder="Mô tả nghi thức chính, địa điểm tổ chức..."></textarea>
+    </div>
+    <div class="form-group" id="contributorGroup" style="display:none;">
+      <label>Tên người đề xuất / Nguồn tham khảo (Tùy chọn)</label>
+      <input type="text" id="fContributor" placeholder="VD: Nguyễn Văn A / Sở Văn hóa..." />
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Hủy</button>
+      <button class="btn btn-primary" id="saveFestivalSubmitBtn" onclick="saveNewFestival()">Tự động tính tới 2099 &amp; Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Hàng Chờ Xét Duyệt Lễ Hội (Dành riêng cho Admin) -->
+<div class="modal-overlay" id="pendingQueueModal">
+  <div class="modal modal-wide">
+    <h2>
+      <span>⏳ Hàng Chờ Xét Duyệt Lễ Hội (Khách Đề Xuất)</span>
+      <span class="badge badge-bac" id="pendingModalHeaderCount">0 đề xuất</span>
+    </h2>
+    <div class="info-callout">
+      Danh sách dưới đây là các ngày lễ/sự kiện do <strong>Khách truy cập</strong> đóng góp. Các mục này đang ở trạng thái <strong>Tạm chờ duyệt</strong> (ẩn khỏi bảng tra cứu công khai). Khi bạn bấm <strong>✅ Duyệt đăng</strong>, lễ hội sẽ lập tức hiển thị chính thức và đồng bộ lên Google Sheets.
+    </div>
+    <div id="pendingQueueEmptyState" style="text-align:center;color:var(--text-muted);padding:28px 16px;background:var(--bg-panel);border-radius:8px;border:1px solid var(--border);">
+      🎉 Hiện không có lễ hội nào đang chờ xét duyệt!
+    </div>
+    <div class="pending-list" id="pendingQueueList" style="display:none;"></div>
+    <div class="modal-actions" style="justify-content:space-between;">
+      <button type="button" class="btn btn-cloud" id="approveAllPendingBtn" style="display:none;" onclick="approveAllPendingFestivals()">✅ Duyệt đăng tất cả</button>
+      <div style="display:flex;gap:8px;margin-left:auto;">
+        <button type="button" class="btn" onclick="pullFromCloud(true)">🔄 Làm mới từ Sheet</button>
+        <button type="button" class="btn btn-primary" onclick="closePendingQueueModal()">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Lưu Lễ Hội Nhiều Năm Vào Google Calendar -->
+<div class="modal-overlay" id="multiYearCalModal">
+  <div class="modal modal-wide">
+    <h2>
+      <span>🗓️ Lưu Lễ Hội Nhiều Năm Vào Google Calendar</span>
+      <span class="badge badge-other" id="mcYearCountBadge">10 năm</span>
+    </h2>
+    <input type="hidden" id="mcFestivalId" value="" />
+
+    <div id="mcFestivalSummary" style="background:var(--bg-panel);border:1px solid var(--border);border-left:4px solid var(--accent-blue);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:0.88rem;"></div>
+
+    <div class="form-group">
+      <label>Chọn nhanh khoảng năm cần lưu vào lịch:</label>
+      <div class="preset-pills" id="mcPresetPills">
+        <button type="button" class="preset-pill" onclick="setMultiCalPreset(5)">5 năm tới</button>
+        <button type="button" class="preset-pill active" onclick="setMultiCalPreset(10)">10 năm tới (Khuyên dùng)</button>
+        <button type="button" class="preset-pill" onclick="setMultiCalPreset(20)">20 năm tới</button>
+        <button type="button" class="preset-pill" onclick="setMultiCalPreset(30)">30 năm tới</button>
+        <button type="button" class="preset-pill" onclick="setMultiCalPreset(100)">Trọn bộ tới 2099</button>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Từ năm Dương lịch *</label>
+        <select id="mcStartYear" onchange="updateMultiCalPreview()"></select>
+      </div>
+      <div class="form-group">
+        <label>Đến năm Dương lịch *</label>
+        <select id="mcEndYear" onchange="updateMultiCalPreview()"></select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Số ngày đánh dấu trên lịch mỗi năm</label>
+        <select id="mcSpanDays" onchange="updateMultiCalPreview()">
+          <option value="1">1 ngày (Chỉ ngày Chính hội)</option>
+          <option value="auto">Tự động theo thời gian lễ hội (VD: 3 ngày)</option>
+          <option value="2">2 ngày liên tiếp</option>
+          <option value="3">3 ngày liên tiếp</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Chuông nhắc lịch tự động (Google Calendar)</label>
+        <select id="mcAlarm">
+          <option value="1d_9h">Nhắc trước 1 ngày &amp; 08:00 sáng ngày lễ</option>
+          <option value="3d">Nhắc trước 3 ngày &amp; 1 ngày</option>
+          <option value="7d">Nhắc trước 1 tuần (7 ngày)</option>
+          <option value="none">Không bật chuông nhắc</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Phương án 1: Gói .ics nhiều năm chuẩn Google Calendar -->
+    <div class="step-card" style="border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.06);">
+      <h3 style="color:#34d399;">Cách 1: Lưu hàng loạt tất cả các năm đã chọn chỉ với 1 lần nhập (Nhanh &amp; Chính xác nhất)</h3>
+      <p style="font-size:0.83rem;color:#cbd5e1;margin-bottom:10px;">
+        Vì ngày Âm lịch quy đổi sang Dương lịch thay đổi vào ngày khác nhau ở mỗi năm, hệ thống đóng gói toàn bộ các năm bạn chọn thành <strong>1 tệp lịch chuẩn (.ics) duy nhất</strong>. Khi trang <em>Google Calendar Import</em> mở ra, bạn chỉ cần chọn tệp vừa tải về và bấm <strong>Nhập (Import)</strong> là tất cả các năm sẽ vào lịch ngay lập tức!
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <button type="button" class="btn btn-primary" style="background:#059669;border-color:#10b981;" onclick="downloadMultiYearICS(true)">⚡ Tải file Lịch (.ics) &amp; Mở trang Nhập Google Calendar</button>
+        <button type="button" class="btn btn-cloud" onclick="downloadMultiYearICS(false)">📥 Chỉ tải file .ics về máy</button>
+        <button type="button" class="btn" onclick="openGCalImportPage()">🌐 Mở trang Import Google Calendar</button>
+      </div>
+    </div>
+
+    <!-- Phương án 2: Mở trực tiếp trên tab Google Calendar -->
+    <div class="step-card">
+      <h3>Cách 2: Mở trực tiếp cửa sổ tạo sự kiện trên Google Calendar Web</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <span style="font-size:0.82rem;color:var(--text-muted);">Bấm vào từng năm bên dưới hoặc mở hàng loạt tab để bấm "Lưu" trực tiếp:</span>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <button type="button" class="btn btn-share" id="mcRecurringSolarBtn" style="display:none;padding:5px 11px;font-size:0.8rem;" onclick="openGCalRecurringSolar()">🔁 Tạo 1 sự kiện lặp hàng năm (Dương lịch cố định)</button>
+          <button type="button" class="btn" style="padding:5px 11px;font-size:0.8rem;border-color:rgba(56,189,248,0.4);color:#38bdf8;" onclick="openBatchGCalTabs()">🚀 Mở nhanh 5 năm liên tiếp trên tab mới</button>
+        </div>
+      </div>
+      <div class="mc-preview-list" id="mcYearPreviewList"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-primary" onclick="closeMultiYearCalendarModal()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Quản lý / Thêm Vùng Miền Mới -->
+<div class="modal-overlay" id="manageRegionsModal">
+  <div class="modal" style="max-width:480px;">
+    <h2>🗺️ Tạo &amp; Quản Lý Vùng Miền</h2>
+    <div class="info-callout">
+      Ngoài 3 miền mặc định (<strong>Miền Nam, Miền Trung, Miền Bắc</strong>), bạn có thể tạo thêm bất kỳ vùng miền hoặc tiểu vùng nào (ví dụ: <em>Tây Nguyên, Miền Tây, Đông Nam Bộ, Tây Bắc, Toàn quốc...</em>). Các miền mới sẽ xuất hiện ngay trên thanh lọc và trong mục Thêm lễ hội.
+    </div>
+    <div class="form-group">
+      <label>Tên vùng miền mới *</label>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="newRegionNameInput" placeholder="VD: Tây Nguyên, Miền Tây, Đông Bắc..." onkeydown="if(event.key==='Enter') addCustomRegionFromModal()" />
+        <button type="button" class="btn btn-primary" style="white-space:nowrap;" onclick="addCustomRegionFromModal()">+ Thêm miền</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Danh sách vùng miền hiện có:</label>
+      <div class="custom-region-list" id="customRegionListContainer"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="closeManageRegionsModal()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Xác thực Chủ sở hữu -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <h2>🔐 Xác Thực Quyền Chủ Sở Hữu</h2>
+    <div class="info-callout">
+      Chế độ bảo vệ dữ liệu đang bật: <strong>Chỉ Chủ sở hữu</strong> mới có quyền Thêm, Sửa, Xóa hoặc Đồng bộ ghi lên Google Sheets.<br/>
+      <span id="authActionHint" style="color:#60a5fa;display:block;margin-top:4px;"></span>
+    </div>
+    <div class="form-group">
+      <label>Mã khóa Chủ sở hữu (Admin Secret Key) *</label>
+      <input type="password" id="authKeyInput" placeholder="Nhập mã khóa bí mật (Mặc định: HIEUADMIN)" onkeydown="if(event.key==='Enter') submitOwnerAuth()" />
+    </div>
+    <label class="checkbox-row">
+      <input type="checkbox" id="rememberAuthCheckbox" />
+      Ghi nhớ trạng thái Chủ sở hữu trên trình duyệt cá nhân này
+    </label>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeAuthModal()">Đóng</button>
+      <button class="btn btn-primary" id="verifyAuthBtn" onclick="submitOwnerAuth()">🔓 Xác thực &amp; Mở khóa</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Cấu hình & Đồng bộ Google Sheets -->
+<div class="modal-overlay" id="cloudConfigModal">
+  <div class="modal">
+    <h2>⚙️ Cấu Hình Đồng Bộ &amp; Chia Sẻ Cho Khách</h2>
+    <div class="info-callout guest-box">
+      <strong>💡 Làm sao để Khách (tài khoản/máy khác) vào xem tự động mà không cần nhập link?</strong><br/>
+      Sau khi bạn dán <strong>Web App URL</strong> ở dưới và bấm Lưu, hãy bấm nút <strong>📤 Xuất file HTML cho Khách</strong> (hoặc <strong>🔗 Copy Link cho Khách</strong> nếu chạy trên web). File xuất ra đã được <strong>gắn sẵn đường dẫn Google Sheets</strong> (nhưng giấu kín mật khẩu Admin), khách mở lên là tự động tải đúng lịch mới nhất của bạn!
+    </div>
+    <div class="form-group">
+      <label>Đường dẫn Web App URL (Google Apps Script) *</label>
+      <input type="url" id="cfgScriptUrl" placeholder="https://script.google.com/macros/s/.../exec" />
+    </div>
+    <div class="form-group">
+      <label>Mã khóa Chủ sở hữu (Dành cho Admin; Khách xem để trống)</label>
+      <input type="password" id="cfgAdminKey" placeholder="Chỉ Admin mới nhập (VD: HIEUADMIN)" />
+    </div>
+    <label class="checkbox-row">
+      <input type="checkbox" id="cfgAutoSync" checked />
+      Tự động tải dữ liệu mới nhất từ Google Sheets ngay khi mở ứng dụng
+    </label>
+    <hr style="border:none;border-top:1px solid var(--border);margin:14px 0;" />
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+      <button type="button" class="btn btn-share" onclick="exportGuestHTML()">📤 Xuất file HTML cho Khách (Tự động kết nối)</button>
+      <button type="button" class="btn" onclick="copyShareLinkForGuest()">🔗 Copy Link chia sẻ cho Khách</button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+      <button type="button" class="btn btn-cloud" onclick="pullFromCloud(true)">⬇️ Chỉ tải từ Sheet về máy (An toàn)</button>
+      <button type="button" class="btn btn-primary" onclick="syncMergeWithCloud()">🔄 Gộp 2 chiều (Máy ↔ Google Sheets)</button>
+      <button type="button" class="btn" onclick="restoreCloudBackup()">⏪ Khôi phục bản sao lưu trên Sheet</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeCloudConfigModal()">Đóng</button>
+      <button class="btn btn-primary" onclick="saveCloudConfig()">💾 Lưu cấu hình &amp; Kết nối</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Hướng dẫn từng bước & Mã nguồn Google Apps Script -->
+<div class="modal-overlay" id="guideModal">
+  <div class="modal modal-wide">
+    <h2>📖 Hướng Dẫn Cài Đặt &amp; Đồng Bộ Cho Khách Xem</h2>
+    <div class="info-callout warn">
+      <strong>Lưu ý quan trọng khi Khách (tài khoản Google khác) không tải được dữ liệu:</strong><br/>
+      1. Trong Google Apps Script &rarr; <strong>Triển khai (Deploy)</strong> &rarr; <strong>Quản lý mục triển khai (Manage deployments)</strong> &rarr; bấm biểu tượng cây bút ✏️: Mục <em>Ai có quyền truy cập (Who has access)</em> bắt buộc phải chọn là <strong>Bất kỳ ai (Anyone)</strong> (Không chọn "Chỉ mình tôi" hay "Bất kỳ ai có tài khoản Google").<br/>
+      2. Để Khách mở lên là thấy dữ liệu ngay mà <strong>không cần tự dán link Web App URL</strong>, Admin chỉ cần bấm nút <strong>📤 Xuất file cho Khách</strong> trên thanh công cụ rồi gửi file đó cho Khách!
+    </div>
+
+    <div class="step-card">
+      <h3>Bước 1: Tạo file Google Sheets mới (Dành cho Admin)</h3>
+      <ol>
+        <li>Mở <a href="https://sheets.google.com" target="_blank" rel="noopener noreferrer" style="color:#60a5fa;">Google Sheets (sheets.google.com)</a> bằng tài khoản Google của bạn và bấm tạo <strong>Bảng tính trống (+)</strong>.</li>
+        <li>Đặt tên bảng tính tùy ý (ví dụ: <code>CSDL_TraCuuLeHoi_THU</code>). Bạn <strong>không cần kẻ cột thủ công</strong> vì mã lệnh sẽ tự động tạo bảng chuẩn.</li>
+      </ol>
+    </div>
+
+    <div class="step-card">
+      <h3>Bước 2: Dán mã Google Apps Script</h3>
+      <ol>
+        <li>Trên thanh menu của Google Sheets, bấm vào <strong>Tiện ích mở rộng (Extensions)</strong> &rarr; chọn <strong>Apps Script</strong>.</li>
+        <li>Xóa hết đoạn mã mặc định <code>function myFunction() {}</code> đang có sẵn trong khung soạn thảo.</li>
+        <li>Bấm nút <strong>📋 Sao chép mã Code.gs</strong> ngay bên dưới rồi dán (Ctrl+V) vào khung Apps Script.</li>
+        <li><em>(Tùy chọn)</em> Tại dòng 18: <code>const DEFAULT_ADMIN_KEY = "HIEUADMIN";</code>, bạn có thể đổi chữ <code>HIEUADMIN</code> thành mật khẩu bí mật của riêng bạn.</li>
+        <li>Bấm biểu tượng <strong>💾 Lưu dự án (Ctrl+S)</strong> trên thanh công cụ Apps Script.</li>
+      </ol>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+        <button type="button" class="btn btn-primary" onclick="copyAppsScriptCode()">📋 Sao chép mã Code.gs</button>
+        <button type="button" class="btn" onclick="downloadAppsScriptFile()">💾 Tải file Code.gs về máy</button>
+      </div>
+      <pre class="code-box" id="appsScriptCodePreview"></pre>
+    </div>
+
+    <div class="step-card">
+      <h3>Bước 3: Phát hành thành Web App (Để Khách tài khoản nào cũng xem được)</h3>
+      <ol>
+        <li>Ở góc trên bên phải màn hình Apps Script, bấm nút màu xanh <strong>Triển khai (Deploy)</strong> &rarr; chọn <strong>Tạo mục triển khai mới (New deployment)</strong>.</li>
+        <li>Bấm vào biểu tượng bánh răng ⚙️ cạnh dòng <em>Chọn loại (Select type)</em> &rarr; chọn <strong>Ứng dụng web (Web app)</strong>.</li>
+        <li>Thiết lập 2 ô quan trọng sau:
+          <ul>
+            <li><strong>Thực thi dưới dạng (Execute as):</strong> Chọn <strong>Tôi (Me - email của bạn)</strong>.</li>
+            <li><strong>Ai có quyền truy cập (Who has access):</strong> Bắt buộc chọn <strong>Bất kỳ ai (Anyone)</strong> để tài khoản Khách hoặc trình duyệt ẩn danh đều tải được lịch mà không bị Google hỏi đăng nhập hay chặn lỗi CORS.</li>
+          </ul>
+        </li>
+        <li>Bấm <strong>Triển khai (Deploy)</strong> &rarr; Cấp quyền truy cập &rarr; Sao chép đường dẫn <strong>URL ứng dụng web (Web app URL)</strong> có đuôi <code>.../exec</code>.</li>
+      </ol>
+    </div>
+
+    <div class="step-card">
+      <h3>Bước 4: Chia sẻ cho Khách vào xem lịch (0 thao tác cấu hình cho Khách)</h3>
+      <ol>
+        <li>Sau khi Admin đã kết nối <strong>Web App URL</strong> trong mục <strong>⚙️ Cấu hình Google Sheets</strong>, hãy bấm nút màu tím <strong>📤 Xuất file cho Khách</strong> trên thanh công cụ.</li>
+        <li>Ứng dụng sẽ tải xuống file <code>TraCuuLeHoi_KhachXem.html</code> đã được <strong>nhúng sẵn đường dẫn Google Sheets của bạn</strong> (không chứa mật khẩu Admin).</li>
+        <li>Bạn gửi file đó cho Khách (hoặc đưa lên Google Drive / GitHub Pages): Khi Khách mở lên, ứng dụng sẽ <strong>tự động tải 100% lịch lễ hội mới nhất từ Google Sheets của bạn</strong> ở chế độ <em>🔒 Khách (Chỉ xem)</em>!</li>
+      </ol>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="closeGuideModal()">Đã hiểu &amp; Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Xác nhận thao tác (Thay thế confirm() bị chặn trong iframe) -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal" style="max-width:440px;">
+    <h2 id="confirmModalTitle">Xác nhận thao tác</h2>
+    <p id="confirmModalMessage" style="color:#cbd5e1;font-size:0.9rem;margin-bottom:16px;"></p>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeConfirmModal()">Hủy</button>
+      <button class="btn btn-primary" id="confirmModalOkBtn" onclick="executeConfirmCallback()">Đồng ý</button>
+    </div>
+  </div>
+</div>
+
+<!-- Vùng hiển thị thông báo Toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+  const START_YEAR = 2026;
+  const END_YEAR = 2099;
+  const DEFAULT_LOCAL_ADMIN_KEY = "HIEUADMIN";
+
+  // ==========================================================================
+  // ĐƯỜNG DẪN GOOGLE APPS SCRIPT MẶC ĐỊNH ĐÃ KẾT NỐI CỦA BẠN:
+  // ==========================================================================
+  const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyMt6wB6XjTpKS6F05HsNvmg90HHwtqFXE4Sfi9rTgF7Euy_MANLUH_0tuvavJystw2Hw/exec";
+
+  // Danh sách vùng miền bổ sung mặc định (được nhúng tự động khi Xuất file cho Khách)
+  const DEFAULT_CUSTOM_REGIONS = [];
+  const DEFAULT_GUEST_TOKEN = "";
+
+  // Mã nguồn Google Apps Script nhúng sẵn để người dùng sao chép 1 chạm
+  const EMBEDDED_APPS_SCRIPT = "/**\n * ============================================================================\n * MÃ NGUỒN GOOGLE APPS SCRIPT ĐỒNG BỘ DỮ LIỆU: TRA CỨU LỄ HỘI VIỆT NAM (2026-2099)\n * ============================================================================\n * Đặc điểm an toàn:\n * 1. Xác thực Chủ sở hữu (Admin Secret Key) cho mọi thao tác Thêm / Sửa / Xóa / Gộp.\n * 2. Cơ chế Gộp thông minh 2 chiều (Safe Merge) theo ID và thời gian (updatedAt):\n *    - Không bao giờ xóa trắng bảng để ghi đè.\n *    - Giữ nguyên các dòng được thêm từ thiết bị khác hoặc sửa trực tiếp trên Sheet.\n * 3. Khóa đồng thời (LockService) chống xung đột khi lưu cùng lúc.\n * 4. Tự động sao lưu trước mọi thay đổi vào trang tính \"Backup_LichSu\" (tối đa 100 bản).\n * ============================================================================\n */\n\n// BƯỚC CẤU HÌNH DUY NHẤT: Đổi mã khóa bí mật của riêng bạn tại dòng dưới đây:\nconst DEFAULT_ADMIN_KEY = \"HIEUADMIN\";\n\nconst SHEET_MAIN = \"LeHoi\";\nconst SHEET_BACKUP = \"Backup_LichSu\";\nconst MAX_BACKUPS = 100;\n\n// 12 lễ hội mặc định khởi tạo lần đầu nếu bảng tính hoàn toàn trống\nconst INITIAL_FESTIVALS = [\n  { id: 1, name: \"Hội Xuân & Vía Bà Đen\", location: \"Tây Ninh\", region: \"Miền Nam\", lunarDay: 5, lunarMonth: 5, lunarLabel: \"05/05 ÂL\", duration: \"Hội Xuân 30 ngày; Vía 3 ngày\", highlights: \"Hành hương đỉnh núi Bà Đen, dâng hương Linh Sơn Thánh Mẫu (04–06/05 ÂL) và đêm hội hoa đăng.\" },\n  { id: 2, name: \"Tết Nguyên Tiêu Chợ Lớn\", location: \"TP. Hồ Chí Minh\", region: \"Miền Nam\", lunarDay: 15, lunarMonth: 1, lunarLabel: \"15/01 ÂL\", duration: \"4 ngày\", highlights: \"Diễu hành nghệ thuật đường phố, lân sư rồng qua các hội quán người Hoa Quận 5 (12–15/01 ÂL).\" },\n  { id: 3, name: \"Lễ hội Vía Bà Chúa Xứ Núi Sam\", location: \"An Giang\", region: \"Miền Nam\", lunarDay: 24, lunarMonth: 4, lunarLabel: \"24/04 ÂL\", duration: \"6 ngày\", highlights: \"Lễ Tắm Bà đêm 23 rạng 24/4 ÂL (kéo dài 22–27/04 ÂL), lễ hội tín ngưỡng lớn nhất miền Tây Nam Bộ.\" },\n  { id: 4, name: \"Lễ hội Nghinh Ông Cần Giờ\", location: \"TP. Hồ Chí Minh\", region: \"Miền Nam\", lunarDay: 16, lunarMonth: 8, lunarLabel: \"16/08 ÂL\", duration: \"3 ngày\", highlights: \"Rước kiệu Nam Hải Tướng Quân trên biển Cần Giờ (15–17/08 ÂL), cầu ngư dân bình an và mùa biển bội thu.\" },\n  { id: 5, name: \"Lễ hội Ok Om Bok – Đua Ghe Ngo\", location: \"Sóc Trăng & Trà Vinh\", region: \"Miền Nam\", lunarDay: 15, lunarMonth: 10, lunarLabel: \"15/10 ÂL\", duration: \"2 – 3 ngày\", highlights: \"Lễ Cúng Trăng của đồng bào Khmer Nam Bộ, đua ghe Ngo trên sông Maspéro và thả đèn nước hoa đăng.\" },\n  { id: 6, name: \"Lễ hội Chùa Bà Thiên Hậu\", location: \"Bình Dương\", region: \"Miền Nam\", lunarDay: 15, lunarMonth: 1, lunarLabel: \"15/01 ÂL\", duration: \"3 ngày\", highlights: \"Lễ rước kiệu Bà Thiên Hậu qua các tuyến phố Thủ Dầu Một vào chiều Rằm tháng Giêng (13–15/01 ÂL).\" },\n  { id: 11, name: \"Lễ hội Quán Thế Âm Ngũ Hành Sơn\", location: \"Đà Nẵng\", region: \"Miền Trung\", lunarDay: 19, lunarMonth: 2, lunarLabel: \"19/02 ÂL\", duration: \"3 ngày\", highlights: \"Lễ rước ánh sáng, rước tôn tượng Quán Thế Âm và hội hoa đăng trên sông Cổ Cò (17–19/02 ÂL).\" },\n  { id: 12, name: \"Lễ hội Điện Hòn Chén\", location: \"Thừa Thiên Huế\", region: \"Miền Trung\", lunarDay: 3, lunarMonth: 3, lunarLabel: \"03/03 ÂL\", duration: \"2 ngày\", highlights: \"Rước sắc bằng thuyền rồng trên sông Hương, tôn vinh Thiên Y A Na Thánh Mẫu.\" },\n  { id: 7, name: \"Lễ hội Chùa Hương\", location: \"Hà Nội\", region: \"Miền Bắc\", lunarDay: 6, lunarMonth: 1, lunarLabel: \"06/01 ÂL\", duration: \"80 – 90 ngày\", highlights: \"Khai hội Mùng 6 Tết, hành hương suối Yến - động Hương Tích kéo dài suốt 3 tháng mùa xuân.\" },\n  { id: 8, name: \"Hội Gióng Đền Sóc\", location: \"Hà Nội\", region: \"Miền Bắc\", lunarDay: 6, lunarMonth: 1, lunarLabel: \"06/01 ÂL\", duration: \"3 ngày\", highlights: \"Tưởng nhớ Thánh Gióng (06–08/01 ÂL), nghi lễ dâng hoa tre và rước voi truyền thống.\" },\n  { id: 9, name: \"Hội Lim (Quan họ)\", location: \"Bắc Ninh\", region: \"Miền Bắc\", lunarDay: 13, lunarMonth: 1, lunarLabel: \"13/01 ÂL\", duration: \"3 ngày\", highlights: \"Hát giao duyên Quan họ Bắc Ninh trên thuyền rồng và đồi Lim (12–14/01 ÂL).\" },\n  { id: 10, name: \"Lễ hội Yên Tử\", location: \"Quảng Ninh\", region: \"Miền Bắc\", lunarDay: 10, lunarMonth: 1, lunarLabel: \"10/01 ÂL\", duration: \"~80 ngày\", highlights: \"Hành hương về đất Phật Trúc Lâm Yên Tử và đỉnh chùa Đồng từ 10 tháng Giêng đến hết tháng 3 ÂL.\" }\n];\n\n// Tạo menu tiện ích ngay trên thanh công cụ Google Sheets cho Chủ sở hữu\nfunction onOpen() {\n  SpreadsheetApp.getUi()\n    .createMenu(\"🏮 Quản lý Lễ Hội\")\n    .addItem(\"1. Khởi tạo bảng & Nạp 12 lễ hội gốc\", \"setupInitialSheet\")\n    .addItem(\"2. Đổi Mã khóa Chủ sở hữu (Admin Key)\", \"promptChangeAdminKey\")\n    .addItem(\"3. Khôi phục bản sao lưu gần nhất\", \"restoreLatestBackupFromMenu\")\n    .addToUi();\n}\n\n// Tự động cập nhật cột updatedAt khi Chủ sở hữu sửa trực tiếp trên Google Sheets\nfunction onEdit(e) {\n  if (!e || !e.range) return;\n  const sheet = e.range.getSheet();\n  if (sheet.getName() !== SHEET_MAIN) return;\n  const row = e.range.getRow();\n  if (row <= 1) return;\n\n  const nowIso = new Date().toISOString();\n  const idCell = sheet.getRange(row, 1);\n  if (!idCell.getValue()) {\n    idCell.setValue(Date.now() + row);\n  }\n  const dayVal = Number(sheet.getRange(row, 5).getValue() || 15);\n  const monthVal = Number(sheet.getRange(row, 6).getValue() || 1);\n  const labelCell = sheet.getRange(row, 7);\n  if (!labelCell.getValue() && dayVal && monthVal) {\n    labelCell.setValue(String(dayVal).padStart(2, \"0\") + \"/\" + String(monthVal).padStart(2, \"0\") + \" ÂL\");\n  }\n  const delCell = sheet.getRange(row, 11);\n  if (delCell.getValue() === \"\") {\n    delCell.setValue(false);\n  }\n  sheet.getRange(row, 10).setValue(nowIso);\n}\n\nfunction getAdminKey() {\n  const savedKey = PropertiesService.getScriptProperties().getProperty(\"ADMIN_SECRET_KEY\");\n  return savedKey ? savedKey : DEFAULT_ADMIN_KEY;\n}\n\nfunction verifyKey(inputKey) {\n  const actual = String(getAdminKey()).trim();\n  const provided = String(inputKey || \"\").trim();\n  if (!actual || !provided || actual.length !== provided.length) return false;\n  let diff = 0;\n  for (let i = 0; i < actual.length; i++) {\n    diff |= actual.charCodeAt(i) ^ provided.charCodeAt(i);\n  }\n  return diff === 0;\n}\n\nfunction promptChangeAdminKey() {\n  const ui = SpreadsheetApp.getUi();\n  const res = ui.prompt(\n    \"Đổi Mã khóa Chủ sở hữu (Admin Key)\",\n    \"Nhập mã khóa bí mật mới (dùng để mở khóa chỉnh sửa trên ứng dụng web):\",\n    ui.ButtonSet.OK_CANCEL\n  );\n  if (res.getSelectedButton() === ui.Button.OK) {\n    const newKey = res.getResponseText().trim();\n    if (newKey.length < 4) {\n      ui.alert(\"Mã khóa phải có ít nhất 4 ký tự!\");\n      return;\n    }\n    PropertiesService.getScriptProperties().setProperty(\"ADMIN_SECRET_KEY\", newKey);\n    ui.alert(\"Đã lưu Mã khóa Chủ sở hữu mới thành công!\");\n  }\n}\n\nfunction ensureSheetsExist() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  let mainSheet = ss.getSheetByName(SHEET_MAIN);\n  if (!mainSheet) {\n    mainSheet = ss.insertSheet(SHEET_MAIN);\n    const headers = [\n      \"id\", \"name\", \"location\", \"region\",\n      \"lunarDay\", \"lunarMonth\", \"lunarLabel\",\n      \"duration\", \"highlights\", \"updatedAt\", \"deleted\"\n    ];\n    mainSheet.getRange(1, 1, 1, headers.length).setValues([headers]);\n    mainSheet.getRange(1, 1, 1, headers.length)\n      .setFontWeight(\"bold\")\n      .setBackground(\"#1e3a8a\")\n      .setFontColor(\"#ffffff\");\n    mainSheet.setFrozenRows(1);\n\n    const initIso = \"2026-01-01T00:00:00.000Z\";\n    const rows = INITIAL_FESTIVALS.map(item => [\n      item.id, item.name, item.location, item.region,\n      item.lunarDay, item.lunarMonth, item.lunarLabel,\n      item.duration, item.highlights, initIso, false\n    ]);\n    mainSheet.getRange(2, 1, rows.length, headers.length).setValues(rows);\n  }\n\n  let backupSheet = ss.getSheetByName(SHEET_BACKUP);\n  if (!backupSheet) {\n    backupSheet = ss.insertSheet(SHEET_BACKUP);\n    const bHeaders = [\"Thời gian sao lưu\", \"Thao tác\", \"Số lượng lễ hội\", \"Dữ liệu JSON (Snapshot)\"];\n    backupSheet.getRange(1, 1, 1, bHeaders.length).setValues([bHeaders]);\n    backupSheet.getRange(1, 1, 1, bHeaders.length)\n      .setFontWeight(\"bold\")\n      .setBackground(\"#334155\")\n      .setFontColor(\"#ffffff\");\n    backupSheet.setFrozenRows(1);\n  }\n  return { ss, mainSheet, backupSheet };\n}\n\nfunction setupInitialSheet() {\n  ensureSheetsExist();\n  return \"Đã khởi tạo bảng LeHoi và Backup_LichSu thành công!\";\n}\n\nfunction readAllRecords(mainSheet) {\n  const lastRow = mainSheet.getLastRow();\n  if (lastRow <= 1) return [];\n  const values = mainSheet.getRange(2, 1, lastRow - 1, 11).getValues();\n  const records = [];\n  for (let i = 0; i < values.length; i++) {\n    const r = values[i];\n    const name = String(r[1] || \"\").trim();\n    const location = String(r[2] || \"\").trim();\n    if (!name && !location) continue;\n    const lunarDay = Number(r[4]) || 15;\n    const lunarMonth = Number(r[5]) || 1;\n    const id = r[0] !== \"\" && r[0] !== null ? r[0] : (Date.now() + i);\n    const lunarLabel = String(r[6] || \"\").trim() || (String(lunarDay).padStart(2, \"0\") + \"/\" + String(lunarMonth).padStart(2, \"0\") + \" ÂL\");\n    const updatedAt = r[9] ? String(r[9]) : \"2026-01-01T00:00:00.000Z\";\n    const deleted = r[10] === true || String(r[10]).toUpperCase() === \"TRUE\";\n    records.push({\n      id: Number.isFinite(Number(id)) ? Number(id) : String(id),\\n      name: name,\\n      location: location,\\n      region: String(r[3] || \"Miền Nam\").trim(),\\n      lunarDay: lunarDay,\\n      lunarMonth: lunarMonth,\\n      lunarLabel: lunarLabel,\\n      duration: String(r[7] || \"1 – 3 ngày\").trim(),\\n      highlights: String(r[8] || \"\").trim(),\\n      updatedAt: updatedAt,\\n      deleted: deleted\n    });\n  }\n  return records;\n}\n\nfunction writeAllRecords(mainSheet, records) {\n  const lastRow = mainSheet.getLastRow();\n  if (lastRow > 1) {\n    mainSheet.getRange(2, 1, lastRow - 1, 11).clearContent();\n  }\n  if (records.length === 0) return;\n  const rows = records.map(item => [\n    item.id,\n    item.name,\n    item.location,\n    item.region || \"Miền Nam\",\n    Number(item.lunarDay) || 15,\n    Number(item.lunarMonth) || 1,\n    item.lunarLabel || (String(item.lunarDay || 15).padStart(2, \"0\") + \"/\" + String(item.lunarMonth || 1).padStart(2, \"0\") + \" ÂL\"),\n    item.duration || \"1 – 3 ngày\",\n    item.highlights || \"\",\n    item.updatedAt || new Date().toISOString(),\n    Boolean(item.deleted)\n  ]);\n  mainSheet.getRange(2, 1, rows.length, 11).setValues(rows);\n}\n\nfunction saveBackupSnapshot(backupSheet, actionName, currentRecords) {\n  const activeCount = currentRecords.filter(r => !r.deleted).length;\n  backupSheet.appendRow([\n    new Date().toISOString(),\n    actionName,\n    activeCount,\n    JSON.stringify(currentRecords)\n  ]);\n  const totalRows = backupSheet.getLastRow();\n  if (totalRows > MAX_BACKUPS + 1) {\n    backupSheet.deleteRows(2, totalRows - (MAX_BACKUPS + 1));\n  }\n}\n\nfunction makeFingerprint(item) {\n  return [\n    String(item.name || \"\").trim().toLowerCase(),\n    String(item.location || \"\").trim().toLowerCase(),\n    Number(item.lunarDay) || 0,\n    Number(item.lunarMonth) || 0\n  ].join(\"|\");\n}\n\nfunction parseTimeMs(isoStr) {\n  const t = Date.parse(isoStr || \"\");\n  return Number.isFinite(t) ? t : 0;\n}\n\nfunction jsonResponse(obj) {\n  return ContentService\n    .createTextOutput(JSON.stringify(obj))\n    .setMimeType(ContentService.MimeType.JSON);\n}\n\n// API ĐỌC DỮ LIỆU (Ai có link đều tra cứu được danh sách mới nhất)\nfunction doGet(e) {\n  try {\n    const { mainSheet } = ensureSheetsExist();\n    const allRecords = readAllRecords(mainSheet);\n    const activeItems = allRecords.filter(r => !r.deleted);\n    const deletedIds = allRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }));\n    return jsonResponse({\n      ok: true,\n      serverTime: new Date().toISOString(),\n      items: activeItems,\n      deletedIds: deletedIds\n    });\n  } catch (err) {\n    return jsonResponse({ ok: false, error: String(err.message || err) });\n  }\n}\n\n// API GHI & ĐỒNG BỘ DỮ LIỆU (Chỉ Chủ sở hữu có Mã khóa mới thực hiện được)\nfunction doPost(e) {\n  const lock = LockService.getScriptLock();\n  try {\n    lock.waitLock(15000);\n  } catch (lockErr) {\n    return jsonResponse({ ok: false, error: \"Hệ thống đang bận xử lý đồng bộ khác, vui lòng thử lại sau vài giây.\" });\n  }\n\n  try {\n    const payload = JSON.parse(e.postData.contents || \"{}\");\n    const action = payload.action || \"\";\n    const adminKey = payload.adminKey || \"\";\n\n    // Cho phép Khách gửi đề xuất lễ hội mới vào Hàng chờ xét duyệt ([CHỜ DUYỆT])\n    if (action === \"submitPending\") {\n      const { mainSheet, backupSheet } = ensureSheetsExist();\n      const currentRecords = readAllRecords(mainSheet);\n      const incoming = payload.item;\n      if (!incoming || !incoming.name || !incoming.location) {\n        return jsonResponse({ ok: false, error: \"Dữ liệu lễ hội đề xuất không hợp lệ.\" });\n      }\n      saveBackupSnapshot(backupSheet, \"GUEST_PROPOSE: \" + incoming.name, currentRecords);\n      const nowIso = new Date().toISOString();\n      const rawLabel = String(incoming.lunarLabel || \"15/01 ÂL\").replace(/^\\[CHỜ DUYỆT\\]\\s*/i, \"\").trim();\n      const pendingLabel = \"[CHỜ DUYỆT] \" + rawLabel;\n      currentRecords.push({\n        id: incoming.id || Date.now(),\n        name: String(incoming.name).trim(),\n        location: String(incoming.location).trim(),\n        region: incoming.region || \"Miền Nam\",\n        lunarDay: Number(incoming.lunarDay) || 15,\n        lunarMonth: Number(incoming.lunarMonth) || 1,\n        lunarLabel: pendingLabel,\n        duration: incoming.duration || \"1 – 3 ngày\",\n        highlights: incoming.highlights || \"\",\n        updatedAt: nowIso,\n        deleted: false\n      });\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\n        ok: true,\n        serverTime: nowIso,\n        items: currentRecords.filter(r => !r.deleted),\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    if (!verifyKey(adminKey)) {\n      return jsonResponse({\n        ok: false,\n        authError: true,\n        error: \"Mã khóa Chủ sở hữu không chính xác! Từ chối quyền chỉnh sửa.\"\n      });\n    }\n\n    const { mainSheet, backupSheet } = ensureSheetsExist();\n    const currentRecords = readAllRecords(mainSheet);\n\n    if (action === \"verifyAuth\") {\n      return jsonResponse({\n        ok: true,\n        message: \"Xác thực Chủ sở hữu thành công!\",\n        serverTime: new Date().toISOString()\n      });\n    }\n\n    // 1. Thêm hoặc cập nhật 1 lễ hội đơn lẻ (Không đụng chạm các dòng khác)\n    if (action === \"upsert\") {\n      const incoming = payload.item;\n      if (!incoming || !incoming.name || !incoming.location) {\n        return jsonResponse({ ok: false, error: \"Dữ liệu lễ hội không hợp lệ.\" });\n      }\n      saveBackupSnapshot(backupSheet, \"UPSERT: \" + incoming.name, currentRecords);\n\n      const nowIso = incoming.updatedAt || new Date().toISOString();\n      const targetId = String(incoming.id);\n      const targetFp = makeFingerprint(incoming);\n      let found = false;\n\n      for (let i = 0; i < currentRecords.length; i++) {\n        if (String(currentRecords[i].id) === targetId || (!currentRecords[i].deleted && makeFingerprint(currentRecords[i]) === targetFp)) {\n          currentRecords[i] = {\n            id: currentRecords[i].id,\n            name: String(incoming.name).trim(),\n            location: String(incoming.location).trim(),\n            region: incoming.region || \"Miền Nam\",\n            lunarDay: Number(incoming.lunarDay) || 15,\n            lunarMonth: Number(incoming.lunarMonth) || 1,\n            lunarLabel: incoming.lunarLabel || (String(incoming.lunarDay).padStart(2, \"0\") + \"/\" + String(incoming.lunarMonth).padStart(2, \"0\") + \" ÂL\"),\n            duration: incoming.duration || \"1 – 3 ngày\",\n            highlights: incoming.highlights || \"\",\n            updatedAt: nowIso,\n            deleted: false\n          };\n          found = true;\n          break;\n        }\n      }\n\n      if (!found) {\n        currentRecords.push({\n          id: incoming.id || Date.now(),\n          name: String(incoming.name).trim(),\n          location: String(incoming.location).trim(),\n          region: incoming.region || \"Miền Nam\",\n          lunarDay: Number(incoming.lunarDay) || 15,\n          lunarMonth: Number(incoming.lunarMonth) || 1,\n          lunarLabel: incoming.lunarLabel || (String(incoming.lunarDay).padStart(2, \"0\") + \"/\" + String(incoming.lunarMonth).padStart(2, \"0\") + \" ÂL\"),\n          duration: incoming.duration || \"1 – 3 ngày\",\n          highlights: incoming.highlights || \"\",\n          updatedAt: nowIso,\n          deleted: false\n        });\n      }\n\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\n        ok: true,\n        serverTime: new Date().toISOString(),\n        items: currentRecords.filter(r => !r.deleted),\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    // 2. Xóa mềm 1 lễ hội (Có lưu vào Backup_LichSu trước khi xóa)\n    if (action === \"delete\") {\n      const targetId = String(payload.id);\n      saveBackupSnapshot(backupSheet, \"DELETE ID: \" + targetId, currentRecords);\n      const nowIso = new Date().toISOString();\n      for (let i = 0; i < currentRecords.length; i++) {\n        if (String(currentRecords[i].id) === targetId) {\n          currentRecords[i].deleted = true;\n          currentRecords[i].updatedAt = nowIso;\n        }\n      }\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\\n        ok: true,\\n        serverTime: nowIso,\\n        items: currentRecords.filter(r => !r.deleted),\\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\\n      });\n    }\n\n    // 3. Đồng bộ Gộp 2 Chiều (Safe Merge: Không làm mất dữ liệu trên Sheet lẫn trên máy)\n    if (action === \"syncMerge\") {\n      const incomingList = Array.isArray(payload.items) ? payload.items : [];\n      saveBackupSnapshot(backupSheet, \"SYNC_MERGE (\" + incomingList.length + \" mục từ trình duyệt)\", currentRecords);\n\n      const byId = {};\n      const byFp = {};\n      currentRecords.forEach(rec => {\n        byId[String(rec.id)] = rec;\n        if (!rec.deleted) {\n          byFp[makeFingerprint(rec)] = rec;\n        }\n      });\n\n      let addedCount = 0;\n      let updatedCount = 0;\n\n      incomingList.forEach(inc => {\n        if (!inc || !inc.name || !inc.location) return;\n        const incId = String(inc.id);\n        const incFp = makeFingerprint(inc);\n        const incTime = parseTimeMs(inc.updatedAt);\n        const existing = byId[incId] || byFp[incFp];\n\n        if (!existing) {\n          const newRec = {\n            id: inc.id || Date.now(),\n            name: String(inc.name).trim(),\n            location: String(inc.location).trim(),\n            region: inc.region || \"Miền Nam\",\n            lunarDay: Number(inc.lunarDay) || 15,\n            lunarMonth: Number(inc.lunarMonth) || 1,\n            lunarLabel: inc.lunarLabel || (String(inc.lunarDay).padStart(2, \"0\") + \"/\" + String(inc.lunarMonth).padStart(2, \"0\") + \" ÂL\"),\n            duration: inc.duration || \"1 – 3 ngày\",\n            highlights: inc.highlights || \"\",\n            updatedAt: inc.updatedAt || new Date().toISOString(),\n            deleted: false\n          };\n          currentRecords.push(newRec);\n          byId[String(newRec.id)] = newRec;\n          byFp[incFp] = newRec;\n          addedCount++;\n        } else {\n          const sheetTime = parseTimeMs(existing.updatedAt);\n          if (existing.deleted && sheetTime >= incTime) {\n            return;\n          }\n          if (incTime > sheetTime) {\n            existing.name = String(inc.name).trim();\n            existing.location = String(inc.location).trim();\n            existing.region = inc.region || existing.region || \"Miền Nam\";\n            existing.lunarDay = Number(inc.lunarDay) || existing.lunarDay || 15;\n            existing.lunarMonth = Number(inc.lunarMonth) || existing.lunarMonth || 1;\n            existing.lunarLabel = inc.lunarLabel || (String(existing.lunarDay).padStart(2, \"0\") + \"/\" + String(existing.lunarMonth).padStart(2, \"0\") + \" ÂL\");\n            existing.duration = inc.duration || existing.duration || \"1 – 3 ngày\";\n            existing.highlights = inc.highlights !== undefined ? inc.highlights : existing.highlights;\n            existing.updatedAt = inc.updatedAt || new Date().toISOString();\n            existing.deleted = false;\n            updatedCount++;\n          }\n        }\n      });\n\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\n        ok: true,\n        addedCount: addedCount,\n        updatedCount: updatedCount,\n        serverTime: new Date().toISOString(),\n        items: currentRecords.filter(r => !r.deleted),\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    // 4. Khôi phục từ bản sao lưu gần nhất trong trang tính Backup_LichSu\n    if (action === \"restoreBackup\") {\n      const bLastRow = backupSheet.getLastRow();\n      if (bLastRow <= 1) {\n        return jsonResponse({ ok: false, error: \"Chưa có bản sao lưu nào trong sheet Backup_LichSu.\" });\n      }\n      const snapshotJson = backupSheet.getRange(bLastRow, 4).getValue();\n      const restoredRecords = JSON.parse(snapshotJson || \"[]\");\n      if (!Array.isArray(restoredRecords) || restoredRecords.length === 0) {\n        return jsonResponse({ ok: false, error: \"Bản sao lưu gần nhất trống hoặc không hợp lệ.\" });\n      }\n      backupSheet.deleteRow(bLastRow);\n      writeAllRecords(mainSheet, restoredRecords);\n      return jsonResponse({\n        ok: true,\n        serverTime: new Date().toISOString(),\n        items: restoredRecords.filter(r => !r.deleted),\n        deletedIds: restoredRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    return jsonResponse({ ok: false, error: \"Hành động không được hỗ trợ: \" + action });\n  } catch (err) {\n    return jsonResponse({ ok: false, error: String(err.message || err) });\n  } finally {\n    lock.releaseLock();\n  }\n}\n\nfunction restoreLatestBackupFromMenu() {\n  const ui = SpreadsheetApp.getUi();\n  const { mainSheet, backupSheet } = ensureSheetsExist();\n  const bLastRow = backupSheet.getLastRow();\n  if (bLastRow <= 1) {\n    ui.alert(\"Chưa có bản sao lưu nào trong trang tính Backup_LichSu!\");\n    return;\n  }\n  const snapshotJson = backupSheet.getRange(bLastRow, 4).getValue();\n  const restoredRecords = JSON.parse(snapshotJson || \"[]\");\n  backupSheet.deleteRow(bLastRow);\n  writeAllRecords(mainSheet, restoredRecords);\n  ui.alert(\"Đã khôi phục thành công bản sao lưu gần nhất!\");\n}\n";
+
+  // Hàm bọc localStorage an toàn chống lỗi trình duyệt chặn bộ nhớ
+  function safeGetStorage(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function safeSetStorage(key, value) {
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function safeRemoveStorage(key) {
+    try {
+      localStorage.removeItem(key);
+    } catch (e) {}
+  }
+
+  // Hàm khử dấu tiếng Việt giúp tìm kiếm cả có dấu lẫn không dấu
+  function removeVietnameseTones(str) {
+    return String(str || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .replace(/Đ/g, "D")
+      .toLowerCase()
+      .trim();
+  }
+
+  // Thông báo Toast & Modal Xác nhận (Thay thế alert/confirm)
+  function showToast(message, type = "info") {
+    const container = document.getElementById("toastContainer");
+    if (!container) return;
+    const item = document.createElement("div");
+    item.className = `toast-item ${type}`;
+    item.textContent = message;
+    container.appendChild(item);
+    setTimeout(() => {
+      if (item.parentNode) item.parentNode.removeChild(item);
+    }, 4200);
+  }
+
+  let pendingConfirmCallback = null;
+  function openConfirmModal(title, message, onConfirm) {
+    document.getElementById("confirmModalTitle").textContent = title;
+    document.getElementById("confirmModalMessage").textContent = message;
+    pendingConfirmCallback = onConfirm;
+    document.getElementById("confirmModal").classList.add("open");
+  }
+
+  function closeConfirmModal() {
+    pendingConfirmCallback = null;
+    document.getElementById("confirmModal").classList.remove("open");
+  }
+
+  function executeConfirmCallback() {
+    const cb = pendingConfirmCallback;
+    closeConfirmModal();
+    if (typeof cb === "function") cb();
+  }
+
+  // Khởi tạo dropdown chọn năm từ 2026 đến 2099 (mặc định chọn năm hiện tại nếu >= 2026, hoặc 2026)
+  const yearSelectEl = document.getElementById("yearSelect");
+  const currentActualYear = new Date().getFullYear();
+  const defaultSelectedYear = (currentActualYear >= START_YEAR && currentActualYear <= END_YEAR) ? currentActualYear : 2026;
+  for (let y = START_YEAR; y <= END_YEAR; y++) {
+    const opt = document.createElement("option");
+    opt.value = y;
+    opt.textContent = y;
+    if (y === defaultSelectedYear) opt.selected = true;
+    yearSelectEl.appendChild(opt);
+  }
+
+  // LỊCH ÂM VIỆT NAM: thuật toán thiên văn kiểu Hồ Ngọc Đức, múi giờ UTC+7.
+  const TIME_ZONE = 7;
+  const PI = Math.PI;
+  const INT = Math.floor;
+
+  function jdFromDate(dd, mm, yy) {
+    const a = INT((14 - mm) / 12);
+    const y = yy + 4800 - a;
+    const m = mm + 12 * a - 3;
+    let jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
+    if (jd < 2299161) jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - 32083;
+    return jd;
+  }
+
+  function jdToDate(jd) {
+    let a, b, c;
+    if (jd > 2299160) {
+      a = jd + 32044;
+      b = INT((4 * a + 3) / 146097);
+      c = a - INT((b * 146097) / 4);
+    } else { b = 0; c = jd + 32082; }
+    const d = INT((4 * c + 3) / 1461);
+    const e = c - INT((1461 * d) / 4);
+    const m = INT((5 * e + 2) / 153);
+    const day = e - INT((153 * m + 2) / 5) + 1;
+    const month = m + 3 - 12 * INT(m / 10);
+    const year = b * 100 + d - 4800 + INT(m / 10);
+    return [day, month, year];
+  }
+
+  function getNewMoonDay(k, timeZone) {
+    const T = k / 1236.85;
+    const T2 = T * T, T3 = T2 * T;
+    const dr = PI / 180;
+    let jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
+    jd1 += 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
+    const M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
+    const Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
+    const F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
+    let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
+    C1 -= 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(2 * dr * Mpr);
+    C1 -= 0.0004 * Math.sin(3 * dr * Mpr);
+    C1 += 0.0104 * Math.sin(2 * dr * F) - 0.0051 * Math.sin((M + Mpr) * dr);
+    C1 -= 0.0074 * Math.sin((M - Mpr) * dr) + 0.0004 * Math.sin((2 * F + M) * dr);
+    C1 -= 0.0004 * Math.sin((2 * F - M) * dr) - 0.0006 * Math.sin((2 * F + Mpr) * dr);
+    C1 += 0.0010 * Math.sin((2 * F - Mpr) * dr) + 0.0005 * Math.sin((2 * Mpr + M) * dr);
+    const deltaT = T < -11 ? 0.001 + 0.000839 * T + 0.0002261 * T2 - 0.00000845 * T3 - 0.000000081 * T * T3 : -0.000278 + 0.000265 * T + 0.000262 * T2;
+    return INT(jd1 + C1 - deltaT + 0.5 + timeZone / 24);
+  }
+
+  function getSunLongitude(jdn, timeZone) {
+    const T = (jdn - 2451545.5 - timeZone / 24) / 36525;
+    const T2 = T * T;
+    const dr = PI / 180;
+    const M = 357.52910 + 35999.05030 * T - 0.0001559 * T2 - 0.00000048 * T * T2;
+    const L0 = 280.46645 + 36000.76983 * T + 0.0003032 * T2;
+    let DL = (1.914600 - 0.004817 * T - 0.000014 * T2) * Math.sin(dr * M);
+    DL += (0.019993 - 0.000101 * T) * Math.sin(2 * dr * M) + 0.000290 * Math.sin(3 * dr * M);
+    let L = (L0 + DL) * dr;
+    L -= PI * 2 * INT(L / (PI * 2));
+    return INT(L / PI * 6);
+  }
+
+  function getLunarMonth11(yy, timeZone) {
+    const off = jdFromDate(31, 12, yy) - 2415021;
+    const k = INT(off / 29.530588853);
+    let nm = getNewMoonDay(k, timeZone);
+    if (getSunLongitude(nm, timeZone) >= 9) nm = getNewMoonDay(k - 1, timeZone);
+    return nm;
+  }
+
+  function getLeapMonthOffset(a11, timeZone) {
+    const k = INT(0.5 + (a11 - 2415021.076998695) / 29.530588853);
+    let last = 0, i = 1;
+    let arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
+    do {
+      last = arc;
+      i++;
+      arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
+    } while (arc !== last && i < 15);
+    return i - 1;
+  }
+
+  function convertSolar2Lunar(dd, mm, yy, timeZone = TIME_ZONE) {
+    const dayNumber = jdFromDate(dd, mm, yy);
+    const k = INT((dayNumber - 2415021.076998695) / 29.530588853);
+    let monthStart = getNewMoonDay(k + 1, timeZone);
+    if (monthStart > dayNumber) monthStart = getNewMoonDay(k, timeZone);
+    let a11 = getLunarMonth11(yy, timeZone);
+    let b11 = a11;
+    let lunarYear;
+    if (a11 >= monthStart) {
+      lunarYear = yy;
+      a11 = getLunarMonth11(yy - 1, timeZone);
+    } else {
+      lunarYear = yy + 1;
+      b11 = getLunarMonth11(yy + 1, timeZone);
+    }
+    const lunarDay = dayNumber - monthStart + 1;
+    const diff = INT((monthStart - a11) / 29);
+    let lunarMonth = diff + 11;
+    let lunarLeap = 0;
+    if (b11 - a11 > 365) {
+      const leapMonthDiff = getLeapMonthOffset(a11, timeZone);
+      if (diff >= leapMonthDiff) {
+        lunarMonth = diff + 10;
+        if (diff === leapMonthDiff) lunarLeap = 1;
+      }
+    }
+    if (lunarMonth > 12) lunarMonth -= 12;
+    if (lunarMonth >= 11 && diff < 4) lunarYear--;
+    return [lunarDay, lunarMonth, lunarYear, lunarLeap];
+  }
+
+  const WEEKDAYS_VN = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+  const yearLunarCache = {};
+  const yearLunarDetailCache = {};
+
+  function buildYearCache(solarYear) {
+    if (yearLunarCache[solarYear]) return yearLunarCache[solarYear];
+    const map = {};
+    const detailMap = {};
+    const daysInYear = (solarYear % 4 === 0 && (solarYear % 100 !== 0 || solarYear % 400 === 0)) ? 366 : 365;
+    for (let i = 0; i < daysInYear; i++) {
+      const cur = new Date(Date.UTC(solarYear, 0, 1 + i));
+      const solarDay = cur.getUTCDate();
+      const solarMonth = cur.getUTCMonth() + 1;
+      const lunar = convertSolar2Lunar(solarDay, solarMonth, solarYear, TIME_ZONE);
+      const lunarDay = lunar[0], lunarMonth = lunar[1], isLeap = lunar[3] === 1;
+      if (!isLeap) {
+        const key = `${lunarDay}-${lunarMonth}`;
+        if (!map[key]) {
+          const weekday = WEEKDAYS_VN[cur.getUTCDay()];
+          const text = `${weekday}, ${String(solarDay).padStart(2, "0")}/${String(solarMonth).padStart(2, "0")}/${solarYear}`;
+          map[key] = text;
+          detailMap[key] = {
+            text,
+            solarDay,
+            solarMonth,
+            solarYear,
+            timestamp: Date.UTC(solarYear, solarMonth - 1, solarDay),
+            note: ""
+          };
+        }
+      }
+    }
+    yearLunarCache[solarYear] = map;
+    yearLunarDetailCache[solarYear] = detailMap;
+    return map;
+  }
+
+  // Hỗ trợ cả Lễ hội Âm lịch (tự động lùi về 29 nếu năm đó tháng thiếu không có ngày 30) VÀ Sự kiện Dương lịch cố định
+  function getFestivalSolarInfo(fest, solarYear) {
+    const isSolarFixed = fest && (fest.calendarType === "solar" || String(fest.lunarLabel || "").includes("DL"));
+    if (isSolarFixed) {
+      const sDay = Number(fest.lunarDay) || 1;
+      const sMonth = Number(fest.lunarMonth) || 1;
+      const dt = new Date(Date.UTC(solarYear, sMonth - 1, sDay));
+      if (dt.getUTCMonth() + 1 !== sMonth || dt.getUTCDate() !== sDay) {
+        return { text: "Không có ngày tương ứng", solarDay: null, solarMonth: null, solarYear, timestamp: Infinity, note: "" };
+      }
+      const weekday = WEEKDAYS_VN[dt.getUTCDay()];
+      return {
+        text: `${weekday}, ${String(sDay).padStart(2, "0")}/${String(sMonth).padStart(2, "0")}/${solarYear}`,
+        solarDay: sDay,
+        solarMonth: sMonth,
+        solarYear,
+        timestamp: Date.UTC(solarYear, sMonth - 1, sDay),
+        note: "Sự kiện Dương lịch cố định"
+      };
+    }
+
+    buildYearCache(solarYear);
+    const lDay = Number(fest.lunarDay) || 15;
+    const lMonth = Number(fest.lunarMonth) || 1;
+    const exact = yearLunarDetailCache[solarYear]?.[`${lDay}-${lMonth}`];
+    if (exact) return exact;
+
+    // Xử lý tự động nếu lễ hội rơi vào ngày 30 Âm lịch nhưng năm đó là tháng thiếu (chỉ có 29 ngày)
+    if (lDay === 30) {
+      const fallback29 = yearLunarDetailCache[solarYear]?.[`29-${lMonth}`];
+      if (fallback29) {
+        return {
+          ...fallback29,
+          note: `Tháng thiếu (29/${String(lMonth).padStart(2, "0")} ÂL)`
+        };
+      }
+    }
+
+    return { text: "Không có ngày tương ứng", solarDay: null, solarMonth: null, solarYear, timestamp: Infinity, note: "" };
+  }
+
+  function getSolarDate(lunarDay, lunarMonth, solarYear, calendarType = "lunar") {
+    return getFestivalSolarInfo({ lunarDay, lunarMonth, calendarType }, solarYear).text;
+  }
+
+  function getSolarMonthOfFestival(fest, solarYear) {
+    return getFestivalSolarInfo(fest, solarYear).solarMonth;
+  }
+
+  // Tính nhãn đếm ngược số ngày so với ngày thực tế hôm nay
+  function getCountdownBadgeHTML(solarInfo) {
+    if (!solarInfo || !solarInfo.solarDay || !solarInfo.solarMonth) return "";
+    const now = new Date();
+    const todayUTC = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    const targetUTC = Date.UTC(solarInfo.solarYear, solarInfo.solarMonth - 1, solarInfo.solarDay);
+    const diffDays = Math.round((targetUTC - todayUTC) / 86400000);
+
+    if (diffDays === 0) {
+      return `<div class="countdown-tag today">🎉 Diễn ra hôm nay</div>`;
+    }
+    if (diffDays > 0 && diffDays <= 365) {
+      return `<div class="countdown-tag upcoming">⏳ Còn ${diffDays} ngày</div>`;
+    }
+    if (diffDays < 0 && diffDays >= -365 && solarInfo.solarYear === now.getFullYear()) {
+      return `<div class="countdown-tag passed">Đã qua ${Math.abs(diffDays)} ngày</div>`;
+    }
+    return "";
+  }
+
+  // Tính số ngày kéo dài sự kiện từ chuỗi duration (nếu chọn chế độ tự động)
+  function resolveEventSpanDays(fest, spanOption = "1") {
+    if (spanOption === "auto") {
+      const m = String(fest?.duration || "").match(/(\d+)/);
+      if (m) {
+        const parsed = parseInt(m[1], 10);
+        if (parsed >= 1 && parsed <= 15) return parsed;
+      }
+      return 1;
+    }
+    const num = parseInt(spanOption, 10);
+    return (Number.isInteger(num) && num >= 1 && num <= 30) ? num : 1;
+  }
+
+  function buildGoogleCalendarTemplateUrl(fest, targetYear, spanDays = 1, recurRule = "") {
+    const info = getFestivalSolarInfo(fest, targetYear);
+    if (!info || !info.solarDay || !info.solarMonth) return null;
+    const startStr = `${info.solarYear}${String(info.solarMonth).padStart(2, "0")}${String(info.solarDay).padStart(2, "0")}`;
+    const endDt = new Date(Date.UTC(info.solarYear, info.solarMonth - 1, info.solarDay + spanDays));
+    const endStr = `${endDt.getUTCFullYear()}${String(endDt.getUTCMonth() + 1).padStart(2, "0")}${String(endDt.getUTCDate()).padStart(2, "0")}`;
+    const cleanLbl = getCleanLunarLabel(fest);
+    const title = encodeURIComponent(`${fest.name} (${fest.location})`);
+    const details = encodeURIComponent(
+      `Mốc lịch: ${cleanLbl}\nThời gian: ${fest.duration || "1 – 3 ngày"}\nVùng miền: ${fest.region}\nĐặc trưng: ${fest.highlights || ""}`
+    );
+    const location = encodeURIComponent(`${fest.location}, Việt Nam`);
+    let url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStr}/${endStr}&details=${details}&location=${location}`;
+    if (recurRule) {
+      url += `&recur=${encodeURIComponent(recurRule)}`;
+    }
+    return url;
+  }
+
+  // Tạo link thêm nhanh sự kiện 1 năm vào Google Calendar
+  function addToGoogleCalendar(e, id) {
+    if (e) e.stopPropagation();
+    const selectedYear = parseInt(document.getElementById("yearSelect").value, 10);
+    addToGoogleCalendarForYear(e, id, selectedYear);
+  }
+
+  function addToGoogleCalendarForYear(e, id, targetYear) {
+    if (e) e.stopPropagation();
+    const f = festivals.find(item => String(item.id) === String(id));
+    if (!f) return;
+    const spanOpt = document.getElementById("mcSpanDays") ? document.getElementById("mcSpanDays").value : "1";
+    const spanDays = resolveEventSpanDays(f, spanOpt);
+    const gcalUrl = buildGoogleCalendarTemplateUrl(f, targetYear, spanDays);
+    if (!gcalUrl) {
+      showToast(`Không xác định được ngày Dương lịch cho năm ${targetYear}!`, "warn");
+      return;
+    }
+    window.open(gcalUrl, "_blank", "noopener,noreferrer");
+  }
+
+  // ==========================================================================
+  // LƯU LỄ HỘI NHIỀU NĂM VÀO GOOGLE CALENDAR (MULTI-YEAR ICS & BATCH LINKS)
+  // ==========================================================================
+  function initMultiCalYearSelects() {
+    const startSel = document.getElementById("mcStartYear");
+    const endSel = document.getElementById("mcEndYear");
+    if (!startSel || !endSel || startSel.options.length > 0) return;
+    for (let y = START_YEAR; y <= END_YEAR; y++) {
+      const opt1 = document.createElement("option");
+      opt1.value = y;
+      opt1.textContent = `Năm ${y}`;
+      startSel.appendChild(opt1);
+
+      const opt2 = document.createElement("option");
+      opt2.value = y;
+      opt2.textContent = `Năm ${y}`;
+      endSel.appendChild(opt2);
+    }
+  }
+
+  function openMultiYearCalendarModal(e, id) {
+    if (e) e.stopPropagation();
+    const f = festivals.find(item => String(item.id) === String(id));
+    if (!f) return;
+    initMultiCalYearSelects();
+
+    document.getElementById("mcFestivalId").value = String(f.id);
+    const selectedYear = parseInt(document.getElementById("yearSelect").value, 10) || 2026;
+    const defaultEnd = Math.min(END_YEAR, selectedYear + 9);
+    document.getElementById("mcStartYear").value = selectedYear;
+    document.getElementById("mcEndYear").value = defaultEnd;
+
+    const cleanLbl = getCleanLunarLabel(f);
+    const isSolar = f.calendarType === "solar" || cleanLbl.includes("DL");
+    const summaryEl = document.getElementById("mcFestivalSummary");
+    if (summaryEl) {
+      summaryEl.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <div>
+            <strong style="font-size:1rem;color:#fff;">${escapeHTML(f.name)}</strong>
+            <span class="${badgeClass(f.region)}" style="margin-left:6px;">${escapeHTML(f.region)}</span>
+          </div>
+          <span style="color:var(--accent-blue);font-weight:600;">🗓️ Mốc lịch: ${escapeHTML(cleanLbl)}</span>
+        </div>
+        <div style="color:var(--text-muted);font-size:0.82rem;margin-top:4px;">
+          📍 Tỉnh/Thành: <strong>${escapeHTML(f.location)}</strong> • ⏳ Thời gian: <strong>${escapeHTML(f.duration || "1 – 3 ngày")}</strong>
+        </div>
+      `;
+    }
+
+    const recurBtn = document.getElementById("mcRecurringSolarBtn");
+    if (recurBtn) {
+      recurBtn.style.display = isSolar ? "inline-block" : "none";
+    }
+
+    highlightPresetPill(10);
+    updateMultiCalPreview();
+    document.getElementById("multiYearCalModal").classList.add("open");
+  }
+
+  function closeMultiYearCalendarModal() {
+    document.getElementById("multiYearCalModal").classList.remove("open");
+  }
+
+  function highlightPresetPill(yearsCount) {
+    const pills = document.querySelectorAll("#mcPresetPills .preset-pill");
+    pills.forEach(btn => {
+      btn.classList.remove("active");
+      const txt = btn.textContent || "";
+      if ((yearsCount === 100 && txt.includes("2099")) || txt.startsWith(`${yearsCount} năm`)) {
+        btn.classList.add("active");
+      }
+    });
+  }
+
+  function setMultiCalPreset(yearsCount) {
+    const startSel = document.getElementById("mcStartYear");
+    const endSel = document.getElementById("mcEndYear");
+    if (!startSel || !endSel) return;
+    let sYear = parseInt(startSel.value, 10) || parseInt(document.getElementById("yearSelect").value, 10) || START_YEAR;
+    if (yearsCount >= 100) {
+      sYear = START_YEAR;
+      startSel.value = START_YEAR;
+      endSel.value = END_YEAR;
+    } else {
+      const eYear = Math.min(END_YEAR, sYear + yearsCount - 1);
+      endSel.value = eYear;
+    }
+    highlightPresetPill(yearsCount);
+    updateMultiCalPreview();
+  }
+
+  function getMultiCalSelectedRange() {
+    let sYear = parseInt(document.getElementById("mcStartYear").value, 10) || START_YEAR;
+    let eYear = parseInt(document.getElementById("mcEndYear").value, 10) || sYear;
+    if (eYear < sYear) {
+      const tmp = sYear;
+      sYear = eYear;
+      eYear = tmp;
+      document.getElementById("mcStartYear").value = sYear;
+      document.getElementById("mcEndYear").value = eYear;
+    }
+    return { sYear, eYear, totalYears: eYear - sYear + 1 };
+  }
+
+  function updateMultiCalPreview() {
+    const id = document.getElementById("mcFestivalId").value;
+    const f = festivals.find(item => String(item.id) === String(id));
+    if (!f) return;
+
+    const { sYear, eYear, totalYears } = getMultiCalSelectedRange();
+    const badge = document.getElementById("mcYearCountBadge");
+    if (badge) {
+      badge.textContent = `${totalYears} năm (${sYear}–${eYear})`;
+    }
+
+    const listEl = document.getElementById("mcYearPreviewList");
+    if (!listEl) return;
+    let html = "";
+    const safeId = escapeHTML(f.id);
+    for (let y = sYear; y <= eYear; y++) {
+      const info = getFestivalSolarInfo(f, y);
+      const noteText = info.note ? ` <small style="color:#fbbf24;">(${escapeHTML(info.note)})</small>` : "";
+      html += `
+        <div class="mc-preview-item">
+          <div>
+            <strong>Năm ${y}:</strong>
+            <span style="color:var(--accent-blue);font-weight:600;margin-left:6px;">${escapeHTML(info.text)}</span>
+            ${noteText}
+          </div>
+          <button type="button" class="cal-btn" style="padding:3px 9px;font-size:0.76rem;" onclick="addToGoogleCalendarForYear(event, '${safeId}', ${y})">📅 + Lưu năm ${y}</button>
+        </div>
+      `;
+    }
+    listEl.innerHTML = html;
+  }
+
+  function escapeICSText(str) {
+    return String(str ?? "")
+      .replace(/\\/g, "\\\\")
+      .replace(/;/g, "\\;")
+      .replace(/,/g, "\\,")
+      .replace(/\r?\n/g, "\\n");
+  }
+
+  function formatICSDateUTC(dt) {
+    const y = dt.getUTCFullYear();
+    const m = String(dt.getUTCMonth() + 1).padStart(2, "0");
+    const d = String(dt.getUTCDate()).padStart(2, "0");
+    const hh = String(dt.getUTCHours()).padStart(2, "0");
+    const mm = String(dt.getUTCMinutes()).padStart(2, "0");
+    const ss = String(dt.getUTCSeconds()).padStart(2, "0");
+    return `${y}${m}${d}T${hh}${mm}${ss}Z`;
+  }
+
+  function buildAlarmICSLines(alarmOption) {
+    if (alarmOption === "none") return [];
+    if (alarmOption === "3d") {
+      return [
+        "BEGIN:VALARM",
+        "ACTION:DISPLAY",
+        "DESCRIPTION:Nhắc lịch Lễ hội (trước 3 ngày)",
+        "TRIGGER:-P3D",
+        "END:VALARM",
+        "BEGIN:VALARM",
+        "ACTION:DISPLAY",
+        "DESCRIPTION:Nhắc lịch Lễ hội (trước 1 ngày)",
+        "TRIGGER:-P1D",
+        "END:VALARM"
+      ];
+    }
+    if (alarmOption === "7d") {
+      return [
+        "BEGIN:VALARM",
+        "ACTION:DISPLAY",
+        "DESCRIPTION:Nhắc lịch Lễ hội (trước 7 ngày)",
+        "TRIGGER:-P7D",
+        "END:VALARM"
+      ];
+    }
+    // Mặc định 1d_9h: nhắc trước 1 ngày và 08:00 sáng ngày diễn ra
+    return [
+      "BEGIN:VALARM",
+      "ACTION:DISPLAY",
+      "DESCRIPTION:Nhắc lịch Lễ hội vào ngày mai",
+      "TRIGGER:-P1DT15H",
+      "END:VALARM",
+      "BEGIN:VALARM",
+      "ACTION:DISPLAY",
+      "DESCRIPTION:Hôm nay diễn ra Lễ hội",
+      "TRIGGER:PT8H",
+      "END:VALARM"
+    ];
+  }
+
+  function downloadMultiYearICS(alsoOpenGCalImport = false) {
+    const id = document.getElementById("mcFestivalId").value;
+    const f = festivals.find(item => String(item.id) === String(id));
+    if (!f) return;
+
+    const { sYear, eYear, totalYears } = getMultiCalSelectedRange();
+    const spanOpt = document.getElementById("mcSpanDays").value;
+    const alarmOpt = document.getElementById("mcAlarm").value;
+    const spanDays = resolveEventSpanDays(f, spanOpt);
+    const cleanLbl = getCleanLunarLabel(f);
+    const nowStamp = formatICSDateUTC(new Date());
+
+    const lines = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//MH-SAMA//Tra Cuu Le Hoi Viet Nam 2026-2099//VI",
+      "CALSCALE:GREGORIAN",
+      "METHOD:PUBLISH",
+      `X-WR-CALNAME:${escapeICSText(f.name)} (${sYear}-${eYear})`,
+      "X-WR-TIMEZONE:Asia/Ho_Chi_Minh"
+    ];
+
+    let exportedCount = 0;
+    for (let y = sYear; y <= eYear; y++) {
+      const info = getFestivalSolarInfo(f, y);
+      if (!info || !info.solarDay || !info.solarMonth) continue;
+
+      const startStr = `${info.solarYear}${String(info.solarMonth).padStart(2, "0")}${String(info.solarDay).padStart(2, "0")}`;
+      const endDt = new Date(Date.UTC(info.solarYear, info.solarMonth - 1, info.solarDay + spanDays));
+      const endStr = `${endDt.getUTCFullYear()}${String(endDt.getUTCMonth() + 1).padStart(2, "0")}${String(endDt.getUTCDate()).padStart(2, "0")}`;
+
+      const descParts = [
+        `Lễ hội: ${f.name}`,
+        `Địa điểm: ${f.location} (${f.region})`,
+        `Mốc lịch: ${cleanLbl}`,
+        `Chính hội năm ${y}: ${info.text}`,
+        `Thời gian diễn ra: ${f.duration || "1 – 3 ngày"}`,
+        `Đặc trưng: ${f.highlights || "Sự kiện văn hóa truyền thống địa phương."}`,
+        `---`,
+        `Tạo bởi ứng dụng Tra Cứu Lễ Hội Địa Phương Việt Nam (MH-SAMA)`
+      ];
+
+      lines.push("BEGIN:VEVENT");
+      lines.push(`UID:lehoi-${f.id}-${y}@mhsama.vn`);
+      lines.push(`DTSTAMP:${nowStamp}`);
+      lines.push(`DTSTART;VALUE=DATE:${startStr}`);
+      lines.push(`DTEND;VALUE=DATE:${endStr}`);
+      lines.push(`SUMMARY:${escapeICSText(`${f.name} (${f.location}) [${cleanLbl}]`)}`);
+      lines.push(`LOCATION:${escapeICSText(`${f.location}, Việt Nam`)}`);
+      lines.push(`DESCRIPTION:${escapeICSText(descParts.join("\n"))}`);
+      lines.push("STATUS:CONFIRMED");
+      lines.push("TRANSP:TRANSPARENT");
+      lines.push(...buildAlarmICSLines(alarmOpt));
+      lines.push("END:VEVENT");
+      exportedCount++;
+    }
+
+    lines.push("END:VCALENDAR");
+
+    const icsContent = lines.join("\r\n") + "\r\n";
+    const safeFileName = removeVietnameseTones(f.name).replace(/[^a-z0-9]+/gi, "_").replace(/^_|_$/g, "") || "le_hoi";
+    const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `Lich_${safeFileName}_${sYear}_${eYear}.ics`;
+    a.click();
+
+    if (alsoOpenGCalImport) {
+      showToast(`Đã tải file Lịch ${exportedCount} năm (${sYear}–${eYear})! Đang mở trang Nhập lịch (Import) của Google Calendar...`, "success");
+      setTimeout(() => {
+        openGCalImportPage();
+      }, 450);
+    } else {
+      showToast(`Đã tải file Lịch .ics cho ${exportedCount} năm (${sYear}–${eYear})! Bạn có thể nhập (Import) vào Google Calendar hoặc mở trực tiếp.`, "success");
+    }
+  }
+
+  function openGCalImportPage() {
+    window.open("https://calendar.google.com/calendar/u/0/r/settings/export", "_blank", "noopener,noreferrer");
+  }
+
+  function openGCalRecurringSolar() {
+    const id = document.getElementById("mcFestivalId").value;
+    const f = festivals.find(item => String(item.id) === String(id));
+    if (!f) return;
+    const { sYear, eYear } = getMultiCalSelectedRange();
+    const spanOpt = document.getElementById("mcSpanDays").value;
+    const spanDays = resolveEventSpanDays(f, spanOpt);
+    const rrule = `RRULE:FREQ=YEARLY;UNTIL=${eYear}1231T235959Z`;
+    const url = buildGoogleCalendarTemplateUrl(f, sYear, spanDays, rrule);
+    if (url) {
+      window.open(url, "_blank", "noopener,noreferrer");
+      showToast(`Đã mở sự kiện lặp hàng năm (${sYear}–${eYear}) trên Google Calendar!`, "success");
+    }
+  }
+
+  function openBatchGCalTabs() {
+    const id = document.getElementById("mcFestivalId").value;
+    const f = festivals.find(item => String(item.id) === String(id));
+    if (!f) return;
+    const { sYear, eYear } = getMultiCalSelectedRange();
+    const spanOpt = document.getElementById("mcSpanDays").value;
+    const spanDays = resolveEventSpanDays(f, spanOpt);
+    const maxTabs = Math.min(eYear, sYear + 4);
+    let opened = 0;
+    for (let y = sYear; y <= maxTabs; y++) {
+      const url = buildGoogleCalendarTemplateUrl(f, y, spanDays);
+      if (url) {
+        window.open(url, "_blank", "noopener,noreferrer");
+        opened++;
+      }
+    }
+    if (eYear - sYear + 1 > 5) {
+      showToast(`Đã mở ${opened} tab (${sYear}–${maxTabs}). Với số năm lớn hơn 5, bạn nên dùng nút Tải file .ics ở Cách 1 để nhập 1 lần duy nhất!`, "info");
+    } else {
+      showToast(`Đã mở ${opened} tab Google Calendar cho giai đoạn ${sYear}–${maxTabs}!`, "success");
+    }
+  }
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>\"']/g, ch => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", "\"":"&quot;", "'":"&#39;"}[ch]));
+  }
+
+  // ==========================================================================
+  // QUẢN LÝ VÙNG MIỀN (3 MIỀN GỐC + CÁC MIỀN TỰ TẠO)
+  // ==========================================================================
+  const CORE_REGIONS = ["Miền Nam", "Miền Trung", "Miền Bắc"];
+  let customRegions = [];
+  try {
+    const savedCustomRegions = safeGetStorage("vn_festivals_custom_regions");
+    if (savedCustomRegions) {
+      const parsed = JSON.parse(savedCustomRegions);
+      if (Array.isArray(parsed)) {
+        customRegions = parsed.map(r => String(r).trim()).filter(r => r && !CORE_REGIONS.includes(r));
+      }
+    }
+    DEFAULT_CUSTOM_REGIONS.forEach(r => {
+      const clean = String(r).trim();
+      if (clean && !CORE_REGIONS.includes(clean) && !customRegions.includes(clean)) {
+        customRegions.push(clean);
+      }
+    });
+  } catch (e) {}
+
+  function getAllRegions() {
+    return [...CORE_REGIONS, ...customRegions];
+  }
+
+  function getRegionOrderValue(regionName) {
+    const all = getAllRegions();
+    const idx = all.indexOf(regionName);
+    return idx !== -1 ? idx + 1 : 999;
+  }
+
+  function saveCustomRegions() {
+    safeSetStorage("vn_festivals_custom_regions", JSON.stringify(customRegions));
+  }
+
+  function ensureRegionsFromFestivals(festivalList) {
+    let changed = false;
+    festivalList.forEach(f => {
+      const reg = String(f.region || "").trim();
+      if (reg && !CORE_REGIONS.includes(reg) && !customRegions.includes(reg)) {
+        customRegions.push(reg);
+        changed = true;
+      }
+    });
+    if (changed) {
+      saveCustomRegions();
+    }
+    renderRegionControls();
+  }
+
+  function renderRegionControls() {
+    // 1. Cập nhật các nút tab vùng miền kèm bộ đếm số lượng lễ hội (chỉ đếm lễ hội đã duyệt)
+    const tabsContainer = document.getElementById("regionTabs");
+    if (tabsContainer && Array.isArray(festivals)) {
+      const approvedList = getApprovedFestivals();
+      const allRegions = ["Tất cả", ...getAllRegions()];
+      let html = "";
+      allRegions.forEach(reg => {
+        const isActive = (currentRegion === reg) ? "active" : "";
+        const count = (reg === "Tất cả")
+          ? approvedList.length
+          : approvedList.filter(f => f.region === reg).length;
+        const safeArg = escapeHTML(reg).replace(/'/g, "\\'");
+        html += `<button type="button" class="tab-btn ${isActive}" onclick="setRegion('${safeArg}')">${escapeHTML(reg)} <span class="tab-count">${count}</span></button>`;
+      });
+      html += `<button type="button" class="tab-btn-add owner-only" onclick="openManageRegionsModal()" title="Tạo hoặc quản lý thêm vùng miền mới">+ Thêm miền</button>`;
+      tabsContainer.innerHTML = html;
+    }
+    updatePendingQueueUI();
+
+    // 2. Cập nhật dropdown chọn vùng miền trong Modal Thêm/Sửa lễ hội
+    const selectEl = document.getElementById("fRegion");
+    if (selectEl) {
+      const currentVal = selectEl.value;
+      const allRegs = getAllRegions();
+      let opts = "";
+      allRegs.forEach(reg => {
+        opts += `<option value="${escapeHTML(reg)}">${escapeHTML(reg)}</option>`;
+      });
+      opts += `<option value="__custom__">+ Nhập vùng miền khác...</option>`;
+      selectEl.innerHTML = opts;
+      if (allRegs.includes(currentVal)) {
+        selectEl.value = currentVal;
+      }
+    }
+
+    // 3. Cập nhật danh sách trong Modal Quản lý Vùng miền
+    const listContainer = document.getElementById("customRegionListContainer");
+    if (listContainer) {
+      let chips = "";
+      CORE_REGIONS.forEach(reg => {
+        chips += `<span class="custom-region-chip">${escapeHTML(reg)} <small style="color:var(--text-muted);">(Mặc định)</small></span>`;
+      });
+      customRegions.forEach(reg => {
+        const safeArg = escapeHTML(reg).replace(/'/g, "\\'");
+        chips += `<span class="custom-region-chip">${escapeHTML(reg)} <button type="button" onclick="removeCustomRegion('${safeArg}')" title="Xóa vùng miền này">×</button></span>`;
+      });
+      listContainer.innerHTML = chips;
+    }
+  }
+
+  function handleRegionSelectChange() {
+    const selectEl = document.getElementById("fRegion");
+    const wrap = document.getElementById("customRegionInputWrap");
+    if (!selectEl || !wrap) return;
+    if (selectEl.value === "__custom__") {
+      wrap.style.display = "block";
+      setTimeout(() => document.getElementById("fCustomRegion").focus(), 50);
+    } else {
+      wrap.style.display = "none";
+    }
+  }
+
+  function toggleCustomRegionInput(show) {
+    const selectEl = document.getElementById("fRegion");
+    const wrap = document.getElementById("customRegionInputWrap");
+    if (!selectEl || !wrap) return;
+    if (show) {
+      selectEl.value = "__custom__";
+      wrap.style.display = "block";
+      setTimeout(() => document.getElementById("fCustomRegion").focus(), 50);
+    } else {
+      wrap.style.display = "none";
+    }
+  }
+
+  function handleCalendarTypeChange() {
+    const calType = document.getElementById("fCalendarType").value;
+    const lblDay = document.getElementById("lblDayInput");
+    const lblMonth = document.getElementById("lblMonthInput");
+    const dayInput = document.getElementById("fLunarDay");
+    if (calType === "solar") {
+      lblDay.textContent = "Ngày Chính hội (Dương lịch: 1–31) *";
+      lblMonth.textContent = "Tháng Chính hội (Dương lịch: 1–12) *";
+      dayInput.max = 31;
+    } else {
+      lblDay.textContent = "Ngày Chính hội (Âm lịch: 1–30) *";
+      lblMonth.textContent = "Tháng Chính hội (Âm lịch: 1–12) *";
+      dayInput.max = 30;
+    }
+  }
+
+  function openManageRegionsModal() {
+    requireOwnerAuth(() => {
+      renderRegionControls();
+      document.getElementById("newRegionNameInput").value = "";
+      document.getElementById("manageRegionsModal").classList.add("open");
+      setTimeout(() => document.getElementById("newRegionNameInput").focus(), 60);
+    }, "Tạo hoặc quản lý vùng miền");
+  }
+
+  function closeManageRegionsModal() {
+    document.getElementById("manageRegionsModal").classList.remove("open");
+  }
+
+  function addCustomRegionFromModal() {
+    const input = document.getElementById("newRegionNameInput");
+    const newReg = input.value.trim();
+    if (!newReg) {
+      showToast("Vui lòng nhập tên vùng miền mới!", "warn");
+      return;
+    }
+    if (newReg === "Tất cả" || CORE_REGIONS.includes(newReg) || customRegions.includes(newReg)) {
+      showToast(`Vùng miền "${newReg}" đã tồn tại trong danh sách!`, "warn");
+      return;
+    }
+    customRegions.push(newReg);
+    saveCustomRegions();
+    input.value = "";
+    renderRegionControls();
+    showToast(`Đã thêm vùng miền "${newReg}" thành công!`, "success");
+  }
+
+  function removeCustomRegion(regionName) {
+    const inUseCount = festivals.filter(f => f.region === regionName).length;
+    if (inUseCount > 0) {
+      showToast(`Đang có ${inUseCount} lễ hội thuộc "${regionName}". Hãy đổi hoặc xóa các lễ hội đó trước khi xóa miền này.`, "warn");
+      return;
+    }
+    customRegions = customRegions.filter(r => r !== regionName);
+    if (currentRegion === regionName) {
+      currentRegion = "Tất cả";
+    }
+    saveCustomRegions();
+    renderRegionControls();
+    renderTable();
+    showToast(`Đã xóa vùng miền "${regionName}".`, "info");
+  }
+
+  // Danh sách 12 lễ hội gốc
+  const DEFAULT_FESTIVALS = [
+    // 1. MIỀN NAM
+    {
+      id: 1, name: "Hội Xuân & Vía Bà Đen", location: "Tây Ninh", region: "Miền Nam",
+      lunarDay: 5, lunarMonth: 5, lunarLabel: "05/05 ÂL", duration: "Hội Xuân 30 ngày; Vía 3 ngày",
+      highlights: "Hành hương đỉnh núi Bà Đen, dâng hương Linh Sơn Thánh Mẫu (04–06/05 ÂL) và đêm hội hoa đăng.",
+      updatedAt: "2026-01-01T00:00:00.000Z"
+    },
+    {
+      id: 2, name: "Tết Nguyên Tiêu Chợ Lớn", location: "TP. Hồ Chí Minh", region: "Miền Nam",
+      lunarDay: 15, lunarMonth: 1, lunarLabel: "15/01 ÂL", duration: "4 ngày",
+      highlights: "Diễu hành nghệ thuật đường phố, lân sư rồng qua các hội quán người Hoa Quận 5 (12–15/01 ÂL).",
+      updatedAt: "2026-01-01T00:00:00.000Z"
+    },
+    {
+      id: 3, name: "Lễ hội Vía Bà Chúa Xứ Núi Sam", location: "An Giang", region: "Miền Nam",
+      lunarDay: 24, lunarMonth: 4, lunarLabel: "24/04 ÂL", duration: "6 ngày",
+      highlights: "Lễ Tắm Bà đêm 23 rạng 24/4 ÂL (kéo dài 22–27/04 ÂL), lễ hội tín ngưỡng lớn nhất miền Tây Nam Bộ.",
+      updatedAt: "2026-01-01T00:00:00.000Z"
+    },
+    {
+      id: 4, name: "Lễ hội Nghinh Ông Cần Giờ", location: "TP. Hồ Chí Minh", region: "Miền Nam",
+      lunarDay: 16, lunarMonth: 8, lunarLabel: "16/08 ÂL", duration: "3 ngày",
+      highlights: "Rước kiệu Nam Hải Tướng Quân trên biển Cần Giờ (15–17/08 ÂL), cầu ngư dân bình an và mùa biển bội thu.",
+      updatedAt: "2026-01-01T00:00:00.000Z"
+    },
+    {
+      id: 5, name: "Lễ hội Ok Om Bok – Đua Ghe Ngo", location: "Sóc Trăng & Trà Vinh", region: "Miền Nam",
+      lunarDay: 15, lunarMonth: 10, lunarLabel: "15/10 ÂL", duration: "2 – 3 ngày",
+      highlights: "Lễ Cúng Trăng của đồng bào Khmer Nam Bộ, đua ghe Ngo trên sông Maspéro và thả đèn nước hoa đăng.",
+      updatedAt: "2026-01-01T00:00:00.000Z"
+    },
+    {
+      id: 6, name: "Lễ hội Chùa Bà Thiên Hậu", location: "Bình Dương", region: "Miền Nam",
+      lunarDay: 15, lunarMonth: 1, lunarLabel: "15/01 ÂL", duration: "3 ngày",
+      highlights: "Lễ rước kiệu Bà Thiên Hậu qua các tuyến phố Thủ Dầu Một vào chiều Rằm tháng Giêng (13–15/01 ÂL).",
+      updatedAt: "2026-01-01T00:00:00.000Z"
+    },
+    // 2. MIỀN TRUNG
+    {
+      id: 11, name: "Lễ hội Quán Thế Âm Ngũ Hành Sơn", location: "Đà Nẵng", region: "Miền Trung",
+      lunarDay: 19, lunarMonth: 2, lunarLabel: "19/02 ÂL", duration: "3 ngày",
+      highlights: "Lễ rước ánh sáng, rước tôn tượng Quán Thế Âm và hội hoa đăng trên sông Cổ Cò (17–19/02 ÂL).",
+      updatedAt: "2026-01-01T00:00:00.000Z"
+    },
+    {
+      id: 12, name: "Lễ hội Điện Hòn Chén", location: "Thừa Thiên Huế", region: "Miền Trung",
+      lunarDay: 3, lunarMonth: 3, lunarLabel: "03/03 ÂL", duration: "2 ngày",
+      highlights: "Rước sắc bằng thuyền rồng trên sông Hương, tôn vinh Thiên Y A Na Thánh Mẫu.",
+      updatedAt: "2026-01-01T00:00:00.000Z"
+    },
+    // 3. MIỀN BẮC
+    {
+      id: 7, name: "Lễ hội Chùa Hương", location: "Hà Nội", region: "Miền Bắc",
+      lunarDay: 6, lunarMonth: 1, lunarLabel: "06/01 ÂL", duration: "80 – 90 ngày",
+      highlights: "Khai hội Mùng 6 Tết, hành hương suối Yến - động Hương Tích kéo dài suốt 3 tháng mùa xuân.",
+      updatedAt: "2026-01-01T00:00:00.000Z"
+    },
+    {
+      id: 8, name: "Hội Gióng Đền Sóc", location: "Hà Nội", region: "Miền Bắc",
+      lunarDay: 6, lunarMonth: 1, lunarLabel: "06/01 ÂL", duration: "3 ngày",
+      highlights: "Tưởng nhớ Thánh Gióng (06–08/01 ÂL), nghi lễ dâng hoa tre và rước voi truyền thống.",
+      updatedAt: "2026-01-01T00:00:00.000Z"
+    },
+    {
+      id: 9, name: "Hội Lim (Quan họ)", location: "Bắc Ninh", region: "Miền Bắc",
+      lunarDay: 13, lunarMonth: 1, lunarLabel: "13/01 ÂL", duration: "3 ngày",
+      highlights: "Hát giao duyên Quan họ Bắc Ninh trên thuyền rồng và đồi Lim (12–14/01 ÂL).",
+      updatedAt: "2026-01-01T00:00:00.000Z"
+    },
+    {
+      id: 10, name: "Lễ hội Yên Tử", location: "Quảng Ninh", region: "Miền Bắc",
+      lunarDay: 10, lunarMonth: 1, lunarLabel: "10/01 ÂL", duration: "~80 ngày",
+      highlights: "Hành hương về đất Phật Trúc Lâm Yên Tử và đỉnh chùa Đồng từ 10 tháng Giêng đến hết tháng 3 ÂL.",
+      updatedAt: "2026-01-01T00:00:00.000Z"
+    }
+  ];
+
+  const PENDING_PREFIX = "[CHỜ DUYỆT] ";
+
+  function isPendingFestival(item) {
+    if (!item) return false;
+    return item.status === "pending" || String(item.lunarLabel || "").trim().toUpperCase().startsWith("[CHỜ DUYỆT]");
+  }
+
+  function getCleanLunarLabel(item) {
+    if (!item) return "";
+    const raw = String(item.lunarLabel || "").replace(/^\[CHỜ DUYỆT\]\s*/i, "").trim();
+    if (raw) return raw;
+    const isSolar = item.calendarType === "solar";
+    return `${String(item.lunarDay || 15).padStart(2, "0")}/${String(item.lunarMonth || 1).padStart(2, "0")} ${isSolar ? "DL" : "ÂL"}`;
+  }
+
+  function normalizeFestivalItem(item, index = 0) {
+    const copy = { ...item };
+    const pendingFlag = isPendingFestival(copy);
+    const cleanedLabel = String(copy.lunarLabel || "").replace(/^\[CHỜ DUYỆT\]\s*/i, "").trim();
+
+    if (!copy.lunarDay || !copy.lunarMonth) {
+      const m = (cleanedLabel || "15/01").match(/(\d+)\/(\d+)/);
+      copy.lunarDay = m ? parseInt(m[1], 10) : 15;
+      copy.lunarMonth = m ? parseInt(m[2], 10) : 1;
+    } else {
+      copy.lunarDay = parseInt(copy.lunarDay, 10) || 15;
+      copy.lunarMonth = parseInt(copy.lunarMonth, 10) || 1;
+    }
+    const isSolar = copy.calendarType === "solar" || cleanedLabel.includes("DL");
+    copy.calendarType = isSolar ? "solar" : "lunar";
+    const baseLabel = cleanedLabel || `${String(copy.lunarDay).padStart(2, "0")}/${String(copy.lunarMonth).padStart(2, "0")} ${isSolar ? "DL" : "ÂL"}`;
+    copy.status = pendingFlag ? "pending" : "approved";
+    copy.lunarLabel = pendingFlag ? `${PENDING_PREFIX}${baseLabel}` : baseLabel;
+    copy.id = copy.id ?? (Date.now() + index);
+    copy.updatedAt = copy.updatedAt || "2026-01-01T00:00:00.000Z";
+    copy.region = String(copy.region || "Miền Nam").trim();
+    return copy;
+  }
+
+  function getResolvedPendingIds() {
+    try {
+      const raw = safeGetStorage("vn_festivals_resolved_pending_ids");
+      const arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr.map(String) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function markPendingIdResolved(id) {
+    const strId = String(id);
+    const resolved = getResolvedPendingIds();
+    if (!resolved.includes(strId)) {
+      resolved.push(strId);
+      safeSetStorage("vn_festivals_resolved_pending_ids", JSON.stringify(resolved.slice(-500)));
+    }
+    const queue = getStoredPendingQueue().filter(item => String(item.id) !== strId);
+    safeSetStorage("vn_festivals_pending_queue", JSON.stringify(queue));
+  }
+
+  function getStoredPendingQueue() {
+    try {
+      const raw = safeGetStorage("vn_festivals_pending_queue");
+      const parsed = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(parsed)) return [];
+      const resolved = new Set(getResolvedPendingIds());
+      return parsed
+        .filter(it => it && !resolved.has(String(it.id)))
+        .map((it, idx) => normalizeFestivalItem({ ...it, status: "pending" }, idx));
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function savePendingToQueueStorage(pendingItem) {
+    const queue = getStoredPendingQueue();
+    const strId = String(pendingItem.id);
+    const filtered = queue.filter(it => String(it.id) !== strId);
+    filtered.unshift(normalizeFestivalItem({ ...pendingItem, status: "pending" }));
+    safeSetStorage("vn_festivals_pending_queue", JSON.stringify(filtered));
+  }
+
+  function syncPendingQueueWithFestivals() {
+    const resolved = new Set(getResolvedPendingIds());
+    const approvedIds = new Set(
+      festivals.filter(f => !isPendingFestival(f)).map(f => String(f.id))
+    );
+    const approvedFps = new Set(
+      festivals.filter(f => !isPendingFestival(f)).map(f =>
+        [
+          String(f.name || "").trim().toLowerCase(),
+          String(f.location || "").trim().toLowerCase(),
+          Number(f.lunarDay) || 0,
+          Number(f.lunarMonth) || 0
+        ].join("|")
+      )
+    );
+
+    // Làm sạch hàng chờ cục bộ nếu mục đó đã được Admin duyệt chính thức hoặc đã xử lý
+    const cleanQueue = getStoredPendingQueue().filter(p => {
+      const pid = String(p.id);
+      const pfp = [
+        String(p.name || "").trim().toLowerCase(),
+        String(p.location || "").trim().toLowerCase(),
+        Number(p.lunarDay) || 0,
+        Number(p.lunarMonth) || 0
+      ].join("|");
+      return !resolved.has(pid) && !approvedIds.has(pid) && !approvedFps.has(pfp);
+    });
+
+    // Đồng bộ thêm các mục đang pending trong mảng festivals vào vn_festivals_pending_queue
+    const existingQueueIds = new Set(cleanQueue.map(p => String(p.id)));
+    festivals.forEach(f => {
+      if (isPendingFestival(f) && !resolved.has(String(f.id)) && !existingQueueIds.has(String(f.id))) {
+        cleanQueue.push(normalizeFestivalItem({ ...f, status: "pending" }));
+        existingQueueIds.add(String(f.id));
+      }
+    });
+
+    safeSetStorage("vn_festivals_pending_queue", JSON.stringify(cleanQueue));
+
+    // Đảm bảo mọi mục trong cleanQueue đều có mặt trong mảng festivals hiện tại
+    const currentFestIds = new Set(festivals.map(f => String(f.id)));
+    let addedAny = false;
+    cleanQueue.forEach(p => {
+      if (!currentFestIds.has(String(p.id))) {
+        festivals.unshift(p);
+        currentFestIds.add(String(p.id));
+        addedAny = true;
+      }
+    });
+    return addedAny;
+  }
+
+  function reloadFestivalsFromLocalStorage() {
+    try {
+      const raw = safeGetStorage("vn_festivals_2026_2099");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          const resolved = new Set(getResolvedPendingIds());
+          const normalized = parsed
+            .filter(it => !(isPendingFestival(it) && resolved.has(String(it.id))))
+            .map((it, idx) => normalizeFestivalItem(it, idx));
+          festivals = safeMergeLists(festivals, normalized, []);
+        }
+      }
+      syncPendingQueueWithFestivals();
+    } catch (e) {}
+  }
+
+  function getApprovedFestivals() {
+    return festivals.filter(f => !isPendingFestival(f));
+  }
+
+  function getPendingFestivals() {
+    return festivals.filter(f => isPendingFestival(f));
+  }
+
+  let rawStored = safeGetStorage("vn_festivals_2026_2099") || safeGetStorage("vn_festivals_2027_2036");
+  let parsedStored = null;
+  try {
+    if (rawStored) parsedStored = JSON.parse(rawStored);
+  } catch (e) {
+    parsedStored = null;
+  }
+
+  let festivals = Array.isArray(parsedStored)
+    ? parsedStored.map((item, idx) => normalizeFestivalItem(item, idx))
+    : JSON.parse(JSON.stringify(DEFAULT_FESTIVALS));
+
+  function sortFestivalsByRegion() {
+    festivals.sort((a, b) => getRegionOrderValue(a.region) - getRegionOrderValue(b.region));
+  }
+
+  let currentRegion = "Tất cả";
+  syncPendingQueueWithFestivals();
+  ensureRegionsFromFestivals(getApprovedFestivals());
+  sortFestivalsByRegion();
+
+  function saveUndoSnapshot() {
+    safeSetStorage("vn_festivals_undo_snapshot", JSON.stringify(festivals));
+    const undoBtn = document.getElementById("undoLocalBtn");
+    if (undoBtn) undoBtn.style.display = "inline-block";
+  }
+
+  function undoLastLocalChange() {
+    requireOwnerAuth(() => {
+      const rawUndo = safeGetStorage("vn_festivals_undo_snapshot");
+      if (!rawUndo) {
+        showToast("Không có bản lưu hoàn tác nào trước đó.", "warn");
+        return;
+      }
+      try {
+        const prev = JSON.parse(rawUndo);
+        if (Array.isArray(prev)) {
+          festivals = prev.map((it, idx) => normalizeFestivalItem(it, idx));
+          ensureRegionsFromFestivals(festivals);
+          sortFestivalsByRegion();
+          saveToStorage();
+          renderTable();
+          document.getElementById("undoLocalBtn").style.display = "none";
+          showToast("Đã hoàn tác dữ liệu về trạng thái trước đó!", "success");
+        }
+      } catch (e) {
+        showToast("Không thể đọc bản lưu hoàn tác.", "error");
+      }
+    }, "Hoàn tác dữ liệu");
+  }
+
+  function saveToStorage() {
+    safeSetStorage("vn_festivals_2026_2099", JSON.stringify(festivals));
+  }
+
+  // ==========================================================================
+  // HỆ THỐNG ĐỒNG BỘ GOOGLE SHEETS & XÁC THỰC CHỦ SỞ HỮU
+  // ==========================================================================
+  let cloudConfig = {
+    scriptUrl: DEFAULT_SCRIPT_URL || "",
+    autoSync: true,
+    lastSync: ""
+  };
+  try {
+    const savedCfg = safeGetStorage("vn_festivals_cloud_config");
+    if (savedCfg) {
+      const parsedCfg = JSON.parse(savedCfg);
+      cloudConfig = {
+        ...cloudConfig,
+        ...parsedCfg,
+        scriptUrl: parsedCfg.scriptUrl || DEFAULT_SCRIPT_URL || ""
+      };
+    }
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramApi = urlParams.get("api") || urlParams.get("sheet");
+    if (paramApi && paramApi.startsWith("https://script.google.com/")) {
+      cloudConfig.scriptUrl = paramApi.trim();
+      safeSetStorage("vn_festivals_cloud_config", JSON.stringify(cloudConfig));
+    }
+  } catch (e) {}
+
+  let ownerAdminKey = safeGetStorage("vn_festivals_owner_key") || "";
+  if (ownerAdminKey) {
+    safeSetStorage("vn_festivals_last_verified_key", ownerAdminKey);
+  }
+  let isOwnerUnlocked = Boolean(ownerAdminKey);
+  let pendingOwnerAction = null;
+
+  function getFallbackProposalKey() {
+    if (ownerAdminKey) return ownerAdminKey;
+    const savedLastKey = safeGetStorage("vn_festivals_last_verified_key");
+    if (savedLastKey) return savedLastKey;
+    if (DEFAULT_GUEST_TOKEN) {
+      try {
+        return decodeURIComponent(escape(atob(DEFAULT_GUEST_TOKEN)));
+      } catch (e) {}
+    }
+    return DEFAULT_LOCAL_ADMIN_KEY;
+  }
+
+  function updateCloudStatusUI(state = "idle", customText = "") {
+    const pill = document.getElementById("cloudStatusPill");
+    const authBtn = document.getElementById("authStatusBtn");
+    const lastSyncEl = document.getElementById("lastSyncTimeText");
+
+    // Bật/tắt chế độ ẩn nút quản trị khi ở Chế độ Khách (guest-mode)
+    if (isOwnerUnlocked && ownerAdminKey) {
+      document.body.classList.remove("guest-mode");
+    } else {
+      document.body.classList.add("guest-mode");
+    }
+
+    if (authBtn) {
+      if (isOwnerUnlocked) {
+        authBtn.className = "auth-pill unlocked";
+        authBtn.innerHTML = "🔓 Chủ sở hữu (Được phép chỉnh sửa)";
+      } else {
+        authBtn.className = "auth-pill";
+        authBtn.innerHTML = "🔒 Chế độ: Khách (Chỉ xem)";
+      }
+    }
+
+    if (lastSyncEl) {
+      lastSyncEl.textContent = cloudConfig.lastSync ? `Đồng bộ lúc: ${cloudConfig.lastSync}` : "";
+    }
+
+    if (!pill) return;
+    if (state === "syncing") {
+      pill.className = "status-pill syncing";
+      pill.textContent = customText || "⏳ Đang đồng bộ với Google Sheets...";
+      return;
+    }
+    if (state === "error") {
+      pill.className = "status-pill error";
+      pill.textContent = customText || "⚠️ Lỗi kết nối Google Sheets";
+      return;
+    }
+    if (cloudConfig.scriptUrl) {
+      pill.className = "status-pill connected";
+      pill.textContent = customText || "☁️ Đã kết nối Google Sheets";
+    } else {
+      pill.className = "status-pill";
+      pill.textContent = "☁️ Chưa kết nối Google Sheets (Lưu cục bộ)";
+    }
+  }
+
+  function handleAuthPillClick() {
+    if (isOwnerUnlocked) {
+      openConfirmModal(
+        "Khóa quyền chỉnh sửa Chủ sở hữu?",
+        "Ứng dụng sẽ chuyển về chế độ Khách (Chỉ xem) và tự động ẩn toàn bộ các nút Thêm / Sửa / Xóa để tránh người khác thao tác nhầm.",
+        () => {
+          isOwnerUnlocked = false;
+          ownerAdminKey = "";
+          safeRemoveStorage("vn_festivals_owner_key");
+          updateCloudStatusUI();
+          showToast("Đã chuyển sang Chế độ Khách (Ẩn toàn bộ nút chỉnh sửa).", "info");
+        }
+      );
+    } else {
+      requireOwnerAuth(() => {
+        reloadFestivalsFromLocalStorage();
+        renderRegionControls();
+        renderTable();
+        const pCount = getPendingFestivals().length;
+        if (pCount > 0) {
+          showToast(`Đã mở khóa Chủ sở hữu! Hiện có ${pCount} đề xuất lễ hội mới trong Hàng chờ duyệt.`, "success");
+        } else {
+          showToast("Đã mở khóa quyền Chủ sở hữu! Các nút Thêm, Sửa, Xóa đã hiển thị.", "success");
+        }
+      }, "Mở khóa quyền chỉnh sửa của Chủ sở hữu");
+    }
+  }
+
+  function requireOwnerAuth(actionCallback, actionDescription = "Chỉnh sửa dữ liệu") {
+    if (isOwnerUnlocked && ownerAdminKey) {
+      actionCallback();
+      return;
+    }
+    pendingOwnerAction = actionCallback;
+    const hintEl = document.getElementById("authActionHint");
+    if (hintEl) {
+      hintEl.textContent = `Thao tác yêu cầu xác thực: ${actionDescription}`;
+    }
+    document.getElementById("authKeyInput").value = "";
+    document.getElementById("authModal").classList.add("open");
+    setTimeout(() => document.getElementById("authKeyInput").focus(), 60);
+  }
+
+  function closeAuthModal() {
+    pendingOwnerAction = null;
+    document.getElementById("authModal").classList.remove("open");
+  }
+
+  async function submitOwnerAuth() {
+    const keyInput = document.getElementById("authKeyInput").value.trim();
+    const remember = document.getElementById("rememberAuthCheckbox").checked;
+    if (!keyInput) {
+      showToast("Vui lòng nhập Mã khóa Chủ sở hữu!", "warn");
+      return;
+    }
+
+    const btn = document.getElementById("verifyAuthBtn");
+    btn.disabled = true;
+    btn.textContent = "⏳ Đang kiểm tra...";
+
+    try {
+      if (cloudConfig.scriptUrl) {
+        const res = await callAppsScriptPost({
+          action: "verifyAuth",
+          adminKey: keyInput
+        });
+        if (!res || !res.ok) {
+          showToast(res?.error || "Mã khóa Chủ sở hữu không đúng!", "error");
+          btn.disabled = false;
+          btn.textContent = "🔓 Xác thực & Mở khóa";
+          return;
+        }
+      } else {
+        const localExpectedKey = safeGetStorage("vn_festivals_custom_local_key") || DEFAULT_LOCAL_ADMIN_KEY;
+        if (keyInput !== localExpectedKey) {
+          showToast("Mã khóa không đúng! (Mặc định khi chưa gắn Sheet là: HIEUADMIN)", "error");
+          btn.disabled = false;
+          btn.textContent = "🔓 Xác thực & Mở khóa";
+          return;
+        }
+      }
+
+      ownerAdminKey = keyInput;
+      isOwnerUnlocked = true;
+      safeSetStorage("vn_festivals_last_verified_key", keyInput);
+      if (remember) {
+        safeSetStorage("vn_festivals_owner_key", keyInput);
+      }
+      reloadFestivalsFromLocalStorage();
+      renderRegionControls();
+      renderTable();
+      updateCloudStatusUI();
+      const cb = pendingOwnerAction;
+      closeAuthModal();
+      if (typeof cb === "function") cb();
+    } catch (err) {
+      showToast("Không thể kết nối xác thực: " + (err.message || err), "error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "🔓 Xác thực & Mở khóa";
+    }
+  }
+
+  // Giao tiếp với Google Apps Script bằng Simple Request (tránh lỗi CORS preflight)
+  async function callAppsScriptGet() {
+    const sep = cloudConfig.scriptUrl.includes("?") ? "&" : "?";
+    const url = `${cloudConfig.scriptUrl}${sep}action=list&t=${Date.now()}`;
+    const response = await fetch(url, {
+      method: "GET",
+      redirect: "follow"
+    });
+    const text = await response.text();
+    try {
+      return JSON.parse(text);
+    } catch (parseErr) {
+      throw new Error("Tài khoản Khách bị Google chặn quyền truy cập Web App! Hãy vào Apps Script -> Triển khai -> Quản lý mục triển khai -> đổi 'Ai có quyền truy cập' thành 'Bất kỳ ai (Anyone)'.");
+    }
+  }
+
+  async function callAppsScriptPost(payload) {
+    const response = await fetch(cloudConfig.scriptUrl, {
+      method: "POST",
+      redirect: "follow",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(payload)
+    });
+    const text = await response.text();
+    try {
+      return JSON.parse(text);
+    } catch (parseErr) {
+      throw new Error("Không nhận được phản hồi JSON từ Apps Script. Hãy kiểm tra quyền 'Bất kỳ ai (Anyone)' khi triển khai Web App.");
+    }
+  }
+
+  function makeItemFingerprint(item) {
+    return [
+      String(item.name || "").trim().toLowerCase(),
+      String(item.location || "").trim().toLowerCase(),
+      Number(item.lunarDay) || 0,
+      Number(item.lunarMonth) || 0
+    ].join("|");
+  }
+
+  function parseTimestamp(isoStr) {
+    const t = Date.parse(isoStr || "");
+    return Number.isFinite(t) ? t : 0;
+  }
+
+  function safeMergeLists(localList, remoteList, deletedIds = []) {
+    const deletedMap = {};
+    if (Array.isArray(deletedIds)) {
+      deletedIds.forEach(d => {
+        if (d && d.id !== undefined) {
+          deletedMap[String(d.id)] = parseTimestamp(d.updatedAt);
+        }
+      });
+    }
+
+    const mergedById = new Map();
+    const fpToId = new Map();
+
+    remoteList.forEach((raw, idx) => {
+      const item = normalizeFestivalItem(raw, idx);
+      const idKey = String(item.id);
+      const fp = makeItemFingerprint(item);
+      mergedById.set(idKey, item);
+      fpToId.set(fp, idKey);
+    });
+
+    localList.forEach((raw, idx) => {
+      const localItem = normalizeFestivalItem(raw, idx);
+      const idKey = String(localItem.id);
+      const fp = makeItemFingerprint(localItem);
+      const localTime = parseTimestamp(localItem.updatedAt);
+
+      if (deletedMap[idKey] !== undefined && deletedMap[idKey] >= localTime) {
+        return;
+      }
+
+      const matchedIdKey = mergedById.has(idKey) ? idKey : fpToId.get(fp);
+      if (!matchedIdKey) {
+        mergedById.set(idKey, localItem);
+        fpToId.set(fp, idKey);
+      } else {
+        const remoteItem = mergedById.get(matchedIdKey);
+        const remoteTime = parseTimestamp(remoteItem.updatedAt);
+        if (localTime > remoteTime) {
+          mergedById.set(matchedIdKey, { ...localItem, id: remoteItem.id });
+        }
+      }
+    });
+
+    return Array.from(mergedById.values());
+  }
+
+  async function pullFromCloud(showNotification = true) {
+    if (!cloudConfig.scriptUrl) {
+      if (showNotification) {
+        openCloudConfigModal();
+        showToast("Vui lòng nhập đường dẫn Web App URL của Google Apps Script trước!", "warn");
+      }
+      return;
+    }
+
+    reloadFestivalsFromLocalStorage();
+    updateCloudStatusUI("syncing", "⏳ Đang tải lịch từ Google Sheets...");
+    try {
+      const data = await callAppsScriptGet();
+      if (!data || !data.ok || !Array.isArray(data.items)) {
+        throw new Error(data?.error || "Phản hồi từ Google Sheets không hợp lệ.");
+      }
+      saveUndoSnapshot();
+
+      // Đánh dấu các ID đã bị xóa trên Sheet để không tự động khôi phục từ hàng chờ cục bộ
+      if (Array.isArray(data.deletedIds)) {
+        data.deletedIds.forEach(d => {
+          if (d && d.id !== undefined) markPendingIdResolved(d.id);
+        });
+      }
+
+      const localPending = getStoredPendingQueue();
+      if (isOwnerUnlocked && ownerAdminKey) {
+        const combinedLocal = safeMergeLists(localPending, festivals, data.deletedIds || []);
+        festivals = safeMergeLists(combinedLocal, data.items, data.deletedIds || []);
+      } else {
+        const remoteNormalized = data.items.map((raw, idx) => normalizeFestivalItem(raw, idx));
+        festivals = safeMergeLists(localPending, remoteNormalized, data.deletedIds || []);
+      }
+
+      syncPendingQueueWithFestivals();
+      ensureRegionsFromFestivals(getApprovedFestivals());
+      sortFestivalsByRegion();
+      saveToStorage();
+      renderTable();
+      if (document.getElementById("pendingQueueModal")?.classList.contains("open")) {
+        renderPendingQueueList();
+      }
+
+      const approvedCount = getApprovedFestivals().length;
+      const pendingCount = getPendingFestivals().length;
+      cloudConfig.lastSync = new Date().toLocaleTimeString("vi-VN");
+      safeSetStorage("vn_festivals_cloud_config", JSON.stringify(cloudConfig));
+      updateCloudStatusUI("idle", `☁️ Đã đồng bộ (${approvedCount} lễ hội${pendingCount > 0 ? `, ${pendingCount} chờ duyệt` : ""})`);
+      if (showNotification) {
+        showToast(`Đã đồng bộ thành công ${approvedCount} lễ hội chính thức${pendingCount > 0 ? ` (và ${pendingCount} đề xuất chờ duyệt)` : ""}!`, "success");
+      }
+    } catch (err) {
+      updateCloudStatusUI("error", "⚠️ Lỗi tải Google Sheets");
+      if (showNotification) {
+        showToast(String(err.message || err), "error");
+      }
+    }
+  }
+
+  // Xuất file HTML dành riêng cho Khách (Đã gắn sẵn Web App URL + danh sách vùng miền mới + token gửi đề xuất)
+  function exportGuestHTML() {
+    if (!cloudConfig.scriptUrl) {
+      openCloudConfigModal();
+      showToast("Bạn hãy dán Web App URL vào Cấu hình Google Sheets trước khi xuất file cho Khách nhé!", "warn");
+      return;
+    }
+
+    const rawKeyForGuestProposal = getFallbackProposalKey();
+    const encodedToken = btoa(unescape(encodeURIComponent(rawKeyForGuestProposal)));
+
+    let htmlSource = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    htmlSource = htmlSource.replace(
+      /const DEFAULT_SCRIPT_URL = "[^"]*";/,
+      `const DEFAULT_SCRIPT_URL = ${JSON.stringify(cloudConfig.scriptUrl)};`
+    );
+    htmlSource = htmlSource.replace(
+      /const DEFAULT_CUSTOM_REGIONS = \[[^\]]*\];/,
+      `const DEFAULT_CUSTOM_REGIONS = ${JSON.stringify(customRegions)};`
+    );
+    htmlSource = htmlSource.replace(
+      /const DEFAULT_GUEST_TOKEN = "[^"]*";/,
+      `const DEFAULT_GUEST_TOKEN = ${JSON.stringify(encodedToken)};`
+    );
+
+    const blob = new Blob([htmlSource], { type: "text/html;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "TraCuuLeHoi_KhachXem.html";
+    a.click();
+    showToast("Đã xuất file TraCuuLeHoi_KhachXem.html! Khách mở file này sẽ tự động đồng bộ và gửi được đề xuất chờ duyệt.", "success");
+  }
+
+  function copyShareLinkForGuest() {
+    if (!cloudConfig.scriptUrl) {
+      showToast("Vui lòng nhập và lưu Web App URL trước khi tạo link chia sẻ!", "warn");
+      return;
+    }
+    const baseUrl = window.location.href.split("?")[0];
+    const shareUrl = `${baseUrl}?api=${encodeURIComponent(cloudConfig.scriptUrl)}`;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        showToast("Đã sao chép Link chia sẻ cho Khách (kèm tham số tự động kết nối Sheet)!", "success");
+      }).catch(() => fallbackCopyText(shareUrl));
+    } else {
+      fallbackCopyText(shareUrl);
+    }
+  }
+
+  function syncMergeWithCloud() {
+    if (!cloudConfig.scriptUrl) {
+      openCloudConfigModal();
+      showToast("Vui lòng dán đường dẫn Web App URL trước khi đồng bộ!", "warn");
+      return;
+    }
+
+    requireOwnerAuth(async () => {
+      // Nạp toàn bộ đề xuất chờ duyệt từ localStorage (nếu Khách vừa nhập ở tab khác) trước khi đồng bộ
+      reloadFestivalsFromLocalStorage();
+      updateCloudStatusUI("syncing", "⏳ Đang gộp dữ liệu 2 chiều...");
+      try {
+        const res = await callAppsScriptPost({
+          action: "syncMerge",
+          adminKey: ownerAdminKey,
+          items: festivals
+        });
+        if (!res || !res.ok) {
+          if (res?.authError) {
+            isOwnerUnlocked = false;
+            ownerAdminKey = "";
+            safeRemoveStorage("vn_festivals_owner_key");
+          }
+          throw new Error(res?.error || "Đồng bộ thất bại.");
+        }
+        saveUndoSnapshot();
+        if (Array.isArray(res.deletedIds)) {
+          res.deletedIds.forEach(d => {
+            if (d && d.id !== undefined) markPendingIdResolved(d.id);
+          });
+        }
+        const localPending = getStoredPendingQueue();
+        const remoteNormalized = res.items.map((it, idx) => normalizeFestivalItem(it, idx));
+        festivals = safeMergeLists(localPending, remoteNormalized, res.deletedIds || []);
+        syncPendingQueueWithFestivals();
+        ensureRegionsFromFestivals(getApprovedFestivals());
+        sortFestivalsByRegion();
+        saveToStorage();
+        renderTable();
+        if (document.getElementById("pendingQueueModal")?.classList.contains("open")) {
+          renderPendingQueueList();
+        }
+
+        const approvedCount = getApprovedFestivals().length;
+        const pendingCount = getPendingFestivals().length;
+        cloudConfig.lastSync = new Date().toLocaleTimeString("vi-VN");
+        safeSetStorage("vn_festivals_cloud_config", JSON.stringify(cloudConfig));
+        updateCloudStatusUI("idle", `☁️ Đã đồng bộ 2 chiều (${approvedCount} lễ hội${pendingCount > 0 ? `, ${pendingCount} chờ duyệt` : ""})`);
+        showToast(
+          `Đồng bộ 2 chiều hoàn tất! (${approvedCount} lễ hội chính thức${pendingCount > 0 ? `, ${pendingCount} đề xuất đang chờ duyệt` : ""})`,
+          "success"
+        );
+      } catch (err) {
+        updateCloudStatusUI("error", "⚠️ Đồng bộ thất bại");
+        showToast("Lỗi khi đồng bộ 2 chiều: " + (err.message || err), "error");
+      }
+    }, "Đồng bộ Gộp 2 Chiều với Google Sheets");
+  }
+
+  function syncNowButton() {
+    if (!cloudConfig.scriptUrl) {
+      openCloudConfigModal();
+      return;
+    }
+    if (isOwnerUnlocked && ownerAdminKey) {
+      syncMergeWithCloud();
+    } else {
+      pullFromCloud(true);
+    }
+  }
+
+  function restoreCloudBackup() {
+    if (!cloudConfig.scriptUrl) {
+      showToast("Vui lòng cấu hình Web App URL trước!", "warn");
+      return;
+    }
+    requireOwnerAuth(() => {
+      openConfirmModal(
+        "Khôi phục bản sao lưu trên Google Sheets?",
+        "Hệ thống sẽ lấy bản chụp dữ liệu gần nhất trong tab Backup_LichSu trên Google Sheets để khôi phục lại bảng chính.",
+        async () => {
+          updateCloudStatusUI("syncing", "⏳ Đang khôi phục bản sao lưu trên Sheet...");
+          try {
+            const res = await callAppsScriptPost({
+              action: "restoreBackup",
+              adminKey: ownerAdminKey
+            });
+            if (!res || !res.ok) {
+              throw new Error(res?.error || "Không thể khôi phục bản sao lưu.");
+            }
+            saveUndoSnapshot();
+            festivals = res.items.map((it, idx) => normalizeFestivalItem(it, idx));
+            ensureRegionsFromFestivals(festivals);
+            sortFestivalsByRegion();
+            saveToStorage();
+            renderTable();
+            cloudConfig.lastSync = new Date().toLocaleTimeString("vi-VN");
+            updateCloudStatusUI("idle", `☁️ Đã khôi phục (${festivals.length} lễ hội)`);
+            showToast("Đã khôi phục thành công bản sao lưu gần nhất từ Google Sheets!", "success");
+          } catch (err) {
+            updateCloudStatusUI("error", "⚠️ Lỗi khôi phục");
+            showToast("Lỗi khôi phục từ Sheet: " + (err.message || err), "error");
+          }
+        }
+      );
+    }, "Khôi phục bản sao lưu trên Google Sheets");
+  }
+
+  function openCloudConfigModal() {
+    document.getElementById("cfgScriptUrl").value = cloudConfig.scriptUrl || "";
+    document.getElementById("cfgAdminKey").value = ownerAdminKey || "";
+    document.getElementById("cfgAutoSync").checked = cloudConfig.autoSync !== false;
+    document.getElementById("cloudConfigModal").classList.add("open");
+  }
+
+  function closeCloudConfigModal() {
+    document.getElementById("cloudConfigModal").classList.remove("open");
+  }
+
+  async function saveCloudConfig() {
+    const url = document.getElementById("cfgScriptUrl").value.trim();
+    const key = document.getElementById("cfgAdminKey").value.trim();
+    const autoSync = document.getElementById("cfgAutoSync").checked;
+
+    cloudConfig.scriptUrl = url;
+    cloudConfig.autoSync = autoSync;
+    safeSetStorage("vn_festivals_cloud_config", JSON.stringify(cloudConfig));
+
+    if (key) {
+      ownerAdminKey = key;
+      isOwnerUnlocked = true;
+      safeSetStorage("vn_festivals_owner_key", key);
+      safeSetStorage("vn_festivals_last_verified_key", key);
+    } else {
+      ownerAdminKey = "";
+      isOwnerUnlocked = false;
+      safeRemoveStorage("vn_festivals_owner_key");
+    }
+
+    closeCloudConfigModal();
+    updateCloudStatusUI();
+
+    if (url) {
+      if (isOwnerUnlocked && ownerAdminKey) {
+        syncMergeWithCloud();
+      } else {
+        pullFromCloud(true);
+      }
+    } else {
+      showToast("Đã lưu cấu hình chế độ lưu trữ cục bộ.", "info");
+    }
+  }
+
+  function openGuideModal() {
+    const codeEl = document.getElementById("appsScriptCodePreview");
+    if (codeEl && !codeEl.textContent) {
+      codeEl.textContent = EMBEDDED_APPS_SCRIPT;
+    }
+    document.getElementById("guideModal").classList.add("open");
+  }
+
+  function closeGuideModal() {
+    document.getElementById("guideModal").classList.remove("open");
+  }
+
+  function copyAppsScriptCode() {
+    const text = EMBEDDED_APPS_SCRIPT;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("Đã sao chép toàn bộ mã Code.gs vào bộ nhớ tạm!", "success");
+      }).catch(() => fallbackCopyText(text));
+    } else {
+      fallbackCopyText(text);
+    }
+  }
+
+  function fallbackCopyText(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand("copy");
+      showToast("Đã sao chép vào bộ nhớ tạm!", "success");
+    } catch (e) {
+      showToast("Không thể tự động sao chép, bạn hãy bôi đen để copy.", "warn");
+    }
+    document.body.removeChild(ta);
+  }
+
+  function downloadAppsScriptFile() {
+    const blob = new Blob([EMBEDDED_APPS_SCRIPT], { type: "text/plain;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "Code.gs";
+    a.click();
+    showToast("Đã tải file Code.gs về máy!", "success");
+  }
+
+  // ==========================================================================
+  // CÁC CHỨC NĂNG TRA CỨU, TÌM KIẾM KHÔNG DẤU, SẮP XẾP & LỊCH
+  // ==========================================================================
+  function resetDefaults() {
+    requireOwnerAuth(() => {
+      openConfirmModal(
+        "Khôi phục 12 lễ hội mặc định?",
+        "Danh sách sẽ đảm bảo có đủ 12 lễ hội gốc ban đầu (sắp xếp Nam -> Trung -> Bắc). Trước khi khôi phục, hệ thống tự động lưu bản chụp hoàn tác để không mất dữ liệu.",
+        async () => {
+          saveUndoSnapshot();
+          const nowIso = new Date().toISOString();
+          festivals = JSON.parse(JSON.stringify(DEFAULT_FESTIVALS)).map(df => ({ ...df, updatedAt: nowIso }));
+          renderRegionControls();
+          sortFestivalsByRegion();
+          saveToStorage();
+          renderTable();
+          showToast("Đã khôi phục danh sách 12 lễ hội mặc định (Có thể bấm Hoàn tác nếu cần).", "success");
+
+          if (cloudConfig.scriptUrl && isOwnerUnlocked) {
+            syncMergeWithCloud();
+          }
+        }
+      );
+    }, "Khôi phục danh sách mặc định");
+  }
+
+  function setRegion(region) {
+    currentRegion = region;
+    renderRegionControls();
+    renderTable();
+  }
+
+  function badgeClass(region) {
+    if (region === "Miền Nam") return "badge badge-nam";
+    if (region === "Miền Trung") return "badge badge-trung";
+    if (region === "Miền Bắc") return "badge badge-bac";
+    return "badge badge-other";
+  }
+
+  function toggleDetail(id) {
+    const row = document.getElementById("detail-" + id);
+    const grid = document.getElementById("grid-" + id);
+    if (!row) return;
+    const isOpening = !row.classList.contains("open");
+    row.classList.toggle("open");
+
+    if (isOpening && grid && grid.innerHTML === "") {
+      const f = festivals.find(item => String(item.id) === String(id));
+      if (!f) return;
+      const selectedYear = parseInt(document.getElementById("yearSelect").value, 10);
+      let chipsHTML = "";
+      const safeFestId = escapeHTML(f.id);
+      for (let y = START_YEAR; y <= END_YEAR; y++) {
+        const sInfo = getFestivalSolarInfo(f, y);
+        const hl = (y === selectedYear) ? "highlight" : "";
+        chipsHTML += `<div class="year-chip ${hl}" onclick="addToGoogleCalendarForYear(event, '${safeFestId}', ${y})" title="Bấm để lưu năm ${y} vào Google Calendar">Năm ${y}: <strong>${sInfo.text}</strong> 📅</div>`;
+      }
+      grid.innerHTML = chipsHTML;
+    }
+  }
+
+  function renderTable() {
+    const year = parseInt(document.getElementById("yearSelect").value, 10);
+    const monthFilterVal = document.getElementById("solarMonthSelect") ? document.getElementById("solarMonthSelect").value : "all";
+    const selectedSolarMonth = monthFilterVal === "all" ? null : parseInt(monthFilterVal, 10);
+    const sortMode = document.getElementById("sortSelect") ? document.getElementById("sortSelect").value : "region";
+    const rawKeyword = document.getElementById("searchInput").value.trim();
+    const normKeyword = removeVietnameseTones(rawKeyword);
+
+    if (selectedSolarMonth) {
+      document.getElementById("solarHeader").textContent = `Chính Hội Dương Lịch (Tháng ${String(selectedSolarMonth).padStart(2, "0")}/${year})`;
+    } else {
+      document.getElementById("solarHeader").textContent = `Chính Hội Dương Lịch (${year})`;
+    }
+
+    renderRegionControls();
+
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = "";
+
+    let filtered = getApprovedFestivals().filter(f => {
+      const matchRegion = (currentRegion === "Tất cả") || (f.region === currentRegion);
+      const searchableText = removeVietnameseTones(`${f.name} ${f.location} ${f.region || ""} ${f.lunarLabel || ""} ${f.highlights || ""}`);
+      const matchKeyword = !normKeyword || searchableText.includes(normKeyword);
+      const festSolarMonth = getSolarMonthOfFestival(f, year);
+      const matchSolarMonth = !selectedSolarMonth || (festSolarMonth === selectedSolarMonth);
+      return matchRegion && matchKeyword && matchSolarMonth;
+    });
+
+    // Sắp xếp danh sách theo lựa chọn của người dùng
+    const now = new Date();
+    const todayUTC = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+
+    filtered.sort((a, b) => {
+      if (sortMode === "date_asc") {
+        const infoA = getFestivalSolarInfo(a, year);
+        const infoB = getFestivalSolarInfo(b, year);
+        return infoA.timestamp - infoB.timestamp;
+      }
+      if (sortMode === "upcoming") {
+        const infoA = getFestivalSolarInfo(a, year);
+        const infoB = getFestivalSolarInfo(b, year);
+        const diffA = infoA.timestamp - todayUTC;
+        const diffB = infoB.timestamp - todayUTC;
+        const scoreA = diffA >= 0 ? diffA : (diffA + 36500 * 86400000);
+        const scoreB = diffB >= 0 ? diffB : (diffB + 36500 * 86400000);
+        return scoreA - scoreB;
+      }
+      const regDiff = getRegionOrderValue(a.region) - getRegionOrderValue(b.region);
+      if (regDiff !== 0) return regDiff;
+      return getFestivalSolarInfo(a, year).timestamp - getFestivalSolarInfo(b, year).timestamp;
+    });
+
+    if (filtered.length === 0) {
+      const emptyTr = document.createElement("tr");
+      emptyTr.innerHTML = `
+        <td colspan="5" style="text-align:center;color:var(--text-muted);padding:28px 16px;">
+          Không có lễ hội nào phù hợp với bộ lọc hiện tại.
+        </td>
+      `;
+      tbody.appendChild(emptyTr);
+      return;
+    }
+
+    filtered.forEach(f => {
+      const solarInfo = getFestivalSolarInfo(f, year);
+      const countdownHTML = getCountdownBadgeHTML(solarInfo);
+      const subnoteHTML = solarInfo.note ? `<div class="solar-subnote">${escapeHTML(solarInfo.note)}</div>` : "";
+
+      const tr = document.createElement("tr");
+      tr.className = "main-row";
+      tr.onclick = () => toggleDetail(f.id);
+      tr.innerHTML = `
+        <td>
+          <div class="fest-name">${escapeHTML(f.name)} <span style="color:#64748b;font-size:0.8rem;">▼</span></div>
+          <div class="fest-loc">${escapeHTML(f.location)}</div>
+        </td>
+        <td><span class="${badgeClass(f.region)}">${escapeHTML(f.region)}</span></td>
+        <td>${escapeHTML(f.lunarLabel)}</td>
+        <td>${escapeHTML(f.duration)}</td>
+        <td>
+          <div class="solar-date">${solarInfo.text}</div>
+          ${subnoteHTML}
+          ${countdownHTML}
+        </td>
+      `;
+      tbody.appendChild(tr);
+
+      const detailTr = document.createElement("tr");
+      detailTr.className = "detail-row";
+      detailTr.id = "detail-" + f.id;
+      detailTr.innerHTML = `
+        <td colspan="5">
+          <div class="detail-box">
+            <p class="detail-desc">📌 <strong>Đặc trưng:</strong> ${escapeHTML(f.highlights || "Sự kiện văn hóa truyền thống địa phương.")}</p>
+            <p class="decade-Note">📅 <strong>Bảng đối chiếu Dương lịch từ ${START_YEAR} đến ${END_YEAR} (cuộn để xem):</strong></p>
+            <div class="ten-year-grid" id="grid-${f.id}"></div>
+            <div class="detail-actions">
+              <button type="button" class="cal-btn" onclick="addToGoogleCalendar(event, '${escapeHTML(f.id)}')">📅 Thêm vào Google Calendar (${year})</button>
+              <button type="button" class="cal-multi-btn" onclick="openMultiYearCalendarModal(event, '${escapeHTML(f.id)}')">🗓️ Lưu nhiều năm vào Google Calendar (2026–2099)</button>
+              <button type="button" class="edit-btn owner-only" onclick="openEditFestival(event, '${escapeHTML(f.id)}')">✏️ Sửa lễ hội này</button>
+              <button type="button" class="delete-btn owner-only" onclick="deleteFestival(event, '${escapeHTML(f.id)}')">🗑 Xóa lễ hội này</button>
+            </div>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(detailTr);
+    });
+  }
+
+  function updatePendingQueueUI() {
+    const pendingCount = getPendingFestivals().length;
+    const badgeEl = document.getElementById("pendingQueueCountBadge");
+    const queueBtn = document.getElementById("pendingQueueBtn");
+    const notifyPill = document.getElementById("pendingNotifyPill");
+    const headerCount = document.getElementById("pendingModalHeaderCount");
+
+    if (badgeEl) badgeEl.textContent = String(pendingCount);
+    if (queueBtn) {
+      if (pendingCount > 0) queueBtn.classList.add("has-items");
+      else queueBtn.classList.remove("has-items");
+    }
+    if (notifyPill) {
+      if (pendingCount > 0) {
+        notifyPill.style.display = "inline-flex";
+        notifyPill.innerHTML = `⏳ Có <strong>${pendingCount}</strong> đề xuất chờ Admin duyệt`;
+      } else {
+        notifyPill.style.display = "none";
+      }
+    }
+    if (headerCount) {
+      headerCount.textContent = `${pendingCount} đề xuất`;
+    }
+  }
+
+  function openModal() {
+    requireOwnerAuth(() => {
+      renderRegionControls();
+      document.getElementById("festivalModalTitle").textContent = "Thêm Lễ Hội / Sự Kiện Mới";
+      document.getElementById("fEditId").value = "";
+      document.getElementById("fModalMode").value = "owner";
+      document.getElementById("guestProposalBanner").style.display = "none";
+      document.getElementById("contributorGroup").style.display = "none";
+      document.getElementById("fContributor").value = "";
+      document.getElementById("saveFestivalSubmitBtn").textContent = "Tự động tính tới 2099 & Lưu";
+      document.getElementById("fName").value = "";
+      document.getElementById("fLocation").value = "";
+      const defaultRegion = (currentRegion !== "Tất cả" && getAllRegions().includes(currentRegion)) ? currentRegion : "Miền Nam";
+      document.getElementById("fRegion").value = defaultRegion;
+      document.getElementById("fCustomRegion").value = "";
+      document.getElementById("customRegionInputWrap").style.display = "none";
+      document.getElementById("fCalendarType").value = "lunar";
+      handleCalendarTypeChange();
+      document.getElementById("fLunarDay").value = "15";
+      document.getElementById("fLunarMonth").value = "1";
+      document.getElementById("fDuration").value = "";
+      document.getElementById("fHighlights").value = "";
+      document.getElementById("addModal").classList.add("open");
+    }, "Thêm lễ hội mới");
+  }
+
+  // Cho phép Khách truy cập mở form đề xuất ngày lễ mới mà không cần mật khẩu Admin
+  function openGuestProposalModal() {
+    renderRegionControls();
+    document.getElementById("festivalModalTitle").textContent = "📝 Đề Xuất Ngày Lễ Mới (Chờ Admin Duyệt)";
+    document.getElementById("fEditId").value = "";
+    document.getElementById("fModalMode").value = "guest";
+    document.getElementById("guestProposalBanner").style.display = "block";
+    document.getElementById("contributorGroup").style.display = "block";
+    document.getElementById("fContributor").value = "";
+    document.getElementById("saveFestivalSubmitBtn").textContent = "📨 Gửi đề xuất chờ Admin duyệt";
+    document.getElementById("fName").value = "";
+    document.getElementById("fLocation").value = "";
+    const defaultRegion = (currentRegion !== "Tất cả" && getAllRegions().includes(currentRegion)) ? currentRegion : "Miền Nam";
+    document.getElementById("fRegion").value = defaultRegion;
+    document.getElementById("fCustomRegion").value = "";
+    document.getElementById("customRegionInputWrap").style.display = "none";
+    document.getElementById("fCalendarType").value = "lunar";
+    handleCalendarTypeChange();
+    document.getElementById("fLunarDay").value = "15";
+    document.getElementById("fLunarMonth").value = "1";
+    document.getElementById("fDuration").value = "";
+    document.getElementById("fHighlights").value = "";
+    document.getElementById("addModal").classList.add("open");
+  }
+
+  function openEditFestival(e, id) {
+    if (e) e.stopPropagation();
+    requireOwnerAuth(() => {
+      const target = festivals.find(item => String(item.id) === String(id));
+      if (!target) return;
+      ensureRegionsFromFestivals([target]);
+      renderRegionControls();
+      const wasPending = isPendingFestival(target);
+      document.getElementById("festivalModalTitle").textContent = wasPending
+        ? "✏️ Kiểm Tra & Duyệt Lễ Hội Đề Xuất"
+        : "Chỉnh Sửa Thông Tin Lễ Hội";
+      document.getElementById("fEditId").value = String(target.id);
+      document.getElementById("fModalMode").value = "owner";
+      document.getElementById("guestProposalBanner").style.display = "none";
+      document.getElementById("contributorGroup").style.display = "none";
+      document.getElementById("saveFestivalSubmitBtn").textContent = wasPending
+        ? "✅ Lưu & Duyệt đăng chính thức"
+        : "Tự động tính tới 2099 & Lưu";
+      document.getElementById("fName").value = target.name || "";
+      document.getElementById("fLocation").value = target.location || "";
+      document.getElementById("fRegion").value = target.region || "Miền Nam";
+      document.getElementById("fCustomRegion").value = "";
+      document.getElementById("customRegionInputWrap").style.display = "none";
+      const cleanLbl = getCleanLunarLabel(target);
+      const isSolar = target.calendarType === "solar" || cleanLbl.includes("DL");
+      document.getElementById("fCalendarType").value = isSolar ? "solar" : "lunar";
+      handleCalendarTypeChange();
+      document.getElementById("fLunarDay").value = target.lunarDay || 15;
+      document.getElementById("fLunarMonth").value = target.lunarMonth || 1;
+      document.getElementById("fDuration").value = target.duration || "";
+      document.getElementById("fHighlights").value = target.highlights || "";
+      document.getElementById("addModal").classList.add("open");
+    }, "Chỉnh sửa thông tin lễ hội");
+  }
+
+  function closeModal() {
+    document.getElementById("addModal").classList.remove("open");
+  }
+
+  async function submitGuestProposalToCloud(pendingItem) {
+    if (!cloudConfig.scriptUrl) return false;
+    updateCloudStatusUI("syncing", "⏳ Đang đẩy đề xuất lên Google Sheets...");
+    const fallbackKey = getFallbackProposalKey();
+    let res = null;
+
+    // Bước 1: Ưu tiên gửi qua action "upsert" (Hoạt động ngay lập tức trên cả bản Code.gs cũ lẫn mới!)
+    try {
+      res = await callAppsScriptPost({
+        action: "upsert",
+        adminKey: fallbackKey,
+        item: pendingItem
+      });
+    } catch (e1) {
+      res = null;
+    }
+
+    // Bước 2: Nếu bản Code.gs mới có mật khẩu khác, gửi qua action "submitPending" không cần mật khẩu
+    if (!res || !res.ok) {
+      try {
+        res = await callAppsScriptPost({
+          action: "submitPending",
+          item: pendingItem
+        });
+      } catch (e2) {
+        res = null;
+      }
+    }
+
+    // Bước 3: Dự phòng nếu trình duyệt Khách chặn phản hồi redirect CORS khi mở từ file://
+    if (!res || !res.ok) {
+      try {
+        await fetch(cloudConfig.scriptUrl, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "upsert",
+            adminKey: fallbackKey,
+            item: pendingItem
+          })
+        });
+        await new Promise(r => setTimeout(r, 1200));
+        res = await callAppsScriptGet();
+      } catch (e3) {
+        res = null;
+      }
+    }
+
+    if (res && res.ok && Array.isArray(res.items)) {
+      const localPending = getStoredPendingQueue();
+      const remoteNormalized = res.items.map((raw, idx) => normalizeFestivalItem(raw, idx));
+      festivals = safeMergeLists(localPending, remoteNormalized, res.deletedIds || []);
+      syncPendingQueueWithFestivals();
+      saveToStorage();
+      renderRegionControls();
+      renderTable();
+      const approvedCount = getApprovedFestivals().length;
+      const pendingCount = getPendingFestivals().length;
+      cloudConfig.lastSync = new Date().toLocaleTimeString("vi-VN");
+      updateCloudStatusUI("idle", `☁️ Đã gửi đề xuất (${approvedCount} lễ hội, ${pendingCount} chờ duyệt)`);
+      const pushedToSheet = remoteNormalized.some(
+        it => String(it.id) === String(pendingItem.id) ||
+              (it.name === pendingItem.name && it.location === pendingItem.location)
+      );
+      return pushedToSheet;
+    }
+
+    const approvedCount = getApprovedFestivals().length;
+    const pendingCount = getPendingFestivals().length;
+    updateCloudStatusUI("idle", `☁️ Đã lưu hàng chờ (${approvedCount} lễ hội, ${pendingCount} chờ duyệt)`);
+    return false;
+  }
+
+  async function saveNewFestival() {
+    const modalMode = document.getElementById("fModalMode").value || "owner";
+    const isGuestSubmission = (modalMode === "guest");
+    const editId = document.getElementById("fEditId").value.trim();
+    const name = document.getElementById("fName").value.trim();
+    const location = document.getElementById("fLocation").value.trim();
+    let region = document.getElementById("fRegion").value;
+    if (region === "__custom__") {
+      region = document.getElementById("fCustomRegion").value.trim();
+      if (!region) {
+        showToast("Vui lòng nhập tên vùng miền mới!", "warn");
+        return;
+      }
+      if (!CORE_REGIONS.includes(region) && !customRegions.includes(region)) {
+        customRegions.push(region);
+        saveCustomRegions();
+      }
+    }
+    const calendarType = document.getElementById("fCalendarType").value;
+    const maxDay = calendarType === "solar" ? 31 : 30;
+    const day = parseInt(document.getElementById("fLunarDay").value, 10);
+    const month = parseInt(document.getElementById("fLunarMonth").value, 10);
+    const duration = document.getElementById("fDuration").value.trim() || "1 – 3 ngày";
+    let highlights = document.getElementById("fHighlights").value.trim();
+    const contributor = document.getElementById("fContributor") ? document.getElementById("fContributor").value.trim() : "";
+
+    if (!name || !location || !Number.isInteger(day) || !Number.isInteger(month) || day < 1 || day > maxDay || month < 1 || month > 12) {
+      showToast(`Vui lòng nhập đầy đủ Tên lễ hội, Tỉnh/Thành và Ngày (1-${maxDay}) / Tháng (1-12)!`, "warn");
+      return;
+    }
+
+    const nowIso = new Date().toISOString();
+    const suffix = calendarType === "solar" ? "DL" : "ÂL";
+    const baseLabel = `${String(day).padStart(2, "0")}/${String(month).padStart(2, "0")} ${suffix}`;
+
+    // Luồng 1: Khách truy cập gửi đề xuất lễ hội mới -> Lưu vào Hàng chờ xét duyệt (status = "pending")
+    if (isGuestSubmission) {
+      if (contributor) {
+        highlights = highlights
+          ? `${highlights} (Đề xuất bởi: ${contributor})`
+          : `Đề xuất bởi: ${contributor}`;
+      }
+      const pendingItem = {
+        id: Date.now(),
+        name,
+        location,
+        region,
+        calendarType,
+        lunarDay: day,
+        lunarMonth: month,
+        lunarLabel: `${PENDING_PREFIX}${baseLabel}`,
+        duration,
+        highlights,
+        status: "pending",
+        updatedAt: nowIso
+      };
+
+      const submitBtn = document.getElementById("saveFestivalSubmitBtn");
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "⏳ Đang gửi lên Hàng chờ Admin...";
+      }
+
+      savePendingToQueueStorage(pendingItem);
+      festivals.unshift(pendingItem);
+      saveToStorage();
+      renderRegionControls();
+      renderTable();
+
+      const syncedOk = await submitGuestProposalToCloud(pendingItem);
+
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "📨 Gửi đề xuất chờ Admin duyệt";
+      }
+      closeModal();
+
+      if (syncedOk) {
+        showToast("🎉 Đã gửi đề xuất lên Google Sheets thành công! Admin sẽ thấy ngay trong mục Hàng chờ duyệt.", "success");
+      } else {
+        showToast("🎉 Đã lưu đề xuất vào Hàng chờ xét duyệt! Khi Admin mở khóa trên trình duyệt hoặc đồng bộ sẽ thấy ngay.", "success");
+      }
+      return;
+    }
+
+    // Luồng 2: Admin thêm mới hoặc sửa/duyệt lễ hội -> Hiển thị chính thức (status = "approved")
+    saveUndoSnapshot();
+    let savedItem = null;
+
+    if (editId) {
+      markPendingIdResolved(editId);
+      festivals = festivals.map(item => {
+        if (String(item.id) === String(editId)) {
+          savedItem = {
+            ...item,
+            name,
+            location,
+            region,
+            calendarType,
+            lunarDay: day,
+            lunarMonth: month,
+            lunarLabel: baseLabel,
+            duration,
+            highlights,
+            status: "approved",
+            updatedAt: nowIso
+          };
+          return savedItem;
+        }
+        return item;
+      });
+    } else {
+      savedItem = {
+        id: Date.now(),
+        name,
+        location,
+        region,
+        calendarType,
+        lunarDay: day,
+        lunarMonth: month,
+        lunarLabel: baseLabel,
+        duration,
+        highlights,
+        status: "approved",
+        updatedAt: nowIso
+      };
+      festivals.unshift(savedItem);
+    }
+
+    renderRegionControls();
+    sortFestivalsByRegion();
+    saveToStorage();
+    closeModal();
+    renderTable();
+    showToast(editId ? "Đã cập nhật & duyệt lễ hội thành công!" : "Đã thêm lễ hội mới thành công!", "success");
+
+    if (cloudConfig.scriptUrl && isOwnerUnlocked && savedItem) {
+      updateCloudStatusUI("syncing", "⏳ Đang lưu lên Google Sheets...");
+      try {
+        const res = await callAppsScriptPost({
+          action: "upsert",
+          adminKey: ownerAdminKey,
+          item: savedItem
+        });
+        if (res && res.ok && Array.isArray(res.items)) {
+          festivals = safeMergeLists(festivals, res.items, res.deletedIds || []);
+          ensureRegionsFromFestivals(getApprovedFestivals());
+          sortFestivalsByRegion();
+          saveToStorage();
+          renderTable();
+          const approvedCount = getApprovedFestivals().length;
+          cloudConfig.lastSync = new Date().toLocaleTimeString("vi-VN");
+          updateCloudStatusUI("idle", `☁️ Đã lưu lên Sheet (${approvedCount} lễ hội)`);
+        } else {
+          throw new Error(res?.error || "Không thể ghi lên Google Sheets.");
+        }
+      } catch (err) {
+        updateCloudStatusUI("error", "⚠️ Lỗi đồng bộ Sheet");
+        showToast("Đã lưu trên máy, nhưng chưa đẩy được lên Google Sheets: " + (err.message || err), "warn");
+      }
+    }
+  }
+
+  // ==========================================================================
+  // QUẢN LÝ HÀNG CHỜ XÉT DUYỆT LỄ HỘI (DÀNH CHO ADMIN)
+  // ==========================================================================
+  function openPendingQueueModal() {
+    requireOwnerAuth(async () => {
+      reloadFestivalsFromLocalStorage();
+      renderPendingQueueList();
+      renderTable();
+      document.getElementById("pendingQueueModal").classList.add("open");
+      if (cloudConfig.scriptUrl) {
+        await pullFromCloud(false);
+        renderPendingQueueList();
+      }
+    }, "Mở Hàng chờ xét duyệt lễ hội");
+  }
+
+  function closePendingQueueModal() {
+    document.getElementById("pendingQueueModal").classList.remove("open");
+  }
+
+  function renderPendingQueueList() {
+    updatePendingQueueUI();
+    const pendingList = getPendingFestivals();
+    const emptyEl = document.getElementById("pendingQueueEmptyState");
+    const listEl = document.getElementById("pendingQueueList");
+    const approveAllBtn = document.getElementById("approveAllPendingBtn");
+    const selectedYear = parseInt(document.getElementById("yearSelect").value, 10) || 2026;
+
+    if (!listEl || !emptyEl) return;
+
+    if (pendingList.length === 0) {
+      emptyEl.style.display = "block";
+      listEl.style.display = "none";
+      if (approveAllBtn) approveAllBtn.style.display = "none";
+      listEl.innerHTML = "";
+      return;
+    }
+
+    emptyEl.style.display = "none";
+    listEl.style.display = "flex";
+    if (approveAllBtn) approveAllBtn.style.display = "inline-block";
+
+    let html = "";
+    pendingList.forEach(item => {
+      const cleanLabel = getCleanLunarLabel(item);
+      const previewInfo = getFestivalSolarInfo({ ...item, lunarLabel: cleanLabel }, selectedYear);
+      const timeStr = item.updatedAt ? new Date(item.updatedAt).toLocaleString("vi-VN") : "Vừa gửi";
+      const safeId = escapeHTML(item.id);
+      html += `
+        <div class="pending-card">
+          <div class="pending-card-header">
+            <div>
+              <div class="pending-card-title">${escapeHTML(item.name)} <span class="${badgeClass(item.region)}">${escapeHTML(item.region)}</span></div>
+              <div class="pending-card-meta">
+                <span>📍 <strong>Tỉnh/Thành:</strong> ${escapeHTML(item.location)}</span>
+                <span>🗓️ <strong>Mốc lịch:</strong> ${escapeHTML(cleanLabel)}</span>
+                <span>⏳ <strong>Thời gian:</strong> ${escapeHTML(item.duration || "1 – 3 ngày")}</span>
+                <span>📆 <strong>Năm ${selectedYear}:</strong> <strong style="color:var(--accent-blue);">${escapeHTML(previewInfo.text)}</strong></span>
+              </div>
+            </div>
+            <span style="font-size:0.76rem;color:var(--text-muted);">🕒 ${escapeHTML(timeStr)}</span>
+          </div>
+          <div class="pending-card-desc">
+            📌 <strong>Ghi chú / Đặc trưng:</strong> ${escapeHTML(item.highlights || "Không có ghi chú thêm.")}
+          </div>
+          <div class="pending-card-actions">
+            <button type="button" class="cal-btn" onclick="approvePendingFestival('${safeId}')">✅ Duyệt đăng chính thức</button>
+            <button type="button" class="edit-btn" onclick="editFromPendingQueue('${safeId}')">✏️ Sửa &amp; Duyệt</button>
+            <button type="button" class="delete-btn" onclick="rejectPendingFestival('${safeId}')">❌ Từ chối / Xóa</button>
+          </div>
+        </div>
+      `;
+    });
+    listEl.innerHTML = html;
+  }
+
+  async function approvePendingFestival(id) {
+    requireOwnerAuth(async () => {
+      const target = festivals.find(f => String(f.id) === String(id));
+      if (!target) return;
+      saveUndoSnapshot();
+      markPendingIdResolved(id);
+      const nowIso = new Date().toISOString();
+      const cleanLabel = getCleanLunarLabel(target);
+      let approvedItem = null;
+
+      festivals = festivals.map(f => {
+        if (String(f.id) === String(id)) {
+          approvedItem = {
+            ...f,
+            lunarLabel: cleanLabel,
+            status: "approved",
+            updatedAt: nowIso
+          };
+          return approvedItem;
+        }
+        return f;
+      });
+
+      ensureRegionsFromFestivals([approvedItem]);
+      sortFestivalsByRegion();
+      saveToStorage();
+      renderPendingQueueList();
+      renderTable();
+      showToast(`✅ Đã duyệt "${approvedItem.name}" lên bảng tra cứu chính thức!`, "success");
+
+      if (cloudConfig.scriptUrl && isOwnerUnlocked && approvedItem) {
+        updateCloudStatusUI("syncing", "⏳ Đang đồng bộ duyệt lên Sheet...");
+        try {
+          const res = await callAppsScriptPost({
+            action: "upsert",
+            adminKey: ownerAdminKey,
+            item: approvedItem
+          });
+          if (res && res.ok && Array.isArray(res.items)) {
+            festivals = safeMergeLists(festivals, res.items, res.deletedIds || []);
+            ensureRegionsFromFestivals(getApprovedFestivals());
+            sortFestivalsByRegion();
+            saveToStorage();
+            renderPendingQueueList();
+            renderTable();
+            updateCloudStatusUI("idle", `☁️ Đã duyệt & đồng bộ (${getApprovedFestivals().length} lễ hội)`);
+          }
+        } catch (err) {
+          updateCloudStatusUI("error", "⚠️ Lỗi đồng bộ Sheet");
+          showToast("Đã duyệt trên máy, nhưng chưa đồng bộ được lên Sheet: " + (err.message || err), "warn");
+        }
+      }
+    }, "Duyệt lễ hội vào danh sách chính thức");
+  }
+
+  function editFromPendingQueue(id) {
+    closePendingQueueModal();
+    openEditFestival(null, id);
+  }
+
+  function rejectPendingFestival(id) {
+    requireOwnerAuth(() => {
+      const target = festivals.find(f => String(f.id) === String(id));
+      if (!target) return;
+      openConfirmModal(
+        "Từ chối đề xuất lễ hội?",
+        `Bạn có chắc muốn từ chối và xóa đề xuất "${target.name}" (${target.location}) khỏi hàng chờ xét duyệt?`,
+        async () => {
+          saveUndoSnapshot();
+          markPendingIdResolved(id);
+          festivals = festivals.filter(f => String(f.id) !== String(id));
+          saveToStorage();
+          renderPendingQueueList();
+          renderTable();
+          showToast(`Đã từ chối đề xuất "${target.name}".`, "info");
+
+          if (cloudConfig.scriptUrl && isOwnerUnlocked) {
+            try {
+              await callAppsScriptPost({
+                action: "delete",
+                adminKey: ownerAdminKey,
+                id: id
+              });
+              updateCloudStatusUI("idle", `☁️ Đã đồng bộ (${getApprovedFestivals().length} lễ hội)`);
+            } catch (err) {}
+          }
+        }
+      );
+    }, "Từ chối đề xuất lễ hội");
+  }
+
+  function approveAllPendingFestivals() {
+    requireOwnerAuth(() => {
+      const pendingList = getPendingFestivals();
+      if (pendingList.length === 0) return;
+      openConfirmModal(
+        "Duyệt tất cả đề xuất?",
+        `Bạn có muốn phê duyệt toàn bộ ${pendingList.length} lễ hội trong hàng chờ để đăng công khai lên bảng tra cứu chính thức?`,
+        async () => {
+          saveUndoSnapshot();
+          const nowIso = new Date().toISOString();
+          festivals = festivals.map(f => {
+            if (isPendingFestival(f)) {
+              markPendingIdResolved(f.id);
+              return {
+                ...f,
+                lunarLabel: getCleanLunarLabel(f),
+                status: "approved",
+                updatedAt: nowIso
+              };
+            }
+            return f;
+          });
+          ensureRegionsFromFestivals(getApprovedFestivals());
+          sortFestivalsByRegion();
+          saveToStorage();
+          renderPendingQueueList();
+          renderTable();
+          showToast(`✅ Đã duyệt toàn bộ ${pendingList.length} lễ hội!`, "success");
+          if (cloudConfig.scriptUrl && isOwnerUnlocked) {
+            syncMergeWithCloud();
+          }
+        }
+      );
+    }, "Duyệt tất cả lễ hội trong hàng chờ");
+  }
+
+  function deleteFestival(e, id) {
+    if (e) e.stopPropagation();
+    requireOwnerAuth(() => {
+      const target = festivals.find(f => String(f.id) === String(id));
+      const festName = target ? target.name : "lễ hội này";
+      openConfirmModal(
+        "Xác nhận xóa lễ hội",
+        `Bạn có chắc muốn xóa "${festName}" khỏi danh sách? (Hệ thống vẫn lưu bản sao lưu tự động để bạn có thể hoàn tác khi cần).`,
+        async () => {
+          saveUndoSnapshot();
+          festivals = festivals.filter(f => String(f.id) !== String(id));
+          saveToStorage();
+          renderTable();
+          showToast(`Đã xóa "${festName}".`, "info");
+
+          if (cloudConfig.scriptUrl && isOwnerUnlocked) {
+            updateCloudStatusUI("syncing", "⏳ Đang cập nhật xóa trên Sheet...");
+            try {
+              const res = await callAppsScriptPost({
+                action: "delete",
+                adminKey: ownerAdminKey,
+                id: id
+              });
+              if (res && res.ok) {
+                cloudConfig.lastSync = new Date().toLocaleTimeString("vi-VN");
+                updateCloudStatusUI("idle", `☁️ Đã đồng bộ (${festivals.length} lễ hội)`);
+              } else {
+                throw new Error(res?.error || "Lỗi xóa trên Sheet");
+              }
+            } catch (err) {
+              updateCloudStatusUI("error", "⚠️ Lỗi đồng bộ xóa");
+              showToast("Đã xóa trên máy nhưng chưa đồng bộ lên Sheet: " + (err.message || err), "warn");
+            }
+          }
+        }
+      );
+    }, "Xóa lễ hội khỏi danh sách");
+  }
+
+  function exportCSV() {
+    const years = [];
+    for (let y = START_YEAR; y <= END_YEAR; y++) years.push(y);
+    let csv = `\uFEFFTên Lễ Hội,Tỉnh Thành,Vùng Miền,Mốc Lịch,Thời Gian,${years.join(",")},Đặc Trưng\n`;
+    getApprovedFestivals().forEach(f => {
+      const yearCols = years.map(y => getFestivalSolarInfo(f, y).text);
+      const csvCell = value => `"${String(value ?? "").replace(/"/g, '""')}"`;
+      const row = [
+        csvCell(f.name), csvCell(f.location), csvCell(f.region), csvCell(f.lunarLabel), csvCell(f.duration),
+        ...yearCols.map(csvCell),
+        csvCell(f.highlights || "")
+      ];
+      csv += row.join(",") + "\n";
+    });
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `Tra_Cuu_Le_Hoi_Viet_Nam_${START_YEAR}_${END_YEAR}.csv`;
+    a.click();
+    showToast("Đã xuất bảng dữ liệu ra file CSV!", "success");
+  }
+
+  function exportJSON() {
+    const blob = new Blob([JSON.stringify(festivals, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `Du_Lieu_Le_Hoi_${START_YEAR}_${END_YEAR}.json`;
+    a.click();
+    showToast("Đã tải xuống file sao lưu JSON!", "success");
+  }
+
+  function triggerImportJSON() {
+    requireOwnerAuth(() => {
+      document.getElementById("importFile").click();
+    }, "Khôi phục / Gộp dữ liệu từ file JSON");
+  }
+
+  function importJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (Array.isArray(data) && data.every(item => item && typeof item.name === "string" && typeof item.location === "string" && Number.isInteger(Number(item.lunarDay)) && Number(item.lunarDay) >= 1 && Number(item.lunarDay) <= 31 && Number.isInteger(Number(item.lunarMonth)) && Number(item.lunarMonth) >= 1 && Number(item.lunarMonth) <= 12)) {
+          saveUndoSnapshot();
+          const nowIso = new Date().toISOString();
+          const incoming = data.map((item, idx) => normalizeFestivalItem({
+            ...item,
+            lunarDay: Number(item.lunarDay),
+            lunarMonth: Number(item.lunarMonth),
+            updatedAt: item.updatedAt || nowIso
+          }, idx));
+
+          festivals = safeMergeLists(festivals, incoming, []);
+          ensureRegionsFromFestivals(festivals);
+          sortFestivalsByRegion();
+          saveToStorage();
+          renderTable();
+          showToast(`Đã gộp & khôi phục thành công (${festivals.length} lễ hội)!`, "success");
+
+          if (cloudConfig.scriptUrl && isOwnerUnlocked) {
+            syncMergeWithCloud();
+          }
+        } else {
+          showToast("File JSON không đúng cấu trúc hoặc có ngày/tháng không hợp lệ.", "error");
+        }
+      } catch (err) {
+        showToast("File JSON không hợp lệ!", "error");
+      } finally {
+        event.target.value = "";
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // Tự động đồng bộ tức thì giữa các Tab / Cửa sổ trên cùng trình duyệt khi Khách vừa gửi đề xuất
+  window.addEventListener("storage", (event) => {
+    if (!event.key || event.key.startsWith("vn_festivals_")) {
+      reloadFestivalsFromLocalStorage();
+      renderRegionControls();
+      renderTable();
+      if (document.getElementById("pendingQueueModal")?.classList.contains("open")) {
+        renderPendingQueueList();
+      }
+    }
+  });
+
+  window.addEventListener("focus", () => {
+    reloadFestivalsFromLocalStorage();
+    renderRegionControls();
+    renderTable();
+    if (document.getElementById("pendingQueueModal")?.classList.contains("open")) {
+      renderPendingQueueList();
+    }
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      reloadFestivalsFromLocalStorage();
+      renderRegionControls();
+      renderTable();
+    }
+  });
+
+  // Khởi chạy ban đầu
+  reloadFestivalsFromLocalStorage();
+  updateCloudStatusUI();
+  renderRegionControls();
+  renderTable();
+  if (cloudConfig.scriptUrl && cloudConfig.autoSync !== false) {
+    pullFromCloud(false);
+  }
+</script>
+</body>
+</html>
