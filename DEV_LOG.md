@@ -77,8 +77,28 @@
 
 ---
 
+### [Phiên bản 3.4.0] Triển Khai Bước 2: Hệ Thống Tài Khoản Gia Đình & Phân Quyền Admin (Google Sheets)
+- **Cơ sở dữ liệu người dùng (`NguoiDung` trên Google Sheets):**
+  - Tự động khởi tạo trang tính `NguoiDung` gồm 9 cột: `id, username, displayName, passwordHash, salt, role, status, createdAt, lastLogin`.
+  - Khởi tạo sẵn tài khoản Admin mặc định (`admin` / `HIEUADMIN`).
+- **Bảo mật SHA-256 + Salt:**
+  - Mật khẩu người dùng được băm qua hàm `Utilities.computeDigest` của Apps Script với chuỗi muối ngẫu nhiên (Salt 16 ký tự).
+  - Không lưu mật khẩu dạng thô, chống dò quét rainbow table an toàn tuyệt đối.
+- **Tính năng Đăng Ký & Đăng Nhập trên Web:**
+  - Nút `👤 Đăng Nhập / Đăng Ký` tại thanh điều khiển.
+  - Modal 2 tab: Đăng nhập & Đăng ký thành viên mới (viết liền không dấu, tên hiển thị, mật khẩu xác nhận).
+  - Khôi phục phiên làm việc (Session) tự động qua LocalStorage token.
+  - Tự động điền tên thành viên vào ô người đề xuất khi gửi lễ hội mới.
+- **Bảng Quản Trị Thành Viên (Admin User Management):**
+  - Admin có giao diện danh sách thành viên: Xem trạng thái, lần đăng nhập cuối.
+  - Thao tác 1 chạm: Khóa / Mở khóa tài khoản, Cấp quyền Quản trị viên (Admin) / Hạ thành viên.
+  - Cho phép người dùng tự đổi mật khẩu cá nhân.
+
+---
+
 ## 📌 TRẠNG THÁI HIỆN TẠI & KẾ HOẠCH BƯỚC TIẾP THEO
 
-- [x] Đã hoàn thành Bước 1: Lột xác giao diện "Đêm Hội Hoa Đăng", Thẻ bài di động, Lịch Vạn Niên & Yêu thích (v3.3.0).
-- [ ] Chờ Admin kiểm tra, trải nghiệm giao diện mới trên máy tính và điện thoại.
-- [ ] Chuẩn bị triển khai Bước 2: Hệ thống Tài khoản gia đình (Đăng ký/Đăng nhập, phân quyền Admin trên Google Sheets).
+- [x] Đã hoàn thành Bước 1: Giao diện Đêm Hội Hoa Đăng, Thẻ bài di động, Lịch Vạn Niên & Yêu thích (v3.3.0).
+- [x] Đã hoàn thành Bước 2: Hệ thống Tài khoản gia đình (20-100 người) & Phân quyền Admin trên Google Sheets (v3.4.0).
+- [ ] Admin copy mã `Code.gs` mới dán vào Google Apps Script và Deploy phiên bản mới để kích hoạt sheet `NguoiDung`.
+- [ ] Trải nghiệm thực tế đăng ký, đăng nhập và quản lý thành viên.
