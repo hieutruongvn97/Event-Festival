@@ -148,7 +148,7 @@
   - **Chế độ 1 - Google Identity Services (GIS):** Tích hợp thư viện `accounts.google.com/gsi/client`, hỗ trợ Google One Tap và cửa sổ đăng nhập 1 chạm chuẩn OAuth 2.0 trên web khi có Google Client ID.
   - **Chế độ 2 - Đăng ký / Đăng nhập nhanh bằng Gmail (Fast Gmail):** Giải quyết triệt để vấn đề Google chặn OAuth trong Android WebView (`disallowed_useragent`) hoặc giao thức `file://`. Người dùng chỉ cần nhập Gmail là tạo ngay tài khoản và vào thẳng ứng dụng không cần gõ mật khẩu!
 - **Tự động nhận diện Chủ sở hữu tối cao (Super Admin):**
-  - Khi đăng nhập bằng tài khoản Google của tác giả (`truongminhhieu58@gmail.com` hoặc `hieutruongvn97@gmail.com`), hệ thống tự động gán quyền Super Admin và mở khóa toàn bộ quyền năng quản trị.
+  - Khi đăng nhập bằng tài khoản Google của tác giả (`truongminhhieu58@gmail.com`), hệ thống tự động gán quyền Super Admin và mở khóa toàn bộ quyền năng quản trị.
   - Thành viên khác đăng ký qua Google sẽ tự động mang quyền Thành viên (`member`), tự động sinh Avatar nhận diện.
 - **Nâng cấp CSDL `NguoiDung` trên Google Sheets & Apps Script (`Code.gs`):**
   - Tự động mở rộng thêm 3 cột: Cột 12 `avatar`, Cột 13 `provider` (`google` hoặc `local`), Cột 14 `email`.

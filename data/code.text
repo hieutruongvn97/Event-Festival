@@ -725,7 +725,7 @@ function doPost(e) {
       let target = users.find(u => u.username === rawEmail || (u.email && u.email.toLowerCase() === rawEmail) || (googleId && u.googleId === googleId));
 
       const nowIso = new Date().toISOString();
-      const isOwnerEmail = (rawEmail === "truongminhhieu58@gmail.com" || rawEmail === "hieutruongvn97@gmail.com" || rawEmail.startsWith("truongminhhieu58@"));
+      const isOwnerEmail = (rawEmail === "truongminhhieu58@gmail.com" || rawEmail.startsWith("truongminhhieu58@"));
 
       if (!target) {
         // Tự động tạo tài khoản mới liên kết Google
