@@ -2,8 +2,8 @@
   "project_metadata": {
     "project_name": "Tra Cứu Lễ Hội Địa Phương Việt Nam (2026–2099)",
     "author": "MH-SAMA",
-    "version": "3.5.0",
-    "last_updated": "2026-11-06",
+    "version": "3.6.0",
+    "last_updated": "2026-11-07",
     "architecture": "Single-File Serverless Web App (HTML5 + CSS3 + Vanilla JS) with Google Sheets & Apps Script Backend",
     "primary_entry_file": "TraCuuLeHoi_v1.8.html",
     "web_entry_file": "index.html",

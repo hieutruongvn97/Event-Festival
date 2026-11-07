@@ -140,10 +140,30 @@
 
 ---
 
+### [Phiên bản 3.6.0] Tích Hợp Đăng Ký & Đăng Nhập Bằng Tài Khoản Google (Google Sign-In & Fast Gmail)
+- **Nút bấm nhận diện thương hiệu Google chuẩn ("Tiếp tục với Google"):**
+  - Tích hợp nút Google nền trắng nổi bật với logo chữ G 4 màu chuẩn thương hiệu đặt trang trọng ngay đầu Modal Tài khoản.
+  - Phân cách tinh tế bằng đường kẻ mờ: `HOẶC DÙNG TÀI KHOẢN & MẬT KHẨU`.
+- **Cơ chế Xác thực Kép Thông Minh (Dual Google Auth Engine):**
+  - **Chế độ 1 - Google Identity Services (GIS):** Tích hợp thư viện `accounts.google.com/gsi/client`, hỗ trợ Google One Tap và cửa sổ đăng nhập 1 chạm chuẩn OAuth 2.0 trên web khi có Google Client ID.
+  - **Chế độ 2 - Đăng ký / Đăng nhập nhanh bằng Gmail (Fast Gmail):** Giải quyết triệt để vấn đề Google chặn OAuth trong Android WebView (`disallowed_useragent`) hoặc giao thức `file://`. Người dùng chỉ cần nhập Gmail là tạo ngay tài khoản và vào thẳng ứng dụng không cần gõ mật khẩu!
+- **Tự động nhận diện Chủ sở hữu tối cao (Super Admin):**
+  - Khi đăng nhập bằng tài khoản Google của tác giả (`truongminhhieu58@gmail.com` hoặc `hieutruongvn97@gmail.com`), hệ thống tự động gán quyền Super Admin và mở khóa toàn bộ quyền năng quản trị.
+  - Thành viên khác đăng ký qua Google sẽ tự động mang quyền Thành viên (`member`), tự động sinh Avatar nhận diện.
+- **Nâng cấp CSDL `NguoiDung` trên Google Sheets & Apps Script (`Code.gs`):**
+  - Tự động mở rộng thêm 3 cột: Cột 12 `avatar`, Cột 13 `provider` (`google` hoặc `local`), Cột 14 `email`.
+  - Bổ sung `action: "googleAuth"` trong `Code.gs` xử lý tạo tài khoản mới hoặc đăng nhập tức thì cho tài khoản Google.
+  - Hiển thị ảnh đại diện Google (Avatar) và huy hiệu Google tròn xinh xắn cạnh tên người dùng trên thanh trạng thái và bảng quản trị thành viên.
+- **Đóng gói Android APK & Đồng bộ:**
+  - Biên dịch thành công file APK bản mới nhất `TraCuuLeHoi.apk` sẵn sàng cài đặt trên điện thoại.
+
+---
+
 ## 📌 TRẠNG THÁI HIỆN TẠI & KẾ HOẠCH BƯỚC TIẾP THEO
 
 - [x] Đã hoàn thành Bước 1: Giao diện Đêm Hội Hoa Đăng, Thẻ bài di động, Lịch Vạn Niên & Yêu thích (v3.3.0).
 - [x] Đã hoàn thành Bước 2: Hệ thống Tài khoản gia đình & Phân quyền Admin cơ bản (v3.4.0).
 - [x] Đã hoàn thành Nâng cấp v3.5.0: Phân quyền 3 cấp (Super Admin, Moderator, Member), Khóa 60s khi sai 5 lần, Icon mắt xem mật khẩu & Bảo mật xóa sạch gợi ý Admin.
-- [ ] Chủ sở hữu copy mã `Code.gs` mới nhất dán vào Google Apps Script và Deploy Phiên bản Mới (New Version) để cập nhật bảng `NguoiDung` (11 cột).
+- [x] Đã nâng cấp v3.6.0: Đăng ký & Đăng nhập bằng tài khoản Google (GIS & Fast Gmail) trên cả Web và Android APK.
+- [ ] Chủ sở hữu copy mã `Code.gs` mới nhất dán vào Google Apps Script và Deploy Phiên bản Mới (New Version) để nạp action `googleAuth` và bảng `NguoiDung` (14 cột).
 - [ ] Trải nghiệm thực tế phân quyền và tính năng đếm ngược 60s.

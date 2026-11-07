@@ -171,7 +171,7 @@ function ensureSheetsExist() {
     usersSheet = ss.insertSheet(SHEET_USERS);
     const uHeaders = [
       "id", "username", "displayName", "passwordHash",
-      "salt", "role", "status", "createdAt", "lastLogin", "failedAttempts", "lockUntil"
+      "salt", "role", "status", "createdAt", "lastLogin", "failedAttempts", "lockUntil", "avatar", "provider", "email"
     ];
     usersSheet.getRange(1, 1, 1, uHeaders.length).setValues([uHeaders]);
     usersSheet.getRange(1, 1, 1, uHeaders.length)
@@ -187,14 +187,21 @@ function ensureSheetsExist() {
       "u_admin", "admin", "Chủ sở hữu (MH-SAMA)",
       adminHash, adminSalt, "superadmin", "active",
       new Date().toISOString(), new Date().toISOString(),
-      0, 0
+      0, 0, "", "local", "truongminhhieu58@gmail.com"
     ];
     usersSheet.getRange(2, 1, 1, initAdminRow.length).setValues([initAdminRow]);
   } else {
-    // Tự động kiểm tra và nâng cấp 2 cột kiểm soát đăng nhập nếu chưa có
+    // Tự động kiểm tra và nâng cấp các cột kiểm soát đăng nhập và Google nếu chưa có
     if (usersSheet.getLastColumn() < 11) {
       usersSheet.getRange(1, 10, 1, 2).setValues([["failedAttempts", "lockUntil"]]);
       usersSheet.getRange(1, 10, 1, 2)
+        .setFontWeight("bold")
+        .setBackground("#065f46")
+        .setFontColor("#ffffff");
+    }
+    if (usersSheet.getLastColumn() < 14) {
+      usersSheet.getRange(1, 12, 1, 3).setValues([["avatar", "provider", "email"]]);
+      usersSheet.getRange(1, 12, 1, 3)
         .setFontWeight("bold")
         .setBackground("#065f46")
         .setFontColor("#ffffff");
@@ -246,7 +253,7 @@ function readAllRecords(mainSheet) {
 function readAllUsers(usersSheet) {
   const lastRow = usersSheet.getLastRow();
   if (lastRow <= 1) return [];
-  const lastCol = Math.max(usersSheet.getLastColumn(), 11);
+  const lastCol = Math.max(usersSheet.getLastColumn(), 14);
   const values = usersSheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
   const users = [];
   for (let i = 0; i < values.length; i++) {
@@ -254,7 +261,7 @@ function readAllUsers(usersSheet) {
     if (!r[1]) continue; // Không có username
     const rawUsername = String(r[1]).trim().toLowerCase();
     let rawRole = String(r[5] || "member").trim().toLowerCase();
-    // Tài khoản gốc admin luôn giữ quyền tối cao superadmin
+    // Tài khoản gốc admin hoặc email chủ sở hữu luôn giữ quyền tối cao superadmin
     if (rawUsername === "admin" && (rawRole === "admin" || !rawRole)) {
       rawRole = "superadmin";
     }
@@ -269,7 +276,10 @@ function readAllUsers(usersSheet) {
       createdAt: String(r[7] || new Date().toISOString()),
       lastLogin: String(r[8] || ""),
       failedAttempts: Number(r[9]) || 0,
-      lockUntil: Number(r[10]) || 0
+      lockUntil: Number(r[10]) || 0,
+      avatar: String(r[11] || ""),
+      provider: String(r[12] || "local"),
+      email: String(r[13] || rawUsername)
     });
   }
   return users;
@@ -277,8 +287,9 @@ function readAllUsers(usersSheet) {
 
 function writeAllUsers(usersSheet, users) {
   const lastRow = usersSheet.getLastRow();
+  const lastCol = Math.max(usersSheet.getLastColumn(), 14);
   if (lastRow > 1) {
-    usersSheet.getRange(2, 1, lastRow - 1, 11).clearContent();
+    usersSheet.getRange(2, 1, lastRow - 1, lastCol).clearContent();
   }
   if (users.length === 0) return;
   const rows = users.map(u => [
@@ -292,9 +303,12 @@ function writeAllUsers(usersSheet, users) {
     u.createdAt || new Date().toISOString(),
     u.lastLogin || "",
     Number(u.failedAttempts) || 0,
-    Number(u.lockUntil) || 0
+    Number(u.lockUntil) || 0,
+    u.avatar || "",
+    u.provider || "local",
+    u.email || u.username
   ]);
-  usersSheet.getRange(2, 1, rows.length, 11).setValues(rows);
+  usersSheet.getRange(2, 1, rows.length, 14).setValues(rows);
 }
 
 function writeAllRecords(mainSheet, records) {
@@ -576,7 +590,10 @@ function doPost(e) {
         createdAt: u.createdAt,
         lastLogin: u.lastLogin,
         failedAttempts: u.failedAttempts || 0,
-        isLockedUntil: (u.lockUntil && u.lockUntil > nowMs) ? Math.ceil((u.lockUntil - nowMs) / 1000) : 0
+        isLockedUntil: (u.lockUntil && u.lockUntil > nowMs) ? Math.ceil((u.lockUntil - nowMs) / 1000) : 0,
+        avatar: u.avatar || "",
+        provider: u.provider || "local",
+        email: u.email || u.username
       }));
       return jsonResponse({
         ok: true,
@@ -690,6 +707,90 @@ function doPost(e) {
         message: "Đã đổi mật khẩu thành công!"
       });
     }
+
+    // 6. Đăng ký & Đăng nhập bằng Google Account (1-Click Google Sign-In / Fast Gmail)
+    if (action === "googleAuth") {
+      const { usersSheet } = ensureSheetsExist();
+      const users = readAllUsers(usersSheet);
+      const rawEmail = String(payload.email || "").trim().toLowerCase();
+      const rawName = String(payload.displayName || payload.name || rawEmail.split("@")[0]).trim();
+      const rawAvatar = String(payload.avatar || payload.picture || "").trim();
+      const googleId = String(payload.googleId || payload.sub || "").trim();
+
+      if (!rawEmail || !rawEmail.includes("@")) {
+        return jsonResponse({ ok: false, error: "Địa chỉ Email Google không hợp lệ!" });
+      }
+
+      // Tìm tài khoản theo email hoặc username trùng email
+      let target = users.find(u => u.username === rawEmail || (u.email && u.email.toLowerCase() === rawEmail) || (googleId && u.googleId === googleId));
+
+      const nowIso = new Date().toISOString();
+      const isOwnerEmail = (rawEmail === "truongminhhieu58@gmail.com" || rawEmail === "hieutruongvn97@gmail.com" || rawEmail.startsWith("truongminhhieu58@"));
+
+      if (!target) {
+        // Tự động tạo tài khoản mới liên kết Google
+        const newId = "u_g_" + Date.now();
+        const autoAvatar = rawAvatar || ("https://ui-avatars.com/api/?background=4285F4&color=fff&bold=true&name=" + encodeURIComponent(rawName || "Google User"));
+        target = {
+          id: newId,
+          username: rawEmail,
+          displayName: rawName || rawEmail.split("@")[0],
+          passwordHash: "GOOGLE_OAUTH_ACCOUNT",
+          salt: "google",
+          role: isOwnerEmail ? "superadmin" : "member",
+          status: "active",
+          createdAt: nowIso,
+          lastLogin: nowIso,
+          failedAttempts: 0,
+          lockUntil: 0,
+          avatar: autoAvatar,
+          provider: "google",
+          email: rawEmail
+        };
+        users.push(target);
+      } else {
+        // Tài khoản đã có -> Kiểm tra trạng thái khóa
+        if (target.status === "locked") {
+          return jsonResponse({ ok: false, error: "Tài khoản Google này đang bị khóa bởi Quản trị viên!" });
+        }
+        // Cập nhật thông tin mới nhất từ Google
+        if (rawName && (!target.displayName || target.displayName === target.username)) {
+          target.displayName = rawName;
+        }
+        if (rawAvatar) {
+          target.avatar = rawAvatar;
+        }
+        if (isOwnerEmail && target.role !== "superadmin") {
+          target.role = "superadmin";
+        }
+        target.provider = "google";
+        target.lastLogin = nowIso;
+        target.failedAttempts = 0;
+        target.lockUntil = 0;
+      }
+
+      writeAllUsers(usersSheet, users);
+
+      const isPrivileged = (target.role === "superadmin" || target.role === "moderator" || target.role === "admin");
+      return jsonResponse({
+        ok: true,
+        message: target.role === "superadmin" ? "Đăng nhập Google với quyền Chủ sở hữu tối cao thành công!" : "Đăng nhập bằng tài khoản Google thành công!",
+        user: {
+          id: target.id,
+          username: target.username,
+          displayName: target.displayName,
+          role: target.role,
+          status: target.status,
+          avatar: target.avatar,
+          provider: "google",
+          email: rawEmail
+        },
+        adminKey: isPrivileged ? getAdminKey() : "",
+        token: "tk_g_" + target.id + "_" + Utilities.getUuid()
+      });
+    }
+
+
 
 
 
