@@ -1285,6 +1285,360 @@
     .user-status-dot.active { background: #34d399; box-shadow: 0 0 8px #10b981; }
     .user-status-dot.locked { background: #f87171; box-shadow: 0 0 8px #ef4444; }
 
+    /* ==========================================================================
+       TỐI ƯU GIAO DIỆN DI ĐỘNG & NÚT CUỘN LÊN ĐẦU TRANG (BACK TO TOP)
+       ========================================================================== */
+    .title-chunk {
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .today-banner-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .today-banner-sep {
+      color: rgba(245, 158, 11, 0.6);
+      font-weight: 700;
+    }
+    .controls-middle-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+    }
+    .filter-row-date {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .filter-col {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .filter-lbl {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Nút cuộn nhanh lên đầu trang (Floating Action Button) */
+    .back-to-top-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 18px;
+      z-index: 9999;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+      color: #ffffff;
+      border: 1px solid rgba(254, 240, 138, 0.45);
+      border-radius: 999px;
+      padding: 9px 15px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(234, 88, 12, 0.5), 0 0 12px rgba(245, 158, 11, 0.35);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px) scale(0.9);
+      transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .back-to-top-btn.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+    .back-to-top-btn:active {
+      transform: scale(0.92);
+    }
+    .btn-top-icon {
+      font-size: 0.95rem;
+      line-height: 1;
+    }
+
+    /* Responsive cho Màn hình Điện thoại & Tablet nhỏ (<= 640px) */
+    @media (max-width: 640px) {
+      body {
+        padding: 12px 8px;
+      }
+      .container {
+        padding: 0 2px;
+      }
+      .header-decor {
+        padding: 4px 0 2px;
+        margin-bottom: 2px;
+      }
+      .lantern {
+        width: 26px;
+        height: 42px;
+        top: -6px;
+      }
+      .lantern-left { left: 0px; }
+      .lantern-right { right: 0px; }
+
+      .app-title {
+        font-size: clamp(1.2rem, 5.2vw, 1.55rem);
+        line-height: 1.25;
+        margin-bottom: 4px;
+        padding: 0 26px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+      }
+
+      /* Banner Lịch Hôm Nay thu gọn 2 dòng tinh tế */
+      .today-banner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        border-radius: 12px;
+        padding: 6px 10px;
+        width: 100%;
+        max-width: 440px;
+        margin: 4px auto 8px;
+        font-size: 0.78rem;
+      }
+      .today-banner-sep {
+        display: none;
+      }
+      .today-banner-line {
+        font-size: 0.76rem;
+        white-space: nowrap;
+        justify-content: center;
+      }
+
+      /* Rút gọn phần giới thiệu và chú thích trên mobile */
+      .subtitle {
+        font-size: 0.76rem;
+        margin-bottom: 6px !important;
+        line-height: 1.35;
+        padding: 0 4px;
+      }
+      .subtitle.subtitle-disclaimer {
+        font-size: 0.72rem;
+        margin-top: -3px !important;
+        margin-bottom: 8px !important;
+        opacity: 0.85;
+      }
+      .author-badge-gold {
+        margin-bottom: 8px;
+        padding: 2px 10px;
+        font-size: 0.74rem;
+      }
+
+      /* Thu gọn thanh trạng thái & Đăng nhập */
+      .sync-status-bar {
+        padding: 8px 10px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        gap: 6px;
+      }
+      .sync-info {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 4px;
+      }
+      .status-pill, .auth-pill {
+        font-size: 0.72rem;
+        padding: 3px 8px;
+        white-space: nowrap;
+      }
+      #lastSyncTimeText {
+        font-size: 0.68rem !important;
+        width: 100%;
+        text-align: right;
+        margin: 0;
+      }
+      .user-auth-zone {
+        width: 100%;
+        margin: 2px 0;
+      }
+      .btn-user-login {
+        width: 100%;
+        padding: 7px 10px;
+        font-size: 0.8rem;
+        justify-content: center;
+      }
+      .sync-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+      .sync-actions .btn-cloud {
+        width: 100%;
+        padding: 7px 10px;
+        font-size: 0.8rem;
+        justify-content: center;
+      }
+      .sync-actions .btn:not(.btn-cloud) {
+        font-size: 0.74rem;
+        padding: 5px 8px;
+      }
+
+      /* Thanh Vùng Miền vuốt ngang mượt mà (Horizontal Swipable Tabs) */
+      .region-tabs {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 2px 2px 6px;
+        gap: 6px;
+        width: 100%;
+        scrollbar-width: none;
+      }
+      .region-tabs::-webkit-scrollbar {
+        display: none;
+      }
+      .tab-btn {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 6px 12px;
+        font-size: 0.78rem;
+      }
+
+      /* Khung tìm kiếm và bộ lọc gọn gàng */
+      .toolbar {
+        padding: 10px 10px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        gap: 8px;
+      }
+      .right-controls {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .search-input {
+        width: 100%;
+        min-width: 0;
+        padding: 7px 12px;
+        font-size: 0.82rem;
+      }
+      .controls-middle-row {
+        display: flex;
+        gap: 6px;
+        width: 100%;
+        align-items: center;
+      }
+      .view-toggle-wrap {
+        flex-shrink: 0;
+        padding: 2px;
+      }
+      .view-toggle-btn {
+        padding: 5px 9px;
+        font-size: 0.76rem;
+      }
+      .sort-select {
+        flex: 1;
+        min-width: 0;
+        padding: 7px 10px;
+        font-size: 0.78rem;
+        text-overflow: ellipsis;
+      }
+      .filter-row-date {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        width: 100%;
+      }
+      .filter-col {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        width: 100%;
+      }
+      .filter-lbl {
+        font-size: 0.76rem;
+        color: var(--text-muted);
+        white-space: nowrap;
+      }
+      .month-select, .year-select {
+        width: 100%;
+        flex: 1;
+        padding: 7px 8px;
+        font-size: 0.78rem;
+      }
+
+      /* Thanh nút hành động */
+      .action-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+      .btn-propose, .btn-primary {
+        width: 100%;
+        padding: 9px 12px;
+        font-size: 0.86rem;
+        font-weight: 700;
+        justify-content: center;
+      }
+      .action-bar .btn:not(.btn-propose):not(.btn-primary) {
+        font-size: 0.75rem;
+        padding: 6px 8px;
+        flex: 1 1 calc(50% - 6px);
+        justify-content: center;
+        white-space: nowrap;
+      }
+
+      /* Thẻ bài Lễ Hội tối ưu chiều cao, cuộn mượt */
+      .fest-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .fest-card {
+        padding: 12px 14px;
+        border-radius: 14px;
+        gap: 10px;
+      }
+      .fest-card-title {
+        font-size: 1.05rem;
+        line-height: 1.3;
+      }
+      .fest-card-location {
+        font-size: 0.8rem;
+      }
+      .fest-card-dates {
+        padding: 8px 10px;
+        gap: 6px;
+      }
+      .fest-date-val {
+        font-size: 0.95rem;
+      }
+      .fest-card-desc {
+        font-size: 0.82rem;
+        padding: 6px 8px;
+      }
+      .fest-card-actions {
+        gap: 6px;
+      }
+      .fest-card-actions .cal-btn {
+        flex: 1 1 100%;
+        min-width: 0;
+        padding: 8px 10px;
+        font-size: 0.82rem;
+      }
+      .fest-card-actions .btn {
+        flex: 1 1 auto;
+        padding: 6px 8px;
+        font-size: 0.76rem;
+      }
+    }
+
 </style>
 </head>
 <body class="guest-mode">
@@ -1334,14 +1688,17 @@
       </defs>
     </svg>
 
-    <h1 class="app-title">🏮 Tra Cứu Lễ Hội Địa Phương Việt Nam 🏮</h1>
+    <h1 class="app-title">
+      <span class="title-chunk">🏮 Tra Cứu Lễ Hội</span>
+      <span class="title-chunk">Địa Phương Việt Nam 🏮</span>
+    </h1>
     <!-- Khung Lịch Vạn Niên Hôm Nay tự động -->
     <div class="today-banner" id="todayCalendarBanner">
       <span>Đang tải thông tin lịch hôm nay...</span>
     </div>
   </div>
   <p class="subtitle">Đối chiếu Âm - Dương lịch &amp; thời gian diễn ra lễ hội tiêu biểu (2026–2099) • Hỗ trợ đồng bộ Google Sheets an toàn</p>
-  <p class="subtitle" style="margin-top:-12px;color:#fbbf24;">Ngày dương lịch là kết quả quy đổi ngày âm truyền thống; không thay thế lịch tổ chức chính thức của địa phương. Tháng nhuận chưa được chọn riêng cho từng lễ hội.</p>
+  <p class="subtitle subtitle-disclaimer" style="margin-top:-12px;color:#fbbf24;">Ngày dương lịch là kết quả quy đổi ngày âm truyền thống; không thay thế lịch tổ chức chính thức của địa phương. Tháng nhuận chưa được chọn riêng cho từng lễ hội.</p>
   <!-- ★ VỊ TRÍ 1 (ĐẦU TRANG): Sửa tên tác giả ở dòng dưới đây ★ -->
   <div class="author-badge-gold">✨ Phát triển &amp; Biên soạn: <strong>MH-SAMA</strong></div>
 
@@ -1398,17 +1755,21 @@
     </div>
     <div class="right-controls">
       <input type="text" id="searchInput" class="search-input" placeholder="Tìm tên, tỉnh thành (có/không dấu)..." oninput="renderTable()" />
-      <div class="view-toggle-wrap">
-        <button type="button" class="view-toggle-btn active" id="btnViewCard" onclick="setViewMode('card')">🎴 Dạng Thẻ</button>
-        <button type="button" class="view-toggle-btn" id="btnViewTable" onclick="setViewMode('table')">📋 Dạng Bảng</button>
+      <div class="controls-middle-row">
+        <div class="view-toggle-wrap">
+          <button type="button" class="view-toggle-btn active" id="btnViewCard" onclick="setViewMode('card')">🎴 Dạng Thẻ</button>
+          <button type="button" class="view-toggle-btn" id="btnViewTable" onclick="setViewMode('table')">📋 Dạng Bảng</button>
+        </div>
+        <select id="sortSelect" class="sort-select" onchange="renderTable()" title="Chọn cách sắp xếp danh sách lễ hội">
+          <option value="upcoming" selected>⏳ Sắp diễn ra gần nhất (Mặc định)</option>
+          <option value="date_asc">📅 Ngày Dương lịch (T1 → T12)</option>
+          <option value="region">🗺️ Theo Vùng miền</option>
+        </select>
       </div>
-      <select id="sortSelect" class="sort-select" onchange="renderTable()" title="Chọn cách sắp xếp danh sách lễ hội">
-        <option value="upcoming" selected>⏳ Sắp xếp: Sắp diễn ra gần nhất (Mặc định)</option>
-        <option value="date_asc">📅 Sắp xếp: Ngày Dương lịch (T1 → T12)</option>
-        <option value="region">🗺️ Sắp xếp: Theo Vùng miền</option>
-      </select>
-      <label style="font-size:0.84rem;color:var(--text-muted);">Tháng Dương:</label>
-      <select id="solarMonthSelect" class="month-select" onchange="renderTable()">
+      <div class="filter-row-date">
+        <div class="filter-col">
+          <label class="filter-lbl" for="solarMonthSelect">Tháng:</label>
+          <select id="solarMonthSelect" class="month-select" onchange="renderTable()">
         <option value="all">Tất cả tháng</option>
         <option value="1">Tháng 01</option>
         <option value="2">Tháng 02</option>
@@ -1423,8 +1784,12 @@
         <option value="11">Tháng 11</option>
         <option value="12">Tháng 12</option>
       </select>
-      <label style="font-size:0.84rem;color:var(--text-muted);">Năm Dương lịch:</label>
-      <select id="yearSelect" class="year-select" onchange="renderTable()"></select>
+        </div>
+        <div class="filter-col">
+          <label class="filter-lbl" for="yearSelect">Năm:</label>
+          <select id="yearSelect" class="year-select" onchange="renderTable()"></select>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -2580,9 +2945,14 @@
       const leapText = lunarLeap === 1 ? " (Nhuận)" : "";
 
       bannerEl.innerHTML = `
-        <span>🏮 <strong>Hôm nay:</strong> ${dayOfWeek}, <span class="solar-hl">${String(solarD).padStart(2, "0")}/${String(solarM).padStart(2, "0")}/${solarY} (Dương lịch)</span></span>
-        <span>•</span>
-        <span>Nhằm ngày <span class="lunar-hl">${String(lunarDay).padStart(2, "0")}/${String(lunarMonth).padStart(2, "0")}${leapText}</span> năm <strong>${canChi}</strong> (Âm lịch)</span>
+        <div class="today-banner-line line-solar">
+          <span class="today-icon">🏮</span>
+          <span class="today-lbl"><strong>Hôm nay:</strong> ${dayOfWeek}, <span class="solar-hl">${String(solarD).padStart(2, "0")}/${String(solarM).padStart(2, "0")}/${solarY}</span> (DL)</span>
+        </div>
+        <div class="today-banner-sep">•</div>
+        <div class="today-banner-line line-lunar">
+          <span class="today-lbl">Nhằm ngày <span class="lunar-hl">${String(lunarDay).padStart(2, "0")}/${String(lunarMonth).padStart(2, "0")}${leapText}</span> năm <strong>${canChi}</strong> (ÂL)</span>
+        </div>
       `;
     } catch (e) {
       console.warn("Lỗi cập nhật banner hôm nay:", e);
@@ -5378,6 +5748,26 @@
     }
   });
   // ==========================================================================
+  // XỬ LÝ NÚT CUỘN NHANH LÊN ĐẦU TRANG (BACK TO TOP)
+  // ==========================================================================
+  window.addEventListener("scroll", () => {
+    const btn = document.getElementById("backToTopBtn");
+    if (!btn) return;
+    if (window.scrollY > 280) {
+      btn.classList.add("visible");
+    } else {
+      btn.classList.remove("visible");
+    }
+  }, { passive: true });
+
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+  // ==========================================================================
   // KHỞI CHẠY HỆ THỐNG BAN ĐẦU (Đặt ở cuối cùng sau khi nạp toàn bộ biến & hàm)
   // ==========================================================================
   try {
@@ -5396,5 +5786,11 @@
   }
 
 </script>
+
+  <!-- Nút cuộn nhanh lên đầu trang (Back to Top FAB) -->
+  <button type="button" id="backToTopBtn" class="back-to-top-btn" onclick="scrollToTop()" title="Lên đầu trang" aria-label="Cuộn lên đầu trang">
+    <span class="btn-top-icon">▲</span>
+    <span class="btn-top-text">Lên đầu</span>
+  </button>
 </body>
 </html>

@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1e3a8a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.json" />
   <title>Tra Cứu Lễ Hội Địa Phương Việt Nam (2026–2099)</title>
   <style>
     :root {
@@ -25,7 +29,19 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg-main); color: var(--text-main); padding: 24px 16px; line-height: 1.5; }
+    body {
+      background: 
+        radial-gradient(ellipse at 50% 0%, rgba(239, 68, 68, 0.16) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 18%, rgba(245, 158, 11, 0.13) 0%, transparent 45%),
+        radial-gradient(ellipse at 15% 22%, rgba(168, 85, 247, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 50% 85%, rgba(16, 185, 129, 0.1) 0%, transparent 60%),
+        linear-gradient(180deg, #0e1322 0%, #0a0d18 35%, #060810 100%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      padding: 24px 16px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
     .container { max-width: 1050px; margin: 0 auto; }
 
     /* Tự động ẩn các nút Thêm / Sửa / Xóa / Quản trị khi ở Chế độ Khách (Chỉ xem) */
@@ -151,16 +167,18 @@
 
     /* Thanh trạng thái Đồng bộ Google Sheets & Quyền Chủ sở hữu */
     .sync-status-bar {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 16px;
+      background: linear-gradient(135deg, rgba(23, 31, 51, 0.75) 0%, rgba(15, 20, 35, 0.85) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 14px;
+      padding: 14px 18px;
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 16px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
     .sync-info {
       display: flex;
@@ -224,35 +242,53 @@
 
     /* Thanh công cụ điều khiển */
     .toolbar {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
+      background: linear-gradient(135deg, rgba(24, 32, 54, 0.8) 0%, rgba(16, 21, 38, 0.9) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.28);
+      border-radius: 16px;
+      padding: 18px 20px;
       display: flex;
       flex-wrap: wrap;
       gap: 14px;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 18px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .region-tabs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
     .tab-btn {
-      background: #1f242d;
-      color: var(--text-main);
-      border: 1px solid var(--border);
-      padding: 8px 15px;
+      background: rgba(32, 44, 72, 0.7);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 8px 16px;
       border-radius: 999px;
       cursor: pointer;
       font-size: 0.86rem;
       font-weight: 600;
-      transition: 0.2s;
+      transition: all 0.2s ease;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
-    .tab-btn:hover { border-color: var(--accent-blue); }
-    .tab-btn.active { background: var(--btn-active); color: var(--accent-blue); border-color: #2563eb; }
+    .tab-btn:hover {
+      background: rgba(45, 62, 102, 0.85);
+      border-color: rgba(245, 158, 11, 0.5);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #0b0f19;
+      border-color: #fbbf24;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+    }
+    .tab-btn.active .tab-count {
+      background: rgba(0, 0, 0, 0.35);
+      color: #fef08a;
+    }
     .tab-count {
       font-size: 0.74rem;
       padding: 1px 6px;
@@ -282,16 +318,26 @@
 
     .right-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
     .search-input, .year-select, .month-select, .sort-select {
-      background: #1f242d;
-      color: var(--text-main);
-      border: 1px solid var(--border);
+      background: rgba(28, 38, 64, 0.8);
+      color: #f8fafc;
+      border: 1px solid rgba(245, 158, 11, 0.25);
       border-radius: 999px;
-      padding: 8px 13px;
+      padding: 9px 15px;
       font-size: 0.86rem;
       outline: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
     }
-    .search-input { min-width: 210px; }
-    .search-input:focus, .year-select:focus, .month-select:focus, .sort-select:focus { border-color: var(--accent-blue); }
+    .search-input { min-width: 220px; }
+    .search-input::placeholder { color: #818cf8; opacity: 0.75; }
+    .search-input:focus, .year-select:focus, .month-select:focus, .sort-select:focus {
+      border-color: #f59e0b;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.35);
+      background: rgba(35, 48, 80, 0.95);
+    }
+    .search-input:hover, .year-select:hover, .month-select:hover, .sort-select:hover {
+      border-color: rgba(245, 158, 11, 0.45);
+    }
 
     /* Thanh nút hành động */
     .action-bar {
@@ -301,23 +347,59 @@
       margin-bottom: 16px;
     }
     .btn {
-      background: #1e293b;
-      color: var(--text-main);
-      border: 1px solid var(--border);
-      padding: 8px 14px;
-      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(32, 44, 72, 0.75), rgba(22, 30, 52, 0.85));
+      color: #f1f5f9;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 9px 15px;
+      border-radius: 10px;
       cursor: pointer;
       font-size: 0.85rem;
       font-weight: 600;
-      transition: 0.2s;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(8px);
     }
-    .btn-primary { background: #2563eb; border-color: #3b82f6; color: #fff; }
-    .btn-primary:hover { background: #1d4ed8; }
-    .btn-cloud { background: rgba(16, 185, 129, 0.16); border-color: rgba(16, 185, 129, 0.4); color: #34d399; }
-    .btn-cloud:hover { background: rgba(16, 185, 129, 0.26); border-color: #34d399; }
-    .btn-share { background: rgba(139, 92, 246, 0.18); border-color: rgba(139, 92, 246, 0.45); color: #c4b5fd; }
-    .btn-share:hover { background: rgba(139, 92, 246, 0.28); border-color: #a78bfa; }
-    .btn:hover { border-color: var(--accent-blue); }
+    .btn:hover {
+      border-color: rgba(245, 158, 11, 0.5);
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      border-color: #60a5fa;
+      color: #fff;
+      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.35);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      border-color: #93c5fd;
+      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5);
+    }
+    .btn-cloud {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(5, 150, 105, 0.28));
+      border-color: rgba(52, 211, 153, 0.45);
+      color: #6ee7b7;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+    }
+    .btn-cloud:hover {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.35), rgba(5, 150, 105, 0.45));
+      border-color: #34d399;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+    .btn-share {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.22), rgba(126, 34, 206, 0.28));
+      border-color: rgba(192, 132, 252, 0.45);
+      color: #e9d5ff;
+      box-shadow: 0 2px 8px rgba(168, 85, 247, 0.2);
+    }
+    .btn-share:hover {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(126, 34, 206, 0.45));
+      border-color: #c084fc;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(168, 85, 247, 0.35);
+    }
     .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
     /* Bảng dữ liệu */
@@ -677,15 +759,948 @@
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
-  </style>
+  
+    /* ==========================================================================
+       THEME MỚI: ĐÊM HỘI HOA ĐĂNG & TRUYỀN THỐNG VIỆT NAM (v3.3.0)
+       ========================================================================== */
+    :root {
+      --bg-main: #07090e;
+      --bg-card: rgba(18, 23, 37, 0.9);
+      --bg-card-hover: rgba(26, 33, 52, 0.98);
+      --bg-panel: #111624;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-highlight: rgba(245, 158, 11, 0.35);
+      --accent-gold: #f59e0b;
+      --accent-gold-light: #fef08a;
+      --accent-red: #ef4444;
+      --accent-blue: #38bdf8;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    /* Hiệu ứng lồng đèn lụa đung đưa 2 bên */
+    .header-wrapper {
+      position: relative;
+      text-align: center;
+      padding: 12px 10px 8px;
+      margin-bottom: 12px;
+      overflow: visible;
+    }
+    .lantern {
+      position: absolute;
+      top: -6px;
+      width: 42px;
+      height: 64px;
+      z-index: 5;
+      pointer-events: none;
+      filter: drop-shadow(0 0 14px rgba(245, 158, 11, 0.65));
+      transform-origin: top center;
+    }
+    .lantern-left {
+      left: 6px;
+      animation: lantern-sway-left 3.4s ease-in-out infinite alternate;
+    }
+    .lantern-right {
+      right: 6px;
+      animation: lantern-sway-right 3.8s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes lantern-sway-left {
+      0% { transform: rotate(-7deg); }
+      100% { transform: rotate(7deg); }
+    }
+    @keyframes lantern-sway-right {
+      0% { transform: rotate(7deg); }
+      100% { transform: rotate(-7deg); }
+    }
+
+    /* Tiêu đề mạ vàng ánh kim lấp lánh */
+    .app-title {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 0%, #fef08a 30%, #f59e0b 65%, #d97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+      text-shadow: 0 0 24px rgba(245, 158, 11, 0.2);
+    }
+    @media (max-width: 640px) {
+      .app-title { font-size: 1.55rem; }
+      .lantern { width: 32px; height: 50px; }
+    }
+
+    /* Banner Lịch Vạn Niên Hôm Nay */
+    .today-banner {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(239, 68, 68, 0.1) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 999px;
+      padding: 7px 18px;
+      margin: 6px auto 14px;
+      font-size: 0.88rem;
+      color: #fef08a;
+      box-shadow: 0 4px 18px rgba(245, 158, 11, 0.12);
+      flex-wrap: wrap;
+    }
+    .today-banner .solar-hl { color: #fff; font-weight: 700; }
+    .today-banner .lunar-hl { color: #fbbf24; font-weight: 700; }
+
+    /* Huy hiệu tác giả MH-SAMA mạ vàng */
+    .author-badge-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.32);
+      border-radius: 999px;
+      color: #fde68a;
+      font-size: 0.84rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    /* Cụm chuyển đổi chế độ xem Thẻ / Bảng */
+    .view-toggle-wrap {
+      display: inline-flex;
+      background: rgba(28, 38, 64, 0.85);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      padding: 4px;
+      border-radius: 999px;
+      gap: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+    .view-toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 13px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .view-toggle-btn:hover { color: #fff; }
+    .view-toggle-btn.active {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #080a11;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
+    }
+
+    /* Tab Yêu thích */
+    .tab-btn.btn-fav-tab.active {
+      background: rgba(244, 63, 94, 0.22);
+      color: #fb7185;
+      border-color: #f43f5e;
+    }
+    .tab-btn.btn-fav-tab .tab-count {
+      background: rgba(244, 63, 94, 0.25);
+      color: #fecdd3;
+    }
+
+    /* Nút Tim Yêu thích */
+    .btn-fav {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 50%;
+      line-height: 1;
+      transition: transform 0.15s ease, filter 0.15s ease;
+      opacity: 0.45;
+      color: #94a3b8;
+    }
+    .btn-fav:hover {
+      transform: scale(1.2);
+      opacity: 0.85;
+      color: #fb7185;
+    }
+    .btn-fav.active {
+      opacity: 1;
+      color: #f43f5e;
+      filter: drop-shadow(0 0 8px rgba(244, 63, 94, 0.7));
+    }
+
+    /* Huy hiệu Hôm Nay phát sáng nhịp tim Pulse */
+    @keyframes pulse-glow {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 16px 4px rgba(245, 158, 11, 0.6);
+        transform: scale(1.03);
+      }
+    }
+    .countdown-tag.today {
+      animation: pulse-glow 2s infinite ease-in-out;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.28), rgba(245, 158, 11, 0.28)) !important;
+      color: #fef08a !important;
+      border: 1px solid #f59e0b !important;
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       HỆ THỐNG THẺ LỄ HỘI (CARD GRID VIEW)
+       ========================================================================== */
+    .fest-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 640px) {
+      .fest-grid { grid-template-columns: 1fr; }
+    }
+    .fest-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    }
+    .fest-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(245, 158, 11, 0.45);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 0 0 16px rgba(245, 158, 11, 0.1);
+    }
+    .fest-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .fest-card-title-group { flex: 1; }
+    .fest-card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+    .fest-card-location {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .fest-card-dates {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    .fest-date-box {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .fest-date-box.right {
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+      padding-left: 10px;
+    }
+    .fest-date-lbl {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .fest-date-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .fest-date-val.lunar { color: #fbbf24; }
+    .fest-date-val.solar { color: #38bdf8; }
+    .fest-card-desc {
+      font-size: 0.86rem;
+      color: #cbd5e1;
+      line-height: 1.45;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+      padding: 8px 10px;
+      border-left: 3px solid rgba(245, 158, 11, 0.4);
+    }
+    .fest-card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .fest-card-detail-drawer {
+      display: none;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 6px;
+    }
+    .fest-card-detail-drawer.open { display: block; }
+
+
+    /* ==========================================================================
+       HỆ THỐNG TÀI KHOẢN NGƯỜI DÙNG & QUẢN TRỊ THÀNH VIÊN (v3.4.0)
+       ========================================================================== */
+    .user-auth-zone {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-user-login {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.25) 0%, rgba(126, 34, 206, 0.35) 100%);
+      border: 1px solid rgba(192, 132, 252, 0.45);
+      color: #f3e8ff;
+      padding: 7px 15px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(168, 85, 247, 0.25);
+    }
+    .btn-user-login:hover {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(126, 34, 206, 0.5) 100%);
+      border-color: #c084fc;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(168, 85, 247, 0.4);
+    }
+    .user-profile-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(22, 30, 52, 0.85);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 999px;
+      padding: 4px 14px 4px 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f59e0b, #ea580c);
+      color: #0b0f19;
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    }
+    .user-profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .user-name-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.84rem;
+      color: #fff;
+    }
+    .user-role-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .user-role-badge.superadmin, .user-role-badge.admin {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.35), rgba(234, 88, 12, 0.35));
+      color: #fde047;
+      border: 1px solid rgba(250, 204, 21, 0.7);
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+      font-weight: 800;
+    }
+    .user-role-badge.moderator {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.35));
+      color: #6ee7b7;
+      border: 1px solid rgba(52, 211, 153, 0.6);
+      font-weight: 700;
+    }
+    .user-role-badge.member {
+      background: rgba(148, 163, 184, 0.2);
+      color: #cbd5e1;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+    /* Khung nhập mật khẩu kèm Icon Con mắt */
+    .password-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .password-input-wrapper input {
+      width: 100%;
+      padding-right: 42px !important;
+    }
+    .btn-toggle-eye {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: all 0.2s;
+      z-index: 2;
+    }
+    .btn-toggle-eye:hover {
+      color: var(--gold-primary);
+      background: rgba(251, 191, 36, 0.15);
+    }
+    .login-lockout-notice {
+      margin-top: 10px;
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      animation: fadeIn 0.3s ease;
+    }
+    .user-quick-actions {
+      display: flex;
+      gap: 8px;
+      font-size: 0.74rem;
+    }
+    .user-action-link {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 0;
+      font-size: 0.74rem;
+      transition: color 0.15s ease;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .user-action-link:hover { color: #f59e0b; }
+    .user-action-link.logout:hover { color: #f87171; }
+
+    /* Tabs trong Modal Đăng nhập / Đăng ký */
+    .auth-tab-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: rgba(14, 18, 30, 0.7);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+    .auth-tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .auth-tab-btn.active {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(126, 34, 206, 0.45));
+      color: #fff;
+      border: 1px solid rgba(192, 132, 252, 0.4);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Bảng danh sách thành viên trong Admin Modal */
+    .user-table-wrap {
+      max-height: 50vh;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(14, 18, 30, 0.6);
+      margin-top: 10px;
+    }
+    .user-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+    .user-table th {
+      padding: 10px 12px;
+      background: rgba(22, 30, 52, 0.95);
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      color: var(--text-muted);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .user-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      vertical-align: middle;
+    }
+    .user-status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    .user-status-dot.active { background: #34d399; box-shadow: 0 0 8px #10b981; }
+    .user-status-dot.locked { background: #f87171; box-shadow: 0 0 8px #ef4444; }
+
+    /* ==========================================================================
+       TỐI ƯU GIAO DIỆN DI ĐỘNG & NÚT CUỘN LÊN ĐẦU TRANG (BACK TO TOP)
+       ========================================================================== */
+    .title-chunk {
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .today-banner-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .today-banner-sep {
+      color: rgba(245, 158, 11, 0.6);
+      font-weight: 700;
+    }
+    .controls-middle-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+    }
+    .filter-row-date {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .filter-col {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .filter-lbl {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Nút cuộn nhanh lên đầu trang (Floating Action Button) */
+    .back-to-top-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 18px;
+      z-index: 9999;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+      color: #ffffff;
+      border: 1px solid rgba(254, 240, 138, 0.45);
+      border-radius: 999px;
+      padding: 9px 15px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(234, 88, 12, 0.5), 0 0 12px rgba(245, 158, 11, 0.35);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px) scale(0.9);
+      transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .back-to-top-btn.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+    .back-to-top-btn:active {
+      transform: scale(0.92);
+    }
+    .btn-top-icon {
+      font-size: 0.95rem;
+      line-height: 1;
+    }
+
+    /* Responsive cho Màn hình Điện thoại & Tablet nhỏ (<= 640px) */
+    @media (max-width: 640px) {
+      body {
+        padding: 12px 8px;
+      }
+      .container {
+        padding: 0 2px;
+      }
+      .header-decor {
+        padding: 4px 0 2px;
+        margin-bottom: 2px;
+      }
+      .lantern {
+        width: 26px;
+        height: 42px;
+        top: -6px;
+      }
+      .lantern-left { left: 0px; }
+      .lantern-right { right: 0px; }
+
+      .app-title {
+        font-size: clamp(1.2rem, 5.2vw, 1.55rem);
+        line-height: 1.25;
+        margin-bottom: 4px;
+        padding: 0 26px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+      }
+
+      /* Banner Lịch Hôm Nay thu gọn 2 dòng tinh tế */
+      .today-banner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        border-radius: 12px;
+        padding: 6px 10px;
+        width: 100%;
+        max-width: 440px;
+        margin: 4px auto 8px;
+        font-size: 0.78rem;
+      }
+      .today-banner-sep {
+        display: none;
+      }
+      .today-banner-line {
+        font-size: 0.76rem;
+        white-space: nowrap;
+        justify-content: center;
+      }
+
+      /* Rút gọn phần giới thiệu và chú thích trên mobile */
+      .subtitle {
+        font-size: 0.76rem;
+        margin-bottom: 6px !important;
+        line-height: 1.35;
+        padding: 0 4px;
+      }
+      .subtitle.subtitle-disclaimer {
+        font-size: 0.72rem;
+        margin-top: -3px !important;
+        margin-bottom: 8px !important;
+        opacity: 0.85;
+      }
+      .author-badge-gold {
+        margin-bottom: 8px;
+        padding: 2px 10px;
+        font-size: 0.74rem;
+      }
+
+      /* Thu gọn thanh trạng thái & Đăng nhập */
+      .sync-status-bar {
+        padding: 8px 10px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        gap: 6px;
+      }
+      .sync-info {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 4px;
+      }
+      .status-pill, .auth-pill {
+        font-size: 0.72rem;
+        padding: 3px 8px;
+        white-space: nowrap;
+      }
+      #lastSyncTimeText {
+        font-size: 0.68rem !important;
+        width: 100%;
+        text-align: right;
+        margin: 0;
+      }
+      .user-auth-zone {
+        width: 100%;
+        margin: 2px 0;
+      }
+      .btn-user-login {
+        width: 100%;
+        padding: 7px 10px;
+        font-size: 0.8rem;
+        justify-content: center;
+      }
+      .sync-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+      .sync-actions .btn-cloud {
+        width: 100%;
+        padding: 7px 10px;
+        font-size: 0.8rem;
+        justify-content: center;
+      }
+      .sync-actions .btn:not(.btn-cloud) {
+        font-size: 0.74rem;
+        padding: 5px 8px;
+      }
+
+      /* Thanh Vùng Miền vuốt ngang mượt mà (Horizontal Swipable Tabs) */
+      .region-tabs {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 2px 2px 6px;
+        gap: 6px;
+        width: 100%;
+        scrollbar-width: none;
+      }
+      .region-tabs::-webkit-scrollbar {
+        display: none;
+      }
+      .tab-btn {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 6px 12px;
+        font-size: 0.78rem;
+      }
+
+      /* Khung tìm kiếm và bộ lọc gọn gàng */
+      .toolbar {
+        padding: 10px 10px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        gap: 8px;
+      }
+      .right-controls {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .search-input {
+        width: 100%;
+        min-width: 0;
+        padding: 7px 12px;
+        font-size: 0.82rem;
+      }
+      .controls-middle-row {
+        display: flex;
+        gap: 6px;
+        width: 100%;
+        align-items: center;
+      }
+      .view-toggle-wrap {
+        flex-shrink: 0;
+        padding: 2px;
+      }
+      .view-toggle-btn {
+        padding: 5px 9px;
+        font-size: 0.76rem;
+      }
+      .sort-select {
+        flex: 1;
+        min-width: 0;
+        padding: 7px 10px;
+        font-size: 0.78rem;
+        text-overflow: ellipsis;
+      }
+      .filter-row-date {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        width: 100%;
+      }
+      .filter-col {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        width: 100%;
+      }
+      .filter-lbl {
+        font-size: 0.76rem;
+        color: var(--text-muted);
+        white-space: nowrap;
+      }
+      .month-select, .year-select {
+        width: 100%;
+        flex: 1;
+        padding: 7px 8px;
+        font-size: 0.78rem;
+      }
+
+      /* Thanh nút hành động */
+      .action-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+      .btn-propose, .btn-primary {
+        width: 100%;
+        padding: 9px 12px;
+        font-size: 0.86rem;
+        font-weight: 700;
+        justify-content: center;
+      }
+      .action-bar .btn:not(.btn-propose):not(.btn-primary) {
+        font-size: 0.75rem;
+        padding: 6px 8px;
+        flex: 1 1 calc(50% - 6px);
+        justify-content: center;
+        white-space: nowrap;
+      }
+
+      /* Thẻ bài Lễ Hội tối ưu chiều cao, cuộn mượt */
+      .fest-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .fest-card {
+        padding: 12px 14px;
+        border-radius: 14px;
+        gap: 10px;
+      }
+      .fest-card-title {
+        font-size: 1.05rem;
+        line-height: 1.3;
+      }
+      .fest-card-location {
+        font-size: 0.8rem;
+      }
+      .fest-card-dates {
+        padding: 8px 10px;
+        gap: 6px;
+      }
+      .fest-date-val {
+        font-size: 0.95rem;
+      }
+      .fest-card-desc {
+        font-size: 0.82rem;
+        padding: 6px 8px;
+      }
+      .fest-card-actions {
+        gap: 6px;
+      }
+      .fest-card-actions .cal-btn {
+        flex: 1 1 100%;
+        min-width: 0;
+        padding: 8px 10px;
+        font-size: 0.82rem;
+      }
+      .fest-card-actions .btn {
+        flex: 1 1 auto;
+        padding: 6px 8px;
+        font-size: 0.76rem;
+      }
+    }
+
+</style>
 </head>
 <body class="guest-mode">
 <div class="container">
-  <h1>Tra Cứu Lễ Hội Địa Phương Việt Nam</h1>
+  <!-- Cặp lồng đèn lụa Hội An đung đưa 2 bên -->
+  <div class="header-wrapper">
+    <svg class="lantern lantern-left" viewBox="0 0 100 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Dây treo -->
+      <line x1="50" y1="0" x2="50" y2="25" stroke="#f59e0b" stroke-width="4"/>
+      <!-- Nắp vàng -->
+      <rect x="30" y="25" width="40" height="10" rx="3" fill="#d97706"/>
+      <!-- Thân đèn lụa đỏ hoa văn -->
+      <ellipse cx="50" cy="75" rx="42" ry="45" fill="url(#lanternGrad1)"/>
+      <ellipse cx="50" cy="75" rx="28" ry="45" fill="none" stroke="#fef08a" stroke-width="2" stroke-opacity="0.4"/>
+      <line x1="50" y1="30" x2="50" y2="120" stroke="#fef08a" stroke-width="2" stroke-opacity="0.5"/>
+      <!-- Đáy vàng -->
+      <rect x="35" y="118" width="30" height="8" rx="2" fill="#d97706"/>
+      <!-- Tua rua vàng -->
+      <line x1="45" y1="126" x2="43" y2="150" stroke="#f59e0b" stroke-width="3"/>
+      <line x1="50" y1="126" x2="50" y2="152" stroke="#f59e0b" stroke-width="3"/>
+      <line x1="55" y1="126" x2="57" y2="150" stroke="#f59e0b" stroke-width="3"/>
+      <defs>
+        <radialGradient id="lanternGrad1" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#f43f5e"/>
+          <stop offset="70%" stop-color="#dc2626"/>
+          <stop offset="100%" stop-color="#991b1b"/>
+        </radialGradient>
+      </defs>
+    </svg>
+
+    <svg class="lantern lantern-right" viewBox="0 0 100 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="50" y1="0" x2="50" y2="25" stroke="#f59e0b" stroke-width="4"/>
+      <rect x="30" y="25" width="40" height="10" rx="3" fill="#d97706"/>
+      <ellipse cx="50" cy="75" rx="42" ry="45" fill="url(#lanternGrad2)"/>
+      <ellipse cx="50" cy="75" rx="28" ry="45" fill="none" stroke="#fef08a" stroke-width="2" stroke-opacity="0.4"/>
+      <line x1="50" y1="30" x2="50" y2="120" stroke="#fef08a" stroke-width="2" stroke-opacity="0.5"/>
+      <rect x="35" y="118" width="30" height="8" rx="2" fill="#d97706"/>
+      <line x1="45" y1="126" x2="43" y2="150" stroke="#f59e0b" stroke-width="3"/>
+      <line x1="50" y1="126" x2="50" y2="152" stroke="#f59e0b" stroke-width="3"/>
+      <line x1="55" y1="126" x2="57" y2="150" stroke="#f59e0b" stroke-width="3"/>
+      <defs>
+        <radialGradient id="lanternGrad2" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#fbbf24"/>
+          <stop offset="60%" stop-color="#ea580c"/>
+          <stop offset="100%" stop-color="#9a3412"/>
+        </radialGradient>
+      </defs>
+    </svg>
+
+    <h1 class="app-title">
+      <span class="title-chunk">🏮 Tra Cứu Lễ Hội</span>
+      <span class="title-chunk">Địa Phương Việt Nam 🏮</span>
+    </h1>
+    <!-- Khung Lịch Vạn Niên Hôm Nay tự động -->
+    <div class="today-banner" id="todayCalendarBanner">
+      <span>Đang tải thông tin lịch hôm nay...</span>
+    </div>
+  </div>
   <p class="subtitle">Đối chiếu Âm - Dương lịch &amp; thời gian diễn ra lễ hội tiêu biểu (2026–2099) • Hỗ trợ đồng bộ Google Sheets an toàn</p>
-  <p class="subtitle" style="margin-top:-12px;color:#fbbf24;">Ngày dương lịch là kết quả quy đổi ngày âm truyền thống; không thay thế lịch tổ chức chính thức của địa phương. Tháng nhuận chưa được chọn riêng cho từng lễ hội.</p>
+  <p class="subtitle subtitle-disclaimer" style="margin-top:-12px;color:#fbbf24;">Ngày dương lịch là kết quả quy đổi ngày âm truyền thống; không thay thế lịch tổ chức chính thức của địa phương. Tháng nhuận chưa được chọn riêng cho từng lễ hội.</p>
   <!-- ★ VỊ TRÍ 1 (ĐẦU TRANG): Sửa tên tác giả ở dòng dưới đây ★ -->
-  <div class="author-badge">✨ Phát triển &amp; Biên soạn: <strong>MH-SAMA</strong></div>
+  <div class="author-badge-gold">✨ Phát triển &amp; Biên soạn: <strong>MH-SAMA</strong></div>
 
   <!-- Thanh trạng thái Đồng bộ Google Sheets & Phân quyền Chủ sở hữu -->
   <div class="sync-status-bar">
@@ -699,6 +1714,27 @@
       </button>
       <span id="lastSyncTimeText" style="color:var(--text-muted);font-size:0.8rem;"></span>
     </div>
+    <!-- KHU VỰC TÀI KHOẢN NGƯỜI DÙNG & PHÂN QUYỀN GIA ĐÌNH -->
+    <div class="user-auth-zone" id="userAuthZone">
+      <button type="button" class="btn-user-login" id="btnOpenAuthModal" onclick="openUserAuthModal('login')">
+        👤 Đăng Nhập / Đăng Ký
+      </button>
+      <div class="user-profile-badge" id="userProfileBadge" style="display:none;">
+        <span class="user-avatar" id="userAvatarChar">A</span>
+        <div class="user-profile-info">
+          <div class="user-name-line">
+            <strong id="userDisplayNameText">Tên thành viên</strong>
+            <span class="user-role-badge member" id="userRoleBadge">Thành viên</span>
+          </div>
+          <div class="user-quick-actions">
+            <button type="button" class="user-action-link owner-only" id="btnAdminManageUsers" onclick="openUserManagementModal()" title="Quản lý thành viên gia đình (khóa/mở khóa)">👥 Thành viên</button>
+            <button type="button" class="user-action-link" onclick="openChangePasswordModal()" title="Đổi mật khẩu cá nhân">🔑 Đổi MK</button>
+            <button type="button" class="user-action-link logout" onclick="logoutUser()" title="Đăng xuất khỏi tài khoản">🚪 Thoát</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="sync-actions">
       <button type="button" class="btn btn-cloud" onclick="syncNowButton()">🔄 Đồng bộ ngay</button>
       <button type="button" class="btn btn-share owner-only" onclick="exportGuestHTML()" title="Tải ra 1 file HTML đã nhúng sẵn link Google Sheets của bạn để gửi cho Khách mở xem ngay không cần cài đặt">📤 Xuất file cho Khách</button>
@@ -711,6 +1747,7 @@
     <!-- Khu vực Vùng miền: Tự động hiển thị các miền mặc định + miền tự tạo + nút Thêm miền mới -->
     <div class="region-tabs" id="regionTabs">
       <button class="tab-btn active" onclick="setRegion('Tất cả')">Tất cả</button>
+      <button class="tab-btn btn-fav-tab" id="favTabBtn" onclick="setRegion('Yêu thích')">❤️ Yêu thích <span class="tab-count" id="favCountBadge">0</span></button>
       <button class="tab-btn" onclick="setRegion('Miền Nam')">Miền Nam</button>
       <button class="tab-btn" onclick="setRegion('Miền Trung')">Miền Trung</button>
       <button class="tab-btn" onclick="setRegion('Miền Bắc')">Miền Bắc</button>
@@ -718,13 +1755,21 @@
     </div>
     <div class="right-controls">
       <input type="text" id="searchInput" class="search-input" placeholder="Tìm tên, tỉnh thành (có/không dấu)..." oninput="renderTable()" />
-      <select id="sortSelect" class="sort-select" onchange="renderTable()" title="Chọn cách sắp xếp danh sách lễ hội">
-        <option value="region">Sắp xếp: Theo Vùng miền</option>
-        <option value="date_asc">Sắp xếp: Ngày Dương lịch (T1 → T12)</option>
-        <option value="upcoming">Sắp xếp: Sắp diễn ra gần nhất</option>
-      </select>
-      <label style="font-size:0.84rem;color:var(--text-muted);">Tháng Dương:</label>
-      <select id="solarMonthSelect" class="month-select" onchange="renderTable()">
+      <div class="controls-middle-row">
+        <div class="view-toggle-wrap">
+          <button type="button" class="view-toggle-btn active" id="btnViewCard" onclick="setViewMode('card')">🎴 Dạng Thẻ</button>
+          <button type="button" class="view-toggle-btn" id="btnViewTable" onclick="setViewMode('table')">📋 Dạng Bảng</button>
+        </div>
+        <select id="sortSelect" class="sort-select" onchange="renderTable()" title="Chọn cách sắp xếp danh sách lễ hội">
+          <option value="upcoming" selected>⏳ Sắp diễn ra gần nhất (Mặc định)</option>
+          <option value="date_asc">📅 Ngày Dương lịch (T1 → T12)</option>
+          <option value="region">🗺️ Theo Vùng miền</option>
+        </select>
+      </div>
+      <div class="filter-row-date">
+        <div class="filter-col">
+          <label class="filter-lbl" for="solarMonthSelect">Tháng:</label>
+          <select id="solarMonthSelect" class="month-select" onchange="renderTable()">
         <option value="all">Tất cả tháng</option>
         <option value="1">Tháng 01</option>
         <option value="2">Tháng 02</option>
@@ -739,8 +1784,12 @@
         <option value="11">Tháng 11</option>
         <option value="12">Tháng 12</option>
       </select>
-      <label style="font-size:0.84rem;color:var(--text-muted);">Năm Dương lịch:</label>
-      <select id="yearSelect" class="year-select" onchange="renderTable()"></select>
+        </div>
+        <div class="filter-col">
+          <label class="filter-lbl" for="yearSelect">Năm:</label>
+          <select id="yearSelect" class="year-select" onchange="renderTable()"></select>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -757,7 +1806,11 @@
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)" />
   </div>
 
-  <div class="table-wrap">
+  <!-- Chế độ xem dạng Thẻ Bài (Card Grid View) - Tối ưu cho Mobile & Trải nghiệm trực quan -->
+  <div class="fest-grid" id="festGrid"></div>
+
+  <!-- Chế độ xem dạng Bảng Chi Tiết (Table View) -->
+  <div class="table-wrap" id="tableWrap" style="display:none;">
     <table>
       <thead>
         <tr>
@@ -992,7 +2045,19 @@
     </div>
     <div class="form-group">
       <label>Mã khóa Chủ sở hữu (Admin Secret Key) *</label>
-      <input type="password" id="authKeyInput" placeholder="Nhập mã khóa bí mật (Mặc định: HIEUADMIN)" onkeydown="if(event.key==='Enter') submitOwnerAuth()" />
+      <div class="password-input-wrapper">
+        <input type="password" id="authKeyInput" placeholder="Nhập mã khóa bí mật" onkeydown="if(event.key==='Enter') submitOwnerAuth()" />
+        <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('authKeyInput', this)" title="Hiện/ẩn mật khẩu" aria-label="Hiện/ẩn mật khẩu">
+          <svg class="eye-open" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+          </svg>
+        </button>
+      </div>
     </div>
     <label class="checkbox-row">
       <input type="checkbox" id="rememberAuthCheckbox" />
@@ -1019,7 +2084,7 @@
     </div>
     <div class="form-group">
       <label>Mã khóa Chủ sở hữu (Dành cho Admin; Khách xem để trống)</label>
-      <input type="password" id="cfgAdminKey" placeholder="Chỉ Admin mới nhập (VD: HIEUADMIN)" />
+      <input type="password" id="cfgAdminKey" placeholder="Dành riêng cho Quản trị viên" />
     </div>
     <label class="checkbox-row">
       <input type="checkbox" id="cfgAutoSync" checked />
@@ -1119,6 +2184,194 @@
 </div>
 
 <!-- Vùng hiển thị thông báo Toast -->
+
+<!-- Modal Đăng Ký / Đăng Nhập Tài Khoản -->
+<div class="modal-overlay" id="userAuthModal">
+  <div class="modal" style="max-width:440px;">
+    <div class="auth-tab-bar">
+      <button type="button" class="auth-tab-btn active" id="tabBtnLogin" onclick="switchAuthTab('login')">🔑 Đăng Nhập</button>
+      <button type="button" class="auth-tab-btn" id="tabBtnRegister" onclick="switchAuthTab('register')">📝 Đăng Ký</button>
+    </div>
+
+    <!-- Form Đăng Nhập -->
+    <form id="loginForm" onsubmit="event.preventDefault(); submitUserLogin();">
+      <div class="form-group">
+        <label>Tên đăng nhập *</label>
+        <input type="text" id="loginUsername" placeholder="Nhập tên đăng nhập" required autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label>Mật khẩu *</label>
+        <div class="password-input-wrapper">
+          <input type="password" id="loginPassword" placeholder="Nhập mật khẩu" required autocomplete="current-password" />
+          <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('loginPassword', this)" title="Hiện/ẩn mật khẩu" aria-label="Hiện/ẩn mật khẩu">
+            <svg class="eye-open" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div id="loginLockoutNotice" class="login-lockout-notice"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="closeUserAuthModal()">Đóng</button>
+        <button type="submit" class="btn btn-primary" id="loginSubmitBtn">Đăng Nhập Ngay</button>
+      </div>
+    </form>
+
+    <!-- Form Đăng Ký Thành Viên Mới -->
+    <form id="registerForm" style="display:none;" onsubmit="event.preventDefault(); submitUserRegister();">
+      <div class="form-group">
+        <label>Tên đăng nhập (viết liền không dấu) *</label>
+        <input type="text" id="regUsername" placeholder="VD: vanan, bachai, lanhuong..." required pattern="[a-zA-Z0-9_.-]{3,30}" title="3-30 ký tự, không dấu, không dấu cách" autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label>Tên gọi hiển thị (Ví dụ: Chú Bảy, Bác Ba, Lan...) *</label>
+        <input type="text" id="regDisplayName" placeholder="Tên thường gọi trong gia đình" required />
+      </div>
+      <div class="form-group">
+        <label>Mật khẩu (ít nhất 4 ký tự) *</label>
+        <div class="password-input-wrapper">
+          <input type="password" id="regPassword" placeholder="Tạo mật khẩu" required minlength="4" autocomplete="new-password" />
+          <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('regPassword', this)" title="Hiện/ẩn mật khẩu" aria-label="Hiện/ẩn mật khẩu">
+            <svg class="eye-open" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Nhập lại mật khẩu *</label>
+        <div class="password-input-wrapper">
+          <input type="password" id="regConfirmPassword" placeholder="Xác nhận mật khẩu" required minlength="4" autocomplete="new-password" />
+          <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('regConfirmPassword', this)" title="Hiện/ẩn mật khẩu" aria-label="Hiện/ẩn mật khẩu">
+            <svg class="eye-open" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="closeUserAuthModal()">Đóng</button>
+        <button type="submit" class="btn btn-primary" id="regSubmitBtn">Tạo Tài Khoản</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Quản Lý Thành Viên (Chỉ dành cho Admin) -->
+<div class="modal-overlay" id="userManagementModal">
+  <div class="modal modal-wide">
+    <h2>
+      <span>👥 Quản Lý Thành Viên Gia Đình</span>
+      <span class="badge badge-other" id="userTotalCountBadge">0 thành viên</span>
+    </h2>
+    <div class="info-callout" id="userManagementCallout">
+      Hệ thống phân quyền gia đình 3 cấp: <strong>👑 Chủ sở hữu (Super Admin)</strong> toàn quyền quản trị tối cao &amp; phong quyền, <strong>🛡️ Kiểm duyệt viên</strong> duyệt lễ hội và quản lý thành viên, <strong>🌱 Thành viên</strong> xem, yêu thích và đề xuất ngày hội.
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+      <button type="button" class="btn btn-cloud" onclick="loadUsersListForAdmin()">🔄 Tải lại danh sách</button>
+    </div>
+
+    <div class="user-table-wrap">
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>Tên đăng nhập</th>
+            <th>Tên hiển thị</th>
+            <th>Vai trò</th>
+            <th>Trạng thái</th>
+            <th>Đăng nhập gần nhất</th>
+            <th style="text-align:right;">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody">
+          <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:20px;">Đang tải danh sách thành viên...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal-actions" style="margin-top:16px;">
+      <button type="button" class="btn btn-primary" onclick="closeUserManagementModal()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Đổi Mật Khẩu Cá Nhân -->
+<div class="modal-overlay" id="changePasswordModal">
+  <div class="modal" style="max-width:400px;">
+    <h2>🔑 Đổi Mật Khẩu Cá Nhân</h2>
+    <form onsubmit="event.preventDefault(); submitChangePassword();">
+      <div class="form-group">
+        <label>Mật khẩu hiện tại *</label>
+        <div class="password-input-wrapper">
+          <input type="password" id="cpOldPassword" placeholder="Nhập mật khẩu cũ" required autocomplete="current-password" />
+          <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('cpOldPassword', this)" title="Hiện/ẩn mật khẩu" aria-label="Hiện/ẩn mật khẩu">
+            <svg class="eye-open" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Mật khẩu mới (ít nhất 4 ký tự) *</label>
+        <div class="password-input-wrapper">
+          <input type="password" id="cpNewPassword" placeholder="Nhập mật khẩu mới" required minlength="4" autocomplete="new-password" />
+          <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('cpNewPassword', this)" title="Hiện/ẩn mật khẩu" aria-label="Hiện/ẩn mật khẩu">
+            <svg class="eye-open" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Nhập lại mật khẩu mới *</label>
+        <div class="password-input-wrapper">
+          <input type="password" id="cpConfirmPassword" placeholder="Xác nhận mật khẩu mới" required minlength="4" autocomplete="new-password" />
+          <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('cpConfirmPassword', this)" title="Hiện/ẩn mật khẩu" aria-label="Hiện/ẩn mật khẩu">
+            <svg class="eye-open" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg class="eye-closed" style="display:none;" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="closeChangePasswordModal()">Đóng</button>
+        <button type="submit" class="btn btn-primary" id="cpSubmitBtn">Lưu Mật Khẩu Mới</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
@@ -1135,8 +2388,661 @@
   const DEFAULT_CUSTOM_REGIONS = [];
   const DEFAULT_GUEST_TOKEN = "";
 
+  // ==========================================================================
+  // HỆ THỐNG QUẢN LÝ TÀI KHOẢN NGƯỜI DÙNG & PHÂN QUYỀN 3 CẤP (v3.5.0)
+  // Super Admin (Chủ sở hữu) -> Moderator (Kiểm duyệt viên) -> Member (Thành viên)
+  // Giới hạn 5 lần đăng nhập sai, tạm khóa 60 giây + Đếm ngược trực tiếp
+  // ==========================================================================
+  let currentUser = null;
+  let loginLockTimer = null;
+
+  try {
+    currentUser = JSON.parse(safeGetStorage("vn_festivals_current_user") || "null");
+  } catch (e) {
+    currentUser = null;
+  }
+
+  // Tiện ích Bật / Tắt hiển thị mật khẩu bằng biểu tượng Con mắt (👁️)
+  function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const isText = (input.type === "text");
+    input.type = isText ? "password" : "text";
+    const eyeOpen = btn.querySelector(".eye-open");
+    const eyeClosed = btn.querySelector(".eye-closed");
+    if (eyeOpen) eyeOpen.style.display = isText ? "block" : "none";
+    if (eyeClosed) eyeClosed.style.display = isText ? "none" : "block";
+  }
+
+  // Đếm ngược thời gian tạm khóa đăng nhập 60 giây
+  function startLockoutCountdown(seconds) {
+    let rem = Math.max(1, Math.ceil(Number(seconds) || 60));
+    const btn = document.getElementById("loginSubmitBtn");
+    const notice = document.getElementById("loginLockoutNotice");
+    const lockUntil = Date.now() + (rem * 1000);
+
+    try {
+      sessionStorage.setItem("vn_festivals_login_lock_until", String(lockUntil));
+    } catch (e) {}
+
+    if (loginLockTimer) {
+      clearInterval(loginLockTimer);
+      loginLockTimer = null;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = `⏳ Vui lòng đợi (${rem}s)...`;
+    }
+    if (notice) {
+      notice.style.display = "flex";
+      notice.innerHTML = `<span>⛔ <strong>Tài khoản bị tạm khóa 60 giây</strong> do nhập sai mật khẩu 5 lần. Vui lòng đợi <strong id="lockoutCountSec">${rem}s</strong> để thử lại.</span>`;
+    }
+
+    loginLockTimer = setInterval(() => {
+      rem--;
+      const countEl = document.getElementById("lockoutCountSec");
+      if (countEl) countEl.textContent = rem + "s";
+      if (btn) btn.textContent = `⏳ Vui lòng đợi (${rem}s)...`;
+
+      if (rem <= 0) {
+        clearInterval(loginLockTimer);
+        loginLockTimer = null;
+        try {
+          sessionStorage.removeItem("vn_festivals_login_lock_until");
+        } catch (e) {}
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "Đăng Nhập Ngay";
+        }
+        if (notice) {
+          notice.style.display = "none";
+        }
+        showToast("Đã hết thời gian chờ! Bạn có thể thử đăng nhập lại.", "info");
+      }
+    }, 1000);
+  }
+
+  function checkExistingLockout() {
+    try {
+      const lockUntil = Number(sessionStorage.getItem("vn_festivals_login_lock_until") || 0);
+      const now = Date.now();
+      if (lockUntil > now) {
+        const remaining = Math.ceil((lockUntil - now) / 1000);
+        startLockoutCountdown(remaining);
+      }
+    } catch (e) {}
+  }
+
+  function updateUserAuthUI() {
+    const btnOpenAuth = document.getElementById("btnOpenAuthModal");
+    const profileBadge = document.getElementById("userProfileBadge");
+    const avatarChar = document.getElementById("userAvatarChar");
+    const displayNameEl = document.getElementById("userDisplayNameText");
+    const roleBadge = document.getElementById("userRoleBadge");
+    const btnManageUsers = document.getElementById("btnAdminManageUsers");
+
+    if (currentUser) {
+      if (btnOpenAuth) btnOpenAuth.style.display = "none";
+      if (profileBadge) profileBadge.style.display = "inline-flex";
+
+      const name = currentUser.displayName || currentUser.username || "Thành viên";
+      if (displayNameEl) displayNameEl.textContent = name;
+      if (avatarChar) avatarChar.textContent = name.trim().charAt(0).toUpperCase();
+
+      const isSuperAdmin = (currentUser.role === "superadmin" || currentUser.username === "admin");
+      const isModerator = (currentUser.role === "moderator" || currentUser.role === "admin");
+      const isPrivileged = isSuperAdmin || isModerator;
+
+      if (roleBadge) {
+        if (isSuperAdmin) {
+          roleBadge.className = "user-role-badge superadmin";
+          roleBadge.textContent = "👑 Chủ sở hữu";
+          roleBadge.title = "Quyền quản trị tối cao (Super Admin)";
+        } else if (isModerator) {
+          roleBadge.className = "user-role-badge moderator";
+          roleBadge.textContent = "🛡️ Kiểm duyệt";
+          roleBadge.title = "Quyền kiểm duyệt & duyệt lễ hội";
+        } else {
+          roleBadge.className = "user-role-badge member";
+          roleBadge.textContent = "🌱 Thành viên";
+          roleBadge.title = "Thành viên gia đình";
+        }
+      }
+
+      // Quyền truy cập các tính năng quản trị & kiểm duyệt
+      if (isPrivileged) {
+        isOwnerUnlocked = true;
+        ownerAdminKey = safeGetStorage("vn_festivals_owner_key") || DEFAULT_LOCAL_ADMIN_KEY;
+        document.body.classList.remove("guest-mode");
+        if (btnManageUsers) btnManageUsers.style.display = "inline-block";
+      } else {
+        isOwnerUnlocked = false;
+        ownerAdminKey = "";
+        document.body.classList.add("guest-mode");
+        if (btnManageUsers) btnManageUsers.style.display = "none";
+      }
+    } else {
+      if (btnOpenAuth) btnOpenAuth.style.display = "inline-flex";
+      if (profileBadge) profileBadge.style.display = "none";
+      if (!isOwnerUnlocked) {
+        document.body.classList.add("guest-mode");
+      }
+    }
+    updateCloudStatusUI();
+    updatePendingQueueUI();
+  }
+
+  function openUserAuthModal(tab = "login") {
+    switchAuthTab(tab);
+    checkExistingLockout();
+    document.getElementById("userAuthModal").classList.add("open");
+  }
+
+  function closeUserAuthModal() {
+    document.getElementById("userAuthModal").classList.remove("open");
+  }
+
+  function switchAuthTab(tab) {
+    const tabLogin = document.getElementById("tabBtnLogin");
+    const tabReg = document.getElementById("tabBtnRegister");
+    const formLogin = document.getElementById("loginForm");
+    const formReg = document.getElementById("registerForm");
+
+    if (tab === "login") {
+      tabLogin.classList.add("active");
+      tabReg.classList.remove("active");
+      formLogin.style.display = "block";
+      formReg.style.display = "none";
+      checkExistingLockout();
+    } else {
+      tabLogin.classList.remove("active");
+      tabReg.classList.add("active");
+      formLogin.style.display = "none";
+      formReg.style.display = "block";
+    }
+  }
+
+  async function submitUserLogin() {
+    const u = document.getElementById("loginUsername").value.trim().toLowerCase();
+    const p = document.getElementById("loginPassword").value;
+    const btn = document.getElementById("loginSubmitBtn");
+    const notice = document.getElementById("loginLockoutNotice");
+
+    if (!u || !p) {
+      showToast("Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!", "warn");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "⏳ Đang đăng nhập...";
+
+    try {
+      const res = await callAppsScriptPost({
+        action: "login",
+        username: u,
+        password: p
+      });
+
+      if (!res || !res.ok) {
+        // Kiểm tra tài khoản bị tạm khóa 60 giây
+        if (res && (res.locked || res.retryAfter)) {
+          startLockoutCountdown(res.retryAfter || 60);
+          showToast(res.error || "Tài khoản tạm thời bị khóa do sai mật khẩu 5 lần!", "error");
+          return;
+        }
+
+        // Kiểm tra số lần thử còn lại
+        if (res && res.attemptsLeft !== undefined) {
+          if (notice) {
+            notice.style.display = "flex";
+            notice.innerHTML = `<span>⚠️ Mật khẩu không đúng! Bạn còn <strong>${res.attemptsLeft} lần thử</strong> trước khi bị tạm khóa 60 giây.</span>`;
+          }
+          showToast(res.error || `Mật khẩu không đúng! Còn ${res.attemptsLeft} lần thử.`, "error");
+        } else {
+          showToast(res?.error || "Đăng nhập thất bại! Vui lòng kiểm tra lại.", "error");
+        }
+
+        btn.disabled = false;
+        btn.textContent = "Đăng Nhập Ngay";
+        return;
+      }
+
+      // Đăng nhập thành công
+      if (notice) notice.style.display = "none";
+      try {
+        sessionStorage.removeItem("vn_festivals_login_lock_until");
+      } catch (e) {}
+
+      currentUser = res.user;
+      safeSetStorage("vn_festivals_current_user", JSON.stringify(currentUser));
+      if (res.token) safeSetStorage("vn_festivals_auth_token", res.token);
+      if (res.adminKey) safeSetStorage("vn_festivals_owner_key", res.adminKey);
+
+      closeUserAuthModal();
+      updateUserAuthUI();
+      renderTable();
+      showToast(`🎉 Xin chào ${currentUser.displayName || currentUser.username}! Đăng nhập thành công.`, "success");
+    } catch (err) {
+      showToast("Lỗi kết nối khi đăng nhập: " + err.message, "error");
+      btn.disabled = false;
+      btn.textContent = "Đăng Nhập Ngay";
+    }
+  }
+
+  async function submitUserRegister() {
+    const u = document.getElementById("regUsername").value.trim().toLowerCase();
+    const d = document.getElementById("regDisplayName").value.trim();
+    const p = document.getElementById("regPassword").value;
+    const cp = document.getElementById("regConfirmPassword").value;
+    const btn = document.getElementById("regSubmitBtn");
+
+    if (!u || !d || !p) {
+      showToast("Vui lòng điền đầy đủ thông tin đăng ký!", "warn");
+      return;
+    }
+    if (p !== cp) {
+      showToast("Mật khẩu nhập lại không khớp!", "error");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "⏳ Đang tạo tài khoản...";
+
+    try {
+      const res = await callAppsScriptPost({
+        action: "register",
+        username: u,
+        displayName: d,
+        password: p
+      });
+
+      if (!res || !res.ok) {
+        showToast(res?.error || "Đăng ký không thành công!", "error");
+        btn.disabled = false;
+        btn.textContent = "Tạo Tài Khoản";
+        return;
+      }
+
+      currentUser = res.user;
+      safeSetStorage("vn_festivals_current_user", JSON.stringify(currentUser));
+      if (res.token) safeSetStorage("vn_festivals_auth_token", res.token);
+
+      closeUserAuthModal();
+      updateUserAuthUI();
+      renderTable();
+      showToast(`🎉 Chúc mừng ${currentUser.displayName}! Bạn đã đăng ký thành công.`, "success");
+    } catch (err) {
+      showToast("Lỗi kết nối khi đăng ký: " + err.message, "error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Tạo Tài Khoản";
+    }
+  }
+
+  function logoutUser() {
+    openConfirmModal(
+      "Đăng xuất tài khoản?",
+      "Bạn có chắc muốn đăng xuất khỏi tài khoản hiện tại không?",
+      () => {
+        currentUser = null;
+        safeRemoveStorage("vn_festivals_current_user");
+        safeRemoveStorage("vn_festivals_auth_token");
+        safeRemoveStorage("vn_festivals_owner_key");
+        isOwnerUnlocked = false;
+        ownerAdminKey = "";
+        updateUserAuthUI();
+        renderTable();
+        showToast("Đã đăng xuất tài khoản thành công.", "info");
+      }
+    );
+  }
+
+  function openChangePasswordModal() {
+    if (!currentUser) {
+      showToast("Vui lòng đăng nhập để đổi mật khẩu!", "warn");
+      return;
+    }
+    document.getElementById("cpOldPassword").value = "";
+    document.getElementById("cpNewPassword").value = "";
+    document.getElementById("cpConfirmPassword").value = "";
+    document.getElementById("changePasswordModal").classList.add("open");
+  }
+
+  function closeChangePasswordModal() {
+    document.getElementById("changePasswordModal").classList.remove("open");
+  }
+
+  async function submitChangePassword() {
+    const oldP = document.getElementById("cpOldPassword").value;
+    const newP = document.getElementById("cpNewPassword").value;
+    const confP = document.getElementById("cpConfirmPassword").value;
+    const btn = document.getElementById("cpSubmitBtn");
+
+    if (newP !== confP) {
+      showToast("Mật khẩu mới nhập lại không khớp!", "error");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "⏳ Đang đổi...";
+
+    try {
+      const res = await callAppsScriptPost({
+        action: "changePassword",
+        userId: currentUser.id,
+        oldPassword: oldP,
+        newPassword: newP
+      });
+
+      if (!res || !res.ok) {
+        showToast(res?.error || "Đổi mật khẩu thất bại!", "error");
+        btn.disabled = false;
+        btn.textContent = "Lưu Mật Khẩu Mới";
+        return;
+      }
+
+      closeChangePasswordModal();
+      showToast("✅ Đã đổi mật khẩu thành công!", "success");
+    } catch (err) {
+      showToast("Lỗi khi đổi mật khẩu: " + err.message, "error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Lưu Mật Khẩu Mới";
+    }
+  }
+
+  // Quản lý thành viên gia đình (Super Admin và Moderator)
+  function openUserManagementModal() {
+    const isSuperAdmin = (currentUser && (currentUser.role === "superadmin" || currentUser.username === "admin"));
+    const isModerator = (currentUser && (currentUser.role === "moderator" || currentUser.role === "admin"));
+
+    if (!isSuperAdmin && !isModerator) {
+      showToast("Chỉ Quản trị viên và Kiểm duyệt viên mới có quyền mở danh sách thành viên!", "warn");
+      return;
+    }
+    document.getElementById("userManagementModal").classList.add("open");
+    loadUsersListForAdmin();
+  }
+
+  function closeUserManagementModal() {
+    document.getElementById("userManagementModal").classList.remove("open");
+  }
+
+  async function loadUsersListForAdmin() {
+    const tbody = document.getElementById("userTableBody");
+    const callout = document.getElementById("userManagementCallout");
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:20px;">⏳ Đang tải danh sách thành viên từ Google Sheets...</td></tr>';
+
+    const isSuperAdmin = (currentUser && (currentUser.role === "superadmin" || currentUser.username === "admin"));
+    const isModerator = (currentUser && (currentUser.role === "moderator" || currentUser.role === "admin"));
+
+    if (callout) {
+      callout.innerHTML = isSuperAdmin
+        ? 'Bạn đang đăng nhập với tư cách <strong>👑 Chủ sở hữu (Super Admin)</strong>: Có toàn quyền Khóa / Mở khóa mọi tài khoản và Cấp quyền Kiểm duyệt viên cho thành viên.'
+        : 'Bạn đang đăng nhập với tư cách <strong>🛡️ Kiểm duyệt viên</strong>: Có quyền Khóa / Mở khóa tài khoản thành viên thông thường để hỗ trợ bảo vệ hệ thống.';
+    }
+
+    try {
+      const res = await callAppsScriptPost({
+        action: "getUsersList",
+        adminKey: ownerAdminKey || DEFAULT_LOCAL_ADMIN_KEY
+      });
+
+      if (!res || !res.ok) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#f87171;padding:20px;">Lỗi: ${escapeHTML(res?.error || "Không thể tải danh sách")}</td></tr>`;
+        return;
+      }
+
+      const users = res.users || [];
+      const badgeCount = document.getElementById("userTotalCountBadge");
+      if (badgeCount) badgeCount.textContent = `${users.length} thành viên`;
+
+      if (users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:20px;">Chưa có thành viên nào đăng ký.</td></tr>';
+        return;
+      }
+
+      let html = "";
+      users.forEach(u => {
+        const isLocked = u.status === "locked";
+        const isTargetSuper = (u.role === "superadmin" || u.username === "admin");
+        const isTargetMod = (u.role === "moderator" || (!isTargetSuper && u.role === "admin"));
+
+        let roleBadgeHTML = '<span class="user-role-badge member">Thành viên</span>';
+        if (isTargetSuper) {
+          roleBadgeHTML = '<span class="user-role-badge superadmin">👑 Chủ sở hữu</span>';
+        } else if (isTargetMod) {
+          roleBadgeHTML = '<span class="user-role-badge moderator">🛡️ Kiểm duyệt</span>';
+        }
+
+        let statusHTML = isLocked
+          ? '<span class="user-status-dot locked"></span><span style="color:#f87171;font-weight:600;">Đã khóa</span>'
+          : '<span class="user-status-dot active"></span><span style="color:#34d399;font-weight:600;">Hoạt động</span>';
+
+        if (u.isLockedUntil > 0) {
+          statusHTML += ` <small style="color:#fbbf24;font-size:0.75rem;">(Khóa tạm ${u.isLockedUntil}s)</small>`;
+        }
+
+        const lastLoginText = u.lastLogin ? new Date(u.lastLogin).toLocaleDateString("vi-VN") : "Chưa đăng nhập";
+
+        // Thao tác dựa trên cấp bậc
+        let actionButtonsHTML = "";
+        if (isTargetSuper) {
+          actionButtonsHTML = '<span style="color:#fbbf24;font-size:0.8rem;font-weight:700;">👑 Tối cao (Cố định)</span>';
+        } else if (isSuperAdmin) {
+          // Super Admin có toàn quyền với tất cả mọi người
+          const lockBtn = isLocked
+            ? `<button type="button" class="btn btn-cloud" style="padding:4px 8px;font-size:0.75rem;" onclick="toggleUserStatus('${escapeHTML(u.id)}', 'active')">🔓 Mở</button>`
+            : `<button type="button" class="btn" style="padding:4px 8px;font-size:0.75rem;color:#f87171;border-color:rgba(239,68,68,0.3);" onclick="toggleUserStatus('${escapeHTML(u.id)}', 'locked')">🔒 Khóa</button>`;
+
+          const roleBtn = isTargetMod
+            ? `<button type="button" class="btn" style="padding:4px 8px;font-size:0.75rem;" onclick="toggleUserRole('${escapeHTML(u.id)}', 'member')">⬇️ Hạ Thành viên</button>`
+            : `<button type="button" class="btn btn-share" style="padding:4px 8px;font-size:0.75rem;" onclick="toggleUserRole('${escapeHTML(u.id)}', 'moderator')">🛡️ Cấp Kiểm duyệt</button>`;
+
+          actionButtonsHTML = `<div style="display:inline-flex;gap:6px;">${lockBtn}${roleBtn}</div>`;
+        } else if (isModerator) {
+          // Moderator chỉ có quyền khóa/mở khóa thành viên thông thường
+          if (!isTargetSuper && !isTargetMod) {
+            const lockBtn = isLocked
+              ? `<button type="button" class="btn btn-cloud" style="padding:4px 8px;font-size:0.75rem;" onclick="toggleUserStatus('${escapeHTML(u.id)}', 'active')">🔓 Mở</button>`
+              : `<button type="button" class="btn" style="padding:4px 8px;font-size:0.75rem;color:#f87171;border-color:rgba(239,68,68,0.3);" onclick="toggleUserStatus('${escapeHTML(u.id)}', 'locked')">🔒 Khóa</button>`;
+            actionButtonsHTML = lockBtn;
+          } else {
+            actionButtonsHTML = '<span style="color:var(--text-muted);font-size:0.8rem;">—</span>';
+          }
+        }
+
+        html += `
+          <tr>
+            <td><strong>${escapeHTML(u.username)}</strong></td>
+            <td>${escapeHTML(u.displayName)}</td>
+            <td>${roleBadgeHTML}</td>
+            <td>${statusHTML}</td>
+            <td style="color:var(--text-muted);">${escapeHTML(lastLoginText)}</td>
+            <td style="text-align:right;">${actionButtonsHTML}</td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#f87171;padding:20px;">Lỗi kết nối: ${escapeHTML(err.message)}</td></tr>`;
+    }
+  }
+
+  async function toggleUserStatus(userId, newStatus) {
+    try {
+      const res = await callAppsScriptPost({
+        action: "updateUserStatus",
+        adminKey: ownerAdminKey || DEFAULT_LOCAL_ADMIN_KEY,
+        userId: userId,
+        status: newStatus,
+        callerRole: currentUser ? currentUser.role : ""
+      });
+      if (res && res.ok) {
+        showToast("Đã cập nhật trạng thái thành viên!", "success");
+        loadUsersListForAdmin();
+      } else {
+        showToast(res?.error || "Không thể cập nhật!", "error");
+      }
+    } catch (err) {
+      showToast("Lỗi: " + err.message, "error");
+    }
+  }
+
+  async function toggleUserRole(userId, newRole) {
+    try {
+      const res = await callAppsScriptPost({
+        action: "updateUserStatus",
+        adminKey: ownerAdminKey || DEFAULT_LOCAL_ADMIN_KEY,
+        userId: userId,
+        role: newRole,
+        callerRole: currentUser ? currentUser.role : ""
+      });
+      if (res && res.ok) {
+        showToast("Đã cập nhật vai trò thành viên!", "success");
+        loadUsersListForAdmin();
+      } else {
+        showToast(res?.error || "Không thể cập nhật!", "error");
+      }
+    } catch (err) {
+      showToast("Lỗi: " + err.message, "error");
+    }
+  }
+
+
+
+  // ==========================================================================
+  // TÍNH NĂNG MỚI: LỊCH VẠN NIÊN HÔM NAY, YÊU THÍCH (FAVORITES) & CHẾ ĐỘ XEM (CARDS)
+  // ==========================================================================
+  const CAN_NAMES = ["Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ", "Canh", "Tân", "Nhâm", "Quý"];
+  const CHI_NAMES = ["Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"];
+  const DAY_NAMES = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+
+  function getCanChiYear(lunarYear) {
+    const can = CAN_NAMES[(lunarYear + 6) % 10];
+    const chi = CHI_NAMES[(lunarYear + 8) % 12];
+    return `${can} ${chi}`;
+  }
+
+  function updateTodayBanner() {
+    try {
+      const bannerEl = document.getElementById("todayCalendarBanner");
+      if (!bannerEl) return;
+      const now = new Date();
+      const solarD = now.getDate();
+      const solarM = now.getMonth() + 1;
+      const solarY = now.getFullYear();
+      const dayOfWeek = DAY_NAMES[now.getDay()];
+
+      const lunarRes = convertSolar2Lunar(solarD, solarM, solarY, TIME_ZONE);
+      const lunarDay = Array.isArray(lunarRes) ? lunarRes[0] : (lunarRes.day || 1);
+      const lunarMonth = Array.isArray(lunarRes) ? lunarRes[1] : (lunarRes.month || 1);
+      const lunarYear = Array.isArray(lunarRes) ? lunarRes[2] : (lunarRes.year || solarY);
+      const lunarLeap = Array.isArray(lunarRes) ? lunarRes[3] : (lunarRes.leap ? 1 : 0);
+
+      const canChi = getCanChiYear(lunarYear);
+      const leapText = lunarLeap === 1 ? " (Nhuận)" : "";
+
+      bannerEl.innerHTML = `
+        <div class="today-banner-line line-solar">
+          <span class="today-icon">🏮</span>
+          <span class="today-lbl"><strong>Hôm nay:</strong> ${dayOfWeek}, <span class="solar-hl">${String(solarD).padStart(2, "0")}/${String(solarM).padStart(2, "0")}/${solarY}</span> (DL)</span>
+        </div>
+        <div class="today-banner-sep">•</div>
+        <div class="today-banner-line line-lunar">
+          <span class="today-lbl">Nhằm ngày <span class="lunar-hl">${String(lunarDay).padStart(2, "0")}/${String(lunarMonth).padStart(2, "0")}${leapText}</span> năm <strong>${canChi}</strong> (ÂL)</span>
+        </div>
+      `;
+    } catch (e) {
+      console.warn("Lỗi cập nhật banner hôm nay:", e);
+    }
+  }
+
+  // Quản lý danh sách Yêu thích
+  let favorites = [];
+  try {
+    favorites = JSON.parse(safeGetStorage("vn_festivals_favorites") || "[]");
+    if (!Array.isArray(favorites)) favorites = [];
+  } catch (e) {
+    favorites = [];
+  }
+
+  function isFavorite(id) {
+    return favorites.includes(String(id));
+  }
+
+  function toggleFavorite(e, id) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const sId = String(id);
+    const idx = favorites.indexOf(sId);
+    if (idx >= 0) {
+      favorites.splice(idx, 1);
+      showToast("Đã bỏ khỏi danh sách Yêu thích", "info");
+    } else {
+      favorites.push(sId);
+      showToast("❤️ Đã thêm vào Lễ hội Yêu thích!", "success");
+    }
+    safeSetStorage("vn_festivals_favorites", JSON.stringify(favorites));
+    updateFavBadges();
+    renderTable();
+  }
+
+  function updateFavBadges() {
+    const badge = document.getElementById("favCountBadge");
+    if (badge) badge.textContent = String(favorites.length);
+  }
+
+  // Quản lý chế độ xem (Dạng Thẻ vs Dạng Bảng)
+  let currentViewMode = safeGetStorage("vn_festivals_view_mode") || "card";
+
+  function setViewMode(mode) {
+    currentViewMode = mode;
+    safeSetStorage("vn_festivals_view_mode", mode);
+    updateViewModeUI();
+  }
+
+  function updateViewModeUI() {
+    const btnCard = document.getElementById("btnViewCard");
+    const btnTable = document.getElementById("btnViewTable");
+    const gridEl = document.getElementById("festGrid");
+    const tableEl = document.getElementById("tableWrap");
+
+    if (currentViewMode === "card") {
+      if (btnCard) btnCard.classList.add("active");
+      if (btnTable) btnTable.classList.remove("active");
+      if (gridEl) gridEl.style.display = "grid";
+      if (tableEl) tableEl.style.display = "none";
+    } else {
+      if (btnCard) btnCard.classList.remove("active");
+      if (btnTable) btnTable.classList.add("active");
+      if (gridEl) gridEl.style.display = "none";
+      if (tableEl) tableEl.style.display = "block";
+    }
+  }
+
+  function toggleCardDetail(e, id) {
+    if (e) e.stopPropagation();
+    const drawer = document.getElementById(`card-drawer-${id}`);
+    const grid = document.getElementById(`card-grid-${id}`);
+    if (!drawer) return;
+    const isOpen = drawer.classList.contains("open");
+    if (isOpen) {
+      drawer.classList.remove("open");
+    } else {
+      drawer.classList.add("open");
+      if (grid && grid.children.length === 0) {
+        renderTenYearGrid(id, `card-grid-${id}`);
+      }
+    }
+  }
+
+
   // Mã nguồn Google Apps Script nhúng sẵn để người dùng sao chép 1 chạm
-  const EMBEDDED_APPS_SCRIPT = "/**\n * ============================================================================\n * MÃ NGUỒN GOOGLE APPS SCRIPT ĐỒNG BỘ DỮ LIỆU: TRA CỨU LỄ HỘI VIỆT NAM (2026-2099)\n * ============================================================================\n * Đặc điểm an toàn:\n * 1. Xác thực Chủ sở hữu (Admin Secret Key) cho mọi thao tác Thêm / Sửa / Xóa / Gộp.\n * 2. Cơ chế Gộp thông minh 2 chiều (Safe Merge) theo ID và thời gian (updatedAt):\n *    - Không bao giờ xóa trắng bảng để ghi đè.\n *    - Giữ nguyên các dòng được thêm từ thiết bị khác hoặc sửa trực tiếp trên Sheet.\n * 3. Khóa đồng thời (LockService) chống xung đột khi lưu cùng lúc.\n * 4. Tự động sao lưu trước mọi thay đổi vào trang tính \"Backup_LichSu\" (tối đa 100 bản).\n * ============================================================================\n */\n\n// BƯỚC CẤU HÌNH DUY NHẤT: Đổi mã khóa bí mật của riêng bạn tại dòng dưới đây:\nconst DEFAULT_ADMIN_KEY = \"HIEUADMIN\";\n\nconst SHEET_MAIN = \"LeHoi\";\nconst SHEET_BACKUP = \"Backup_LichSu\";\nconst MAX_BACKUPS = 100;\n\n// 12 lễ hội mặc định khởi tạo lần đầu nếu bảng tính hoàn toàn trống\nconst INITIAL_FESTIVALS = [\n  { id: 1, name: \"Hội Xuân & Vía Bà Đen\", location: \"Tây Ninh\", region: \"Miền Nam\", lunarDay: 5, lunarMonth: 5, lunarLabel: \"05/05 ÂL\", duration: \"Hội Xuân 30 ngày; Vía 3 ngày\", highlights: \"Hành hương đỉnh núi Bà Đen, dâng hương Linh Sơn Thánh Mẫu (04–06/05 ÂL) và đêm hội hoa đăng.\" },\n  { id: 2, name: \"Tết Nguyên Tiêu Chợ Lớn\", location: \"TP. Hồ Chí Minh\", region: \"Miền Nam\", lunarDay: 15, lunarMonth: 1, lunarLabel: \"15/01 ÂL\", duration: \"4 ngày\", highlights: \"Diễu hành nghệ thuật đường phố, lân sư rồng qua các hội quán người Hoa Quận 5 (12–15/01 ÂL).\" },\n  { id: 3, name: \"Lễ hội Vía Bà Chúa Xứ Núi Sam\", location: \"An Giang\", region: \"Miền Nam\", lunarDay: 24, lunarMonth: 4, lunarLabel: \"24/04 ÂL\", duration: \"6 ngày\", highlights: \"Lễ Tắm Bà đêm 23 rạng 24/4 ÂL (kéo dài 22–27/04 ÂL), lễ hội tín ngưỡng lớn nhất miền Tây Nam Bộ.\" },\n  { id: 4, name: \"Lễ hội Nghinh Ông Cần Giờ\", location: \"TP. Hồ Chí Minh\", region: \"Miền Nam\", lunarDay: 16, lunarMonth: 8, lunarLabel: \"16/08 ÂL\", duration: \"3 ngày\", highlights: \"Rước kiệu Nam Hải Tướng Quân trên biển Cần Giờ (15–17/08 ÂL), cầu ngư dân bình an và mùa biển bội thu.\" },\n  { id: 5, name: \"Lễ hội Ok Om Bok – Đua Ghe Ngo\", location: \"Sóc Trăng & Trà Vinh\", region: \"Miền Nam\", lunarDay: 15, lunarMonth: 10, lunarLabel: \"15/10 ÂL\", duration: \"2 – 3 ngày\", highlights: \"Lễ Cúng Trăng của đồng bào Khmer Nam Bộ, đua ghe Ngo trên sông Maspéro và thả đèn nước hoa đăng.\" },\n  { id: 6, name: \"Lễ hội Chùa Bà Thiên Hậu\", location: \"Bình Dương\", region: \"Miền Nam\", lunarDay: 15, lunarMonth: 1, lunarLabel: \"15/01 ÂL\", duration: \"3 ngày\", highlights: \"Lễ rước kiệu Bà Thiên Hậu qua các tuyến phố Thủ Dầu Một vào chiều Rằm tháng Giêng (13–15/01 ÂL).\" },\n  { id: 11, name: \"Lễ hội Quán Thế Âm Ngũ Hành Sơn\", location: \"Đà Nẵng\", region: \"Miền Trung\", lunarDay: 19, lunarMonth: 2, lunarLabel: \"19/02 ÂL\", duration: \"3 ngày\", highlights: \"Lễ rước ánh sáng, rước tôn tượng Quán Thế Âm và hội hoa đăng trên sông Cổ Cò (17–19/02 ÂL).\" },\n  { id: 12, name: \"Lễ hội Điện Hòn Chén\", location: \"Thừa Thiên Huế\", region: \"Miền Trung\", lunarDay: 3, lunarMonth: 3, lunarLabel: \"03/03 ÂL\", duration: \"2 ngày\", highlights: \"Rước sắc bằng thuyền rồng trên sông Hương, tôn vinh Thiên Y A Na Thánh Mẫu.\" },\n  { id: 7, name: \"Lễ hội Chùa Hương\", location: \"Hà Nội\", region: \"Miền Bắc\", lunarDay: 6, lunarMonth: 1, lunarLabel: \"06/01 ÂL\", duration: \"80 – 90 ngày\", highlights: \"Khai hội Mùng 6 Tết, hành hương suối Yến - động Hương Tích kéo dài suốt 3 tháng mùa xuân.\" },\n  { id: 8, name: \"Hội Gióng Đền Sóc\", location: \"Hà Nội\", region: \"Miền Bắc\", lunarDay: 6, lunarMonth: 1, lunarLabel: \"06/01 ÂL\", duration: \"3 ngày\", highlights: \"Tưởng nhớ Thánh Gióng (06–08/01 ÂL), nghi lễ dâng hoa tre và rước voi truyền thống.\" },\n  { id: 9, name: \"Hội Lim (Quan họ)\", location: \"Bắc Ninh\", region: \"Miền Bắc\", lunarDay: 13, lunarMonth: 1, lunarLabel: \"13/01 ÂL\", duration: \"3 ngày\", highlights: \"Hát giao duyên Quan họ Bắc Ninh trên thuyền rồng và đồi Lim (12–14/01 ÂL).\" },\n  { id: 10, name: \"Lễ hội Yên Tử\", location: \"Quảng Ninh\", region: \"Miền Bắc\", lunarDay: 10, lunarMonth: 1, lunarLabel: \"10/01 ÂL\", duration: \"~80 ngày\", highlights: \"Hành hương về đất Phật Trúc Lâm Yên Tử và đỉnh chùa Đồng từ 10 tháng Giêng đến hết tháng 3 ÂL.\" }\n];\n\n// Tạo menu tiện ích ngay trên thanh công cụ Google Sheets cho Chủ sở hữu\nfunction onOpen() {\n  SpreadsheetApp.getUi()\n    .createMenu(\"🏮 Quản lý Lễ Hội\")\n    .addItem(\"1. Khởi tạo bảng & Nạp 12 lễ hội gốc\", \"setupInitialSheet\")\n    .addItem(\"2. Đổi Mã khóa Chủ sở hữu (Admin Key)\", \"promptChangeAdminKey\")\n    .addItem(\"3. Khôi phục bản sao lưu gần nhất\", \"restoreLatestBackupFromMenu\")\n    .addToUi();\n}\n\n// Tự động cập nhật cột updatedAt khi Chủ sở hữu sửa trực tiếp trên Google Sheets\nfunction onEdit(e) {\n  if (!e || !e.range) return;\n  const sheet = e.range.getSheet();\n  if (sheet.getName() !== SHEET_MAIN) return;\n  const row = e.range.getRow();\n  if (row <= 1) return;\n\n  const nowIso = new Date().toISOString();\n  const idCell = sheet.getRange(row, 1);\n  if (!idCell.getValue()) {\n    idCell.setValue(Date.now() + row);\n  }\n  const dayVal = Number(sheet.getRange(row, 5).getValue() || 15);\n  const monthVal = Number(sheet.getRange(row, 6).getValue() || 1);\n  const labelCell = sheet.getRange(row, 7);\n  if (!labelCell.getValue() && dayVal && monthVal) {\n    labelCell.setValue(String(dayVal).padStart(2, \"0\") + \"/\" + String(monthVal).padStart(2, \"0\") + \" ÂL\");\n  }\n  const delCell = sheet.getRange(row, 11);\n  if (delCell.getValue() === \"\") {\n    delCell.setValue(false);\n  }\n  sheet.getRange(row, 10).setValue(nowIso);\n}\n\nfunction getAdminKey() {\n  const savedKey = PropertiesService.getScriptProperties().getProperty(\"ADMIN_SECRET_KEY\");\n  return savedKey ? savedKey : DEFAULT_ADMIN_KEY;\n}\n\nfunction verifyKey(inputKey) {\n  const actual = String(getAdminKey()).trim();\n  const provided = String(inputKey || \"\").trim();\n  if (!actual || !provided || actual.length !== provided.length) return false;\n  let diff = 0;\n  for (let i = 0; i < actual.length; i++) {\n    diff |= actual.charCodeAt(i) ^ provided.charCodeAt(i);\n  }\n  return diff === 0;\n}\n\nfunction promptChangeAdminKey() {\n  const ui = SpreadsheetApp.getUi();\n  const res = ui.prompt(\n    \"Đổi Mã khóa Chủ sở hữu (Admin Key)\",\n    \"Nhập mã khóa bí mật mới (dùng để mở khóa chỉnh sửa trên ứng dụng web):\",\n    ui.ButtonSet.OK_CANCEL\n  );\n  if (res.getSelectedButton() === ui.Button.OK) {\n    const newKey = res.getResponseText().trim();\n    if (newKey.length < 4) {\n      ui.alert(\"Mã khóa phải có ít nhất 4 ký tự!\");\n      return;\n    }\n    PropertiesService.getScriptProperties().setProperty(\"ADMIN_SECRET_KEY\", newKey);\n    ui.alert(\"Đã lưu Mã khóa Chủ sở hữu mới thành công!\");\n  }\n}\n\nfunction ensureSheetsExist() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  let mainSheet = ss.getSheetByName(SHEET_MAIN);\n  if (!mainSheet) {\n    mainSheet = ss.insertSheet(SHEET_MAIN);\n    const headers = [\n      \"id\", \"name\", \"location\", \"region\",\n      \"lunarDay\", \"lunarMonth\", \"lunarLabel\",\n      \"duration\", \"highlights\", \"updatedAt\", \"deleted\"\n    ];\n    mainSheet.getRange(1, 1, 1, headers.length).setValues([headers]);\n    mainSheet.getRange(1, 1, 1, headers.length)\n      .setFontWeight(\"bold\")\n      .setBackground(\"#1e3a8a\")\n      .setFontColor(\"#ffffff\");\n    mainSheet.setFrozenRows(1);\n\n    const initIso = \"2026-01-01T00:00:00.000Z\";\n    const rows = INITIAL_FESTIVALS.map(item => [\n      item.id, item.name, item.location, item.region,\n      item.lunarDay, item.lunarMonth, item.lunarLabel,\n      item.duration, item.highlights, initIso, false\n    ]);\n    mainSheet.getRange(2, 1, rows.length, headers.length).setValues(rows);\n  }\n\n  let backupSheet = ss.getSheetByName(SHEET_BACKUP);\n  if (!backupSheet) {\n    backupSheet = ss.insertSheet(SHEET_BACKUP);\n    const bHeaders = [\"Thời gian sao lưu\", \"Thao tác\", \"Số lượng lễ hội\", \"Dữ liệu JSON (Snapshot)\"];\n    backupSheet.getRange(1, 1, 1, bHeaders.length).setValues([bHeaders]);\n    backupSheet.getRange(1, 1, 1, bHeaders.length)\n      .setFontWeight(\"bold\")\n      .setBackground(\"#334155\")\n      .setFontColor(\"#ffffff\");\n    backupSheet.setFrozenRows(1);\n  }\n  return { ss, mainSheet, backupSheet };\n}\n\nfunction setupInitialSheet() {\n  ensureSheetsExist();\n  return \"Đã khởi tạo bảng LeHoi và Backup_LichSu thành công!\";\n}\n\nfunction readAllRecords(mainSheet) {\n  const lastRow = mainSheet.getLastRow();\n  if (lastRow <= 1) return [];\n  const values = mainSheet.getRange(2, 1, lastRow - 1, 11).getValues();\n  const records = [];\n  for (let i = 0; i < values.length; i++) {\n    const r = values[i];\n    const name = String(r[1] || \"\").trim();\n    const location = String(r[2] || \"\").trim();\n    if (!name && !location) continue;\n    const lunarDay = Number(r[4]) || 15;\n    const lunarMonth = Number(r[5]) || 1;\n    const id = r[0] !== \"\" && r[0] !== null ? r[0] : (Date.now() + i);\n    const lunarLabel = String(r[6] || \"\").trim() || (String(lunarDay).padStart(2, \"0\") + \"/\" + String(lunarMonth).padStart(2, \"0\") + \" ÂL\");\n    const updatedAt = r[9] ? String(r[9]) : \"2026-01-01T00:00:00.000Z\";\n    const deleted = r[10] === true || String(r[10]).toUpperCase() === \"TRUE\";\n    records.push({\n      id: Number.isFinite(Number(id)) ? Number(id) : String(id),\\n      name: name,\\n      location: location,\\n      region: String(r[3] || \"Miền Nam\").trim(),\\n      lunarDay: lunarDay,\\n      lunarMonth: lunarMonth,\\n      lunarLabel: lunarLabel,\\n      duration: String(r[7] || \"1 – 3 ngày\").trim(),\\n      highlights: String(r[8] || \"\").trim(),\\n      updatedAt: updatedAt,\\n      deleted: deleted\n    });\n  }\n  return records;\n}\n\nfunction writeAllRecords(mainSheet, records) {\n  const lastRow = mainSheet.getLastRow();\n  if (lastRow > 1) {\n    mainSheet.getRange(2, 1, lastRow - 1, 11).clearContent();\n  }\n  if (records.length === 0) return;\n  const rows = records.map(item => [\n    item.id,\n    item.name,\n    item.location,\n    item.region || \"Miền Nam\",\n    Number(item.lunarDay) || 15,\n    Number(item.lunarMonth) || 1,\n    item.lunarLabel || (String(item.lunarDay || 15).padStart(2, \"0\") + \"/\" + String(item.lunarMonth || 1).padStart(2, \"0\") + \" ÂL\"),\n    item.duration || \"1 – 3 ngày\",\n    item.highlights || \"\",\n    item.updatedAt || new Date().toISOString(),\n    Boolean(item.deleted)\n  ]);\n  mainSheet.getRange(2, 1, rows.length, 11).setValues(rows);\n}\n\nfunction saveBackupSnapshot(backupSheet, actionName, currentRecords) {\n  const activeCount = currentRecords.filter(r => !r.deleted).length;\n  backupSheet.appendRow([\n    new Date().toISOString(),\n    actionName,\n    activeCount,\n    JSON.stringify(currentRecords)\n  ]);\n  const totalRows = backupSheet.getLastRow();\n  if (totalRows > MAX_BACKUPS + 1) {\n    backupSheet.deleteRows(2, totalRows - (MAX_BACKUPS + 1));\n  }\n}\n\nfunction makeFingerprint(item) {\n  return [\n    String(item.name || \"\").trim().toLowerCase(),\n    String(item.location || \"\").trim().toLowerCase(),\n    Number(item.lunarDay) || 0,\n    Number(item.lunarMonth) || 0\n  ].join(\"|\");\n}\n\nfunction parseTimeMs(isoStr) {\n  const t = Date.parse(isoStr || \"\");\n  return Number.isFinite(t) ? t : 0;\n}\n\nfunction jsonResponse(obj) {\n  return ContentService\n    .createTextOutput(JSON.stringify(obj))\n    .setMimeType(ContentService.MimeType.JSON);\n}\n\n// API ĐỌC DỮ LIỆU (Ai có link đều tra cứu được danh sách mới nhất)\nfunction doGet(e) {\n  try {\n    const { mainSheet } = ensureSheetsExist();\n    const allRecords = readAllRecords(mainSheet);\n    const activeItems = allRecords.filter(r => !r.deleted);\n    const deletedIds = allRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }));\n    return jsonResponse({\n      ok: true,\n      serverTime: new Date().toISOString(),\n      items: activeItems,\n      deletedIds: deletedIds\n    });\n  } catch (err) {\n    return jsonResponse({ ok: false, error: String(err.message || err) });\n  }\n}\n\n// API GHI & ĐỒNG BỘ DỮ LIỆU (Chỉ Chủ sở hữu có Mã khóa mới thực hiện được)\nfunction doPost(e) {\n  const lock = LockService.getScriptLock();\n  try {\n    lock.waitLock(15000);\n  } catch (lockErr) {\n    return jsonResponse({ ok: false, error: \"Hệ thống đang bận xử lý đồng bộ khác, vui lòng thử lại sau vài giây.\" });\n  }\n\n  try {\n    const payload = JSON.parse(e.postData.contents || \"{}\");\n    const action = payload.action || \"\";\n    const adminKey = payload.adminKey || \"\";\n\n    // Cho phép Khách gửi đề xuất lễ hội mới vào Hàng chờ xét duyệt ([CHỜ DUYỆT])\n    if (action === \"submitPending\") {\n      const { mainSheet, backupSheet } = ensureSheetsExist();\n      const currentRecords = readAllRecords(mainSheet);\n      const incoming = payload.item;\n      if (!incoming || !incoming.name || !incoming.location) {\n        return jsonResponse({ ok: false, error: \"Dữ liệu lễ hội đề xuất không hợp lệ.\" });\n      }\n      saveBackupSnapshot(backupSheet, \"GUEST_PROPOSE: \" + incoming.name, currentRecords);\n      const nowIso = new Date().toISOString();\n      const rawLabel = String(incoming.lunarLabel || \"15/01 ÂL\").replace(/^\\[CHỜ DUYỆT\\]\\s*/i, \"\").trim();\n      const pendingLabel = \"[CHỜ DUYỆT] \" + rawLabel;\n      currentRecords.push({\n        id: incoming.id || Date.now(),\n        name: String(incoming.name).trim(),\n        location: String(incoming.location).trim(),\n        region: incoming.region || \"Miền Nam\",\n        lunarDay: Number(incoming.lunarDay) || 15,\n        lunarMonth: Number(incoming.lunarMonth) || 1,\n        lunarLabel: pendingLabel,\n        duration: incoming.duration || \"1 – 3 ngày\",\n        highlights: incoming.highlights || \"\",\n        updatedAt: nowIso,\n        deleted: false\n      });\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\n        ok: true,\n        serverTime: nowIso,\n        items: currentRecords.filter(r => !r.deleted),\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    if (!verifyKey(adminKey)) {\n      return jsonResponse({\n        ok: false,\n        authError: true,\n        error: \"Mã khóa Chủ sở hữu không chính xác! Từ chối quyền chỉnh sửa.\"\n      });\n    }\n\n    const { mainSheet, backupSheet } = ensureSheetsExist();\n    const currentRecords = readAllRecords(mainSheet);\n\n    if (action === \"verifyAuth\") {\n      return jsonResponse({\n        ok: true,\n        message: \"Xác thực Chủ sở hữu thành công!\",\n        serverTime: new Date().toISOString()\n      });\n    }\n\n    // 1. Thêm hoặc cập nhật 1 lễ hội đơn lẻ (Không đụng chạm các dòng khác)\n    if (action === \"upsert\") {\n      const incoming = payload.item;\n      if (!incoming || !incoming.name || !incoming.location) {\n        return jsonResponse({ ok: false, error: \"Dữ liệu lễ hội không hợp lệ.\" });\n      }\n      saveBackupSnapshot(backupSheet, \"UPSERT: \" + incoming.name, currentRecords);\n\n      const nowIso = incoming.updatedAt || new Date().toISOString();\n      const targetId = String(incoming.id);\n      const targetFp = makeFingerprint(incoming);\n      let found = false;\n\n      for (let i = 0; i < currentRecords.length; i++) {\n        if (String(currentRecords[i].id) === targetId || (!currentRecords[i].deleted && makeFingerprint(currentRecords[i]) === targetFp)) {\n          currentRecords[i] = {\n            id: currentRecords[i].id,\n            name: String(incoming.name).trim(),\n            location: String(incoming.location).trim(),\n            region: incoming.region || \"Miền Nam\",\n            lunarDay: Number(incoming.lunarDay) || 15,\n            lunarMonth: Number(incoming.lunarMonth) || 1,\n            lunarLabel: incoming.lunarLabel || (String(incoming.lunarDay).padStart(2, \"0\") + \"/\" + String(incoming.lunarMonth).padStart(2, \"0\") + \" ÂL\"),\n            duration: incoming.duration || \"1 – 3 ngày\",\n            highlights: incoming.highlights || \"\",\n            updatedAt: nowIso,\n            deleted: false\n          };\n          found = true;\n          break;\n        }\n      }\n\n      if (!found) {\n        currentRecords.push({\n          id: incoming.id || Date.now(),\n          name: String(incoming.name).trim(),\n          location: String(incoming.location).trim(),\n          region: incoming.region || \"Miền Nam\",\n          lunarDay: Number(incoming.lunarDay) || 15,\n          lunarMonth: Number(incoming.lunarMonth) || 1,\n          lunarLabel: incoming.lunarLabel || (String(incoming.lunarDay).padStart(2, \"0\") + \"/\" + String(incoming.lunarMonth).padStart(2, \"0\") + \" ÂL\"),\n          duration: incoming.duration || \"1 – 3 ngày\",\n          highlights: incoming.highlights || \"\",\n          updatedAt: nowIso,\n          deleted: false\n        });\n      }\n\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\n        ok: true,\n        serverTime: new Date().toISOString(),\n        items: currentRecords.filter(r => !r.deleted),\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    // 2. Xóa mềm 1 lễ hội (Có lưu vào Backup_LichSu trước khi xóa)\n    if (action === \"delete\") {\n      const targetId = String(payload.id);\n      saveBackupSnapshot(backupSheet, \"DELETE ID: \" + targetId, currentRecords);\n      const nowIso = new Date().toISOString();\n      for (let i = 0; i < currentRecords.length; i++) {\n        if (String(currentRecords[i].id) === targetId) {\n          currentRecords[i].deleted = true;\n          currentRecords[i].updatedAt = nowIso;\n        }\n      }\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\\n        ok: true,\\n        serverTime: nowIso,\\n        items: currentRecords.filter(r => !r.deleted),\\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\\n      });\n    }\n\n    // 3. Đồng bộ Gộp 2 Chiều (Safe Merge: Không làm mất dữ liệu trên Sheet lẫn trên máy)\n    if (action === \"syncMerge\") {\n      const incomingList = Array.isArray(payload.items) ? payload.items : [];\n      saveBackupSnapshot(backupSheet, \"SYNC_MERGE (\" + incomingList.length + \" mục từ trình duyệt)\", currentRecords);\n\n      const byId = {};\n      const byFp = {};\n      currentRecords.forEach(rec => {\n        byId[String(rec.id)] = rec;\n        if (!rec.deleted) {\n          byFp[makeFingerprint(rec)] = rec;\n        }\n      });\n\n      let addedCount = 0;\n      let updatedCount = 0;\n\n      incomingList.forEach(inc => {\n        if (!inc || !inc.name || !inc.location) return;\n        const incId = String(inc.id);\n        const incFp = makeFingerprint(inc);\n        const incTime = parseTimeMs(inc.updatedAt);\n        const existing = byId[incId] || byFp[incFp];\n\n        if (!existing) {\n          const newRec = {\n            id: inc.id || Date.now(),\n            name: String(inc.name).trim(),\n            location: String(inc.location).trim(),\n            region: inc.region || \"Miền Nam\",\n            lunarDay: Number(inc.lunarDay) || 15,\n            lunarMonth: Number(inc.lunarMonth) || 1,\n            lunarLabel: inc.lunarLabel || (String(inc.lunarDay).padStart(2, \"0\") + \"/\" + String(inc.lunarMonth).padStart(2, \"0\") + \" ÂL\"),\n            duration: inc.duration || \"1 – 3 ngày\",\n            highlights: inc.highlights || \"\",\n            updatedAt: inc.updatedAt || new Date().toISOString(),\n            deleted: false\n          };\n          currentRecords.push(newRec);\n          byId[String(newRec.id)] = newRec;\n          byFp[incFp] = newRec;\n          addedCount++;\n        } else {\n          const sheetTime = parseTimeMs(existing.updatedAt);\n          if (existing.deleted && sheetTime >= incTime) {\n            return;\n          }\n          if (incTime > sheetTime) {\n            existing.name = String(inc.name).trim();\n            existing.location = String(inc.location).trim();\n            existing.region = inc.region || existing.region || \"Miền Nam\";\n            existing.lunarDay = Number(inc.lunarDay) || existing.lunarDay || 15;\n            existing.lunarMonth = Number(inc.lunarMonth) || existing.lunarMonth || 1;\n            existing.lunarLabel = inc.lunarLabel || (String(existing.lunarDay).padStart(2, \"0\") + \"/\" + String(existing.lunarMonth).padStart(2, \"0\") + \" ÂL\");\n            existing.duration = inc.duration || existing.duration || \"1 – 3 ngày\";\n            existing.highlights = inc.highlights !== undefined ? inc.highlights : existing.highlights;\n            existing.updatedAt = inc.updatedAt || new Date().toISOString();\n            existing.deleted = false;\n            updatedCount++;\n          }\n        }\n      });\n\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\n        ok: true,\n        addedCount: addedCount,\n        updatedCount: updatedCount,\n        serverTime: new Date().toISOString(),\n        items: currentRecords.filter(r => !r.deleted),\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    // 4. Khôi phục từ bản sao lưu gần nhất trong trang tính Backup_LichSu\n    if (action === \"restoreBackup\") {\n      const bLastRow = backupSheet.getLastRow();\n      if (bLastRow <= 1) {\n        return jsonResponse({ ok: false, error: \"Chưa có bản sao lưu nào trong sheet Backup_LichSu.\" });\n      }\n      const snapshotJson = backupSheet.getRange(bLastRow, 4).getValue();\n      const restoredRecords = JSON.parse(snapshotJson || \"[]\");\n      if (!Array.isArray(restoredRecords) || restoredRecords.length === 0) {\n        return jsonResponse({ ok: false, error: \"Bản sao lưu gần nhất trống hoặc không hợp lệ.\" });\n      }\n      backupSheet.deleteRow(bLastRow);\n      writeAllRecords(mainSheet, restoredRecords);\n      return jsonResponse({\n        ok: true,\n        serverTime: new Date().toISOString(),\n        items: restoredRecords.filter(r => !r.deleted),\n        deletedIds: restoredRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    return jsonResponse({ ok: false, error: \"Hành động không được hỗ trợ: \" + action });\n  } catch (err) {\n    return jsonResponse({ ok: false, error: String(err.message || err) });\n  } finally {\n    lock.releaseLock();\n  }\n}\n\nfunction restoreLatestBackupFromMenu() {\n  const ui = SpreadsheetApp.getUi();\n  const { mainSheet, backupSheet } = ensureSheetsExist();\n  const bLastRow = backupSheet.getLastRow();\n  if (bLastRow <= 1) {\n    ui.alert(\"Chưa có bản sao lưu nào trong trang tính Backup_LichSu!\");\n    return;\n  }\n  const snapshotJson = backupSheet.getRange(bLastRow, 4).getValue();\n  const restoredRecords = JSON.parse(snapshotJson || \"[]\");\n  backupSheet.deleteRow(bLastRow);\n  writeAllRecords(mainSheet, restoredRecords);\n  ui.alert(\"Đã khôi phục thành công bản sao lưu gần nhất!\");\n}\n";
+  const EMBEDDED_APPS_SCRIPT = "/**\n * ============================================================================\n * M\u00c3 NGU\u1ed2N GOOGLE APPS SCRIPT \u0110\u1ed2NG B\u1ed8 D\u1eee LI\u1ec6U: TRA C\u1ee8U L\u1ec4 H\u1ed8I VI\u1ec6T NAM (2026-2099)\n * T\u00e1c gi\u1ea3 / Ch\u1ee7 s\u1edf h\u1eefu: MH-SAMA\n * ============================================================================\n * \u0110\u1eb7c \u0111i\u1ec3m an to\u00e0n:\n * 1. X\u00e1c th\u1ef1c Ch\u1ee7 s\u1edf h\u1eefu (Admin Secret Key) cho m\u1ecdi thao t\u00e1c Th\u00eam / S\u1eeda / X\u00f3a / G\u1ed9p.\n * 2. H\u1ed7 tr\u1ee3 Kh\u00e1ch g\u1eedi \u0111\u1ec1 xu\u1ea5t l\u1ec5 h\u1ed9i m\u1edbi v\u00e0o H\u00e0ng ch\u1edd x\u00e9t duy\u1ec7t ([CH\u1edc DUY\u1ec6T]) qua action \"submitPending\".\n * 3. C\u01a1 ch\u1ebf G\u1ed9p th\u00f4ng minh 2 chi\u1ec1u (Safe Merge) theo ID v\u00e0 th\u1eddi gian (updatedAt):\n *    - Kh\u00f4ng bao gi\u1edd x\u00f3a tr\u1eafng b\u1ea3ng \u0111\u1ec3 ghi \u0111\u00e8.\n *    - Gi\u1eef nguy\u00ean c\u00e1c d\u00f2ng \u0111\u01b0\u1ee3c th\u00eam t\u1eeb thi\u1ebft b\u1ecb kh\u00e1c ho\u1eb7c s\u1eeda tr\u1ef1c ti\u1ebfp tr\u00ean Sheet.\n * 4. Kh\u00f3a \u0111\u1ed3ng th\u1eddi (LockService) ch\u1ed1ng xung \u0111\u1ed9t khi l\u01b0u c\u00f9ng l\u00fac.\n * 5. T\u1ef1 \u0111\u1ed9ng sao l\u01b0u tr\u01b0\u1edbc m\u1ecdi thay \u0111\u1ed5i v\u00e0o trang t\u00ednh \"Backup_LichSu\" (t\u1ed1i \u0111a 100 b\u1ea3n).\n * ============================================================================\n */\n\n// B\u01af\u1edaC C\u1ea4U H\u00ccNH DUY NH\u1ea4T: \u0110\u1ed5i m\u00e3 kh\u00f3a b\u00ed m\u1eadt c\u1ee7a ri\u00eang b\u1ea1n t\u1ea1i d\u00f2ng d\u01b0\u1edbi \u0111\u00e2y:\nconst DEFAULT_ADMIN_KEY = \"HIEUADMIN\";\n\n// ============================================================================\n// H\u1ec6 TH\u1ed0NG X\u00c1C TH\u1ef0C & B\u1ea2O M\u1eacT M\u1eacT KH\u1ea8U (SHA-256 + SALT)\n// ============================================================================\nfunction hashPasswordWithSalt(password, salt) {\n  const raw = String(salt || \"\") + \":\" + String(password || \"\");\n  const signature = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, raw, Utilities.Charset.UTF_8);\n  let hash = \"\";\n  for (let i = 0; i < signature.length; i++) {\n    const byteVal = signature[i] < 0 ? signature[i] + 256 : signature[i];\n    const hex = byteVal.toString(16);\n    hash += hex.length === 1 ? \"0\" + hex : hex;\n  }\n  return hash;\n}\n\nfunction generateRandomSalt() {\n  return Utilities.getUuid().replace(/-/g, \"\").substring(0, 16);\n}\n\n\nconst SHEET_MAIN = \"LeHoi\";\nconst SHEET_BACKUP = \"Backup_LichSu\";\nconst SHEET_USERS = \"NguoiDung\";\nconst MAX_BACKUPS = 100;\n\n// 12 l\u1ec5 h\u1ed9i m\u1eb7c \u0111\u1ecbnh kh\u1edfi t\u1ea1o l\u1ea7n \u0111\u1ea7u n\u1ebfu b\u1ea3ng t\u00ednh ho\u00e0n to\u00e0n tr\u1ed1ng\nconst INITIAL_FESTIVALS = [\n  { id: 1, name: \"H\u1ed9i Xu\u00e2n & V\u00eda B\u00e0 \u0110en\", location: \"T\u00e2y Ninh\", region: \"Mi\u1ec1n Nam\", lunarDay: 5, lunarMonth: 5, lunarLabel: \"05/05 \u00c2L\", duration: \"H\u1ed9i Xu\u00e2n 30 ng\u00e0y; V\u00eda 3 ng\u00e0y\", highlights: \"H\u00e0nh h\u01b0\u01a1ng \u0111\u1ec9nh n\u00fai B\u00e0 \u0110en, d\u00e2ng h\u01b0\u01a1ng Linh S\u01a1n Th\u00e1nh M\u1eabu (04\u201306/05 \u00c2L) v\u00e0 \u0111\u00eam h\u1ed9i hoa \u0111\u0103ng.\" },\n  { id: 2, name: \"T\u1ebft Nguy\u00ean Ti\u00eau Ch\u1ee3 L\u1edbn\", location: \"TP. H\u1ed3 Ch\u00ed Minh\", region: \"Mi\u1ec1n Nam\", lunarDay: 15, lunarMonth: 1, lunarLabel: \"15/01 \u00c2L\", duration: \"4 ng\u00e0y\", highlights: \"Di\u1ec5u h\u00e0nh ngh\u1ec7 thu\u1eadt \u0111\u01b0\u1eddng ph\u1ed1, l\u00e2n s\u01b0 r\u1ed3ng qua c\u00e1c h\u1ed9i qu\u00e1n ng\u01b0\u1eddi Hoa Qu\u1eadn 5 (12\u201315/01 \u00c2L).\" },\n  { id: 3, name: \"L\u1ec5 h\u1ed9i V\u00eda B\u00e0 Ch\u00faa X\u1ee9 N\u00fai Sam\", location: \"An Giang\", region: \"Mi\u1ec1n Nam\", lunarDay: 24, lunarMonth: 4, lunarLabel: \"24/04 \u00c2L\", duration: \"6 ng\u00e0y\", highlights: \"L\u1ec5 T\u1eafm B\u00e0 \u0111\u00eam 23 r\u1ea1ng 24/4 \u00c2L (k\u00e9o d\u00e0i 22\u201327/04 \u00c2L), l\u1ec5 h\u1ed9i t\u00edn ng\u01b0\u1ee1ng l\u1edbn nh\u1ea5t mi\u1ec1n T\u00e2y Nam B\u1ed9.\" },\n  { id: 4, name: \"L\u1ec5 h\u1ed9i Nghinh \u00d4ng C\u1ea7n Gi\u1edd\", location: \"TP. H\u1ed3 Ch\u00ed Minh\", region: \"Mi\u1ec1n Nam\", lunarDay: 16, lunarMonth: 8, lunarLabel: \"16/08 \u00c2L\", duration: \"3 ng\u00e0y\", highlights: \"R\u01b0\u1edbc ki\u1ec7u Nam H\u1ea3i T\u01b0\u1edbng Qu\u00e2n tr\u00ean bi\u1ec3n C\u1ea7n Gi\u1edd (15\u201317/08 \u00c2L), c\u1ea7u ng\u01b0 d\u00e2n b\u00ecnh an v\u00e0 m\u00f9a bi\u1ec3n b\u1ed9i thu.\" },\n  { id: 5, name: \"L\u1ec5 h\u1ed9i Ok Om Bok \u2013 \u0110ua Ghe Ngo\", location: \"S\u00f3c Tr\u0103ng & Tr\u00e0 Vinh\", region: \"Mi\u1ec1n Nam\", lunarDay: 15, lunarMonth: 10, lunarLabel: \"15/10 \u00c2L\", duration: \"2 \u2013 3 ng\u00e0y\", highlights: \"L\u1ec5 C\u00fang Tr\u0103ng c\u1ee7a \u0111\u1ed3ng b\u00e0o Khmer Nam B\u1ed9, \u0111ua ghe Ngo tr\u00ean s\u00f4ng Masp\u00e9ro v\u00e0 th\u1ea3 \u0111\u00e8n n\u01b0\u1edbc hoa \u0111\u0103ng.\" },\n  { id: 6, name: \"L\u1ec5 h\u1ed9i Ch\u00f9a B\u00e0 Thi\u00ean H\u1eadu\", location: \"B\u00ecnh D\u01b0\u01a1ng\", region: \"Mi\u1ec1n Nam\", lunarDay: 15, lunarMonth: 1, lunarLabel: \"15/01 \u00c2L\", duration: \"3 ng\u00e0y\", highlights: \"L\u1ec5 r\u01b0\u1edbc ki\u1ec7u B\u00e0 Thi\u00ean H\u1eadu qua c\u00e1c tuy\u1ebfn ph\u1ed1 Th\u1ee7 D\u1ea7u M\u1ed9t v\u00e0o chi\u1ec1u R\u1eb1m th\u00e1ng Gi\u00eang (13\u201315/01 \u00c2L).\" },\n  { id: 11, name: \"L\u1ec5 h\u1ed9i Qu\u00e1n Th\u1ebf \u00c2m Ng\u0169 H\u00e0nh S\u01a1n\", location: \"\u0110\u00e0 N\u1eb5ng\", region: \"Mi\u1ec1n Trung\", lunarDay: 19, lunarMonth: 2, lunarLabel: \"19/02 \u00c2L\", duration: \"3 ng\u00e0y\", highlights: \"L\u1ec5 r\u01b0\u1edbc \u00e1nh s\u00e1ng, r\u01b0\u1edbc t\u00f4n t\u01b0\u1ee3ng Qu\u00e1n Th\u1ebf \u00c2m v\u00e0 h\u1ed9i hoa \u0111\u0103ng tr\u00ean s\u00f4ng C\u1ed5 C\u00f2 (17\u201319/02 \u00c2L).\" },\n  { id: 12, name: \"L\u1ec5 h\u1ed9i \u0110i\u1ec7n H\u00f2n Ch\u00e9n\", location: \"Th\u1eeba Thi\u00ean Hu\u1ebf\", region: \"Mi\u1ec1n Trung\", lunarDay: 3, lunarMonth: 3, lunarLabel: \"03/03 \u00c2L\", duration: \"2 ng\u00e0y\", highlights: \"R\u01b0\u1edbc s\u1eafc b\u1eb1ng thuy\u1ec1n r\u1ed3ng tr\u00ean s\u00f4ng H\u01b0\u01a1ng, t\u00f4n vinh Thi\u00ean Y A Na Th\u00e1nh M\u1eabu.\" },\n  { id: 7, name: \"L\u1ec5 h\u1ed9i Ch\u00f9a H\u01b0\u01a1ng\", location: \"H\u00e0 N\u1ed9i\", region: \"Mi\u1ec1n B\u1eafc\", lunarDay: 6, lunarMonth: 1, lunarLabel: \"06/01 \u00c2L\", duration: \"80 \u2013 90 ng\u00e0y\", highlights: \"Khai h\u1ed9i M\u00f9ng 6 T\u1ebft, h\u00e0nh h\u01b0\u01a1ng su\u1ed1i Y\u1ebfn - \u0111\u1ed9ng H\u01b0\u01a1ng T\u00edch k\u00e9o d\u00e0i su\u1ed1t 3 th\u00e1ng m\u00f9a xu\u00e2n.\" },\n  { id: 8, name: \"H\u1ed9i Gi\u00f3ng \u0110\u1ec1n S\u00f3c\", location: \"H\u00e0 N\u1ed9i\", region: \"Mi\u1ec1n B\u1eafc\", lunarDay: 6, lunarMonth: 1, lunarLabel: \"06/01 \u00c2L\", duration: \"3 ng\u00e0y\", highlights: \"T\u01b0\u1edfng nh\u1edb Th\u00e1nh Gi\u00f3ng (06\u201308/01 \u00c2L), nghi l\u1ec5 d\u00e2ng hoa tre v\u00e0 r\u01b0\u1edbc voi truy\u1ec1n th\u1ed1ng.\" },\n  { id: 9, name: \"H\u1ed9i Lim (Quan h\u1ecd)\", location: \"B\u1eafc Ninh\", region: \"Mi\u1ec1n B\u1eafc\", lunarDay: 13, lunarMonth: 1, lunarLabel: \"13/01 \u00c2L\", duration: \"3 ng\u00e0y\", highlights: \"H\u00e1t giao duy\u00ean Quan h\u1ecd B\u1eafc Ninh tr\u00ean thuy\u1ec1n r\u1ed3ng v\u00e0 \u0111\u1ed3i Lim (12\u201314/01 \u00c2L).\" },\n  { id: 10, name: \"L\u1ec5 h\u1ed9i Y\u00ean T\u1eed\", location: \"Qu\u1ea3ng Ninh\", region: \"Mi\u1ec1n B\u1eafc\", lunarDay: 10, lunarMonth: 1, lunarLabel: \"10/01 \u00c2L\", duration: \"~80 ng\u00e0y\", highlights: \"H\u00e0nh h\u01b0\u01a1ng v\u1ec1 \u0111\u1ea5t Ph\u1eadt Tr\u00fac L\u00e2m Y\u00ean T\u1eed v\u00e0 \u0111\u1ec9nh ch\u00f9a \u0110\u1ed3ng t\u1eeb 10 th\u00e1ng Gi\u00eang \u0111\u1ebfn h\u1ebft th\u00e1ng 3 \u00c2L.\" }\n];\n\n// T\u1ea1o menu ti\u1ec7n \u00edch ngay tr\u00ean thanh c\u00f4ng c\u1ee5 Google Sheets cho Ch\u1ee7 s\u1edf h\u1eefu\nfunction onOpen() {\n  SpreadsheetApp.getUi()\n    .createMenu(\"\ud83c\udfee Qu\u1ea3n l\u00fd L\u1ec5 H\u1ed9i\")\n    .addItem(\"1. Kh\u1edfi t\u1ea1o b\u1ea3ng & N\u1ea1p 12 l\u1ec5 h\u1ed9i g\u1ed1c\", \"setupInitialSheet\")\n    .addItem(\"2. \u0110\u1ed5i M\u00e3 kh\u00f3a Ch\u1ee7 s\u1edf h\u1eefu (Admin Key)\", \"promptChangeAdminKey\")\n    .addItem(\"3. Kh\u00f4i ph\u1ee5c b\u1ea3n sao l\u01b0u g\u1ea7n nh\u1ea5t\", \"restoreLatestBackupFromMenu\")\n    .addToUi();\n}\n\n// T\u1ef1 \u0111\u1ed9ng c\u1eadp nh\u1eadt c\u1ed9t updatedAt khi Ch\u1ee7 s\u1edf h\u1eefu s\u1eeda tr\u1ef1c ti\u1ebfp tr\u00ean Google Sheets\nfunction onEdit(e) {\n  if (!e || !e.range) return;\n  const sheet = e.range.getSheet();\n  if (sheet.getName() !== SHEET_MAIN) return;\n  const row = e.range.getRow();\n  if (row <= 1) return;\n\n  const nowIso = new Date().toISOString();\n  const idCell = sheet.getRange(row, 1);\n  if (!idCell.getValue()) {\n    idCell.setValue(Date.now() + row);\n  }\n  const dayVal = Number(sheet.getRange(row, 5).getValue() || 15);\n  const monthVal = Number(sheet.getRange(row, 6).getValue() || 1);\n  const labelCell = sheet.getRange(row, 7);\n  if (!labelCell.getValue() && dayVal && monthVal) {\n    labelCell.setValue(String(dayVal).padStart(2, \"0\") + \"/\" + String(monthVal).padStart(2, \"0\") + \" \u00c2L\");\n  }\n  const delCell = sheet.getRange(row, 11);\n  if (delCell.getValue() === \"\") {\n    delCell.setValue(false);\n  }\n  sheet.getRange(row, 10).setValue(nowIso);\n}\n\nfunction getAdminKey() {\n  const savedKey = PropertiesService.getScriptProperties().getProperty(\"ADMIN_SECRET_KEY\");\n  return savedKey ? savedKey : DEFAULT_ADMIN_KEY;\n}\n\nfunction verifyKey(inputKey) {\n  const actual = String(getAdminKey()).trim();\n  const provided = String(inputKey || \"\").trim();\n  if (!actual || !provided || actual.length !== provided.length) return false;\n  let diff = 0;\n  for (let i = 0; i < actual.length; i++) {\n    diff |= actual.charCodeAt(i) ^ provided.charCodeAt(i);\n  }\n  return diff === 0;\n}\n\nfunction promptChangeAdminKey() {\n  const ui = SpreadsheetApp.getUi();\n  const res = ui.prompt(\n    \"\u0110\u1ed5i M\u00e3 kh\u00f3a Ch\u1ee7 s\u1edf h\u1eefu (Admin Key)\",\n    \"Nh\u1eadp m\u00e3 kh\u00f3a b\u00ed m\u1eadt m\u1edbi (d\u00f9ng \u0111\u1ec3 m\u1edf kh\u00f3a ch\u1ec9nh s\u1eeda tr\u00ean \u1ee9ng d\u1ee5ng web):\",\n    ui.ButtonSet.OK_CANCEL\n  );\n  if (res.getSelectedButton() === ui.Button.OK) {\n    const newKey = res.getResponseText().trim();\n    if (newKey.length < 4) {\n      ui.alert(\"M\u00e3 kh\u00f3a ph\u1ea3i c\u00f3 \u00edt nh\u1ea5t 4 k\u00fd t\u1ef1!\");\n      return;\n    }\n    PropertiesService.getScriptProperties().setProperty(\"ADMIN_SECRET_KEY\", newKey);\n    ui.alert(\"\u0110\u00e3 l\u01b0u M\u00e3 kh\u00f3a Ch\u1ee7 s\u1edf h\u1eefu m\u1edbi th\u00e0nh c\u00f4ng!\");\n  }\n}\n\nfunction ensureSheetsExist() {\n  const ss = SpreadsheetApp.getActiveSpreadsheet();\n  let mainSheet = ss.getSheetByName(SHEET_MAIN);\n  if (!mainSheet) {\n    mainSheet = ss.insertSheet(SHEET_MAIN);\n    const headers = [\n      \"id\", \"name\", \"location\", \"region\",\n      \"lunarDay\", \"lunarMonth\", \"lunarLabel\",\n      \"duration\", \"highlights\", \"updatedAt\", \"deleted\"\n    ];\n    mainSheet.getRange(1, 1, 1, headers.length).setValues([headers]);\n    mainSheet.getRange(1, 1, 1, headers.length)\n      .setFontWeight(\"bold\")\n      .setBackground(\"#1e3a8a\")\n      .setFontColor(\"#ffffff\");\n    mainSheet.setFrozenRows(1);\n\n    const initIso = \"2026-01-01T00:00:00.000Z\";\n    const rows = INITIAL_FESTIVALS.map(item => [\n      item.id, item.name, item.location, item.region,\n      item.lunarDay, item.lunarMonth, item.lunarLabel,\n      item.duration, item.highlights, initIso, false\n    ]);\n    mainSheet.getRange(2, 1, rows.length, headers.length).setValues(rows);\n  }\n\n  let backupSheet = ss.getSheetByName(SHEET_BACKUP);\n  if (!backupSheet) {\n    backupSheet = ss.insertSheet(SHEET_BACKUP);\n    const bHeaders = [\"Th\u1eddi gian sao l\u01b0u\", \"Thao t\u00e1c\", \"S\u1ed1 l\u01b0\u1ee3ng l\u1ec5 h\u1ed9i\", \"D\u1eef li\u1ec7u JSON (Snapshot)\"];\n    backupSheet.getRange(1, 1, 1, bHeaders.length).setValues([bHeaders]);\n    backupSheet.getRange(1, 1, 1, bHeaders.length)\n      .setFontWeight(\"bold\")\n      .setBackground(\"#334155\")\n      .setFontColor(\"#ffffff\");\n    backupSheet.setFrozenRows(1);\n  }\n\n  let usersSheet = ss.getSheetByName(SHEET_USERS);\n  if (!usersSheet) {\n    usersSheet = ss.insertSheet(SHEET_USERS);\n    const uHeaders = [\n      \"id\", \"username\", \"displayName\", \"passwordHash\",\n      \"salt\", \"role\", \"status\", \"createdAt\", \"lastLogin\", \"failedAttempts\", \"lockUntil\"\n    ];\n    usersSheet.getRange(1, 1, 1, uHeaders.length).setValues([uHeaders]);\n    usersSheet.getRange(1, 1, 1, uHeaders.length)\n      .setFontWeight(\"bold\")\n      .setBackground(\"#065f46\")\n      .setFontColor(\"#ffffff\");\n    usersSheet.setFrozenRows(1);\n\n    // T\u1ea1o s\u1eb5n t\u00e0i kho\u1ea3n Admin t\u1ed1i cao \u0111\u1ea7u ti\u00ean cho Ch\u1ee7 s\u1edf h\u1eefu\n    const adminSalt = generateRandomSalt();\n    const adminHash = hashPasswordWithSalt(\"HIEUADMIN\", adminSalt);\n    const initAdminRow = [\n      \"u_admin\", \"admin\", \"Ch\u1ee7 s\u1edf h\u1eefu (MH-SAMA)\",\n      adminHash, adminSalt, \"superadmin\", \"active\",\n      new Date().toISOString(), new Date().toISOString(),\n      0, 0\n    ];\n    usersSheet.getRange(2, 1, 1, initAdminRow.length).setValues([initAdminRow]);\n  } else {\n    // T\u1ef1 \u0111\u1ed9ng ki\u1ec3m tra v\u00e0 n\u00e2ng c\u1ea5p 2 c\u1ed9t ki\u1ec3m so\u00e1t \u0111\u0103ng nh\u1eadp n\u1ebfu ch\u01b0a c\u00f3\n    if (usersSheet.getLastColumn() < 11) {\n      usersSheet.getRange(1, 10, 1, 2).setValues([[\"failedAttempts\", \"lockUntil\"]]);\n      usersSheet.getRange(1, 10, 1, 2)\n        .setFontWeight(\"bold\")\n        .setBackground(\"#065f46\")\n        .setFontColor(\"#ffffff\");\n    }\n  }\n\n  return { ss, mainSheet, backupSheet, usersSheet };\n}\n\nfunction setupInitialSheet() {\n  ensureSheetsExist();\n  return \"\u0110\u00e3 kh\u1edfi t\u1ea1o b\u1ea3ng LeHoi v\u00e0 Backup_LichSu th\u00e0nh c\u00f4ng!\";\n}\n\nfunction readAllRecords(mainSheet) {\n  const lastRow = mainSheet.getLastRow();\n  if (lastRow <= 1) return [];\n  const values = mainSheet.getRange(2, 1, lastRow - 1, 11).getValues();\n  const records = [];\n  for (let i = 0; i < values.length; i++) {\n    const r = values[i];\n    const name = String(r[1] || \"\").trim();\n    const location = String(r[2] || \"\").trim();\n    if (!name && !location) continue;\n    const lunarDay = Number(r[4]) || 15;\n    const lunarMonth = Number(r[5]) || 1;\n    const id = r[0] !== \"\" && r[0] !== null ? r[0] : (Date.now() + i);\n    const lunarLabel = String(r[6] || \"\").trim() || (String(lunarDay).padStart(2, \"0\") + \"/\" + String(lunarMonth).padStart(2, \"0\") + \" \u00c2L\");\n    const updatedAt = r[9] ? String(r[9]) : \"2026-01-01T00:00:00.000Z\";\n    const deleted = r[10] === true || String(r[10]).toUpperCase() === \"TRUE\";\n    records.push({\n      id: Number.isFinite(Number(id)) ? Number(id) : String(id),\n      name: name,\n      location: location,\n      region: String(r[3] || \"Mi\u1ec1n Nam\").trim(),\n      lunarDay: lunarDay,\n      lunarMonth: lunarMonth,\n      lunarLabel: lunarLabel,\n      duration: String(r[7] || \"1 \u2013 3 ng\u00e0y\").trim(),\n      highlights: String(r[8] || \"\").trim(),\n      updatedAt: updatedAt,\n      deleted: deleted\n    });\n  }\n  return records;\n}\n\n\nfunction readAllUsers(usersSheet) {\n  const lastRow = usersSheet.getLastRow();\n  if (lastRow <= 1) return [];\n  const lastCol = Math.max(usersSheet.getLastColumn(), 11);\n  const values = usersSheet.getRange(2, 1, lastRow - 1, lastCol).getValues();\n  const users = [];\n  for (let i = 0; i < values.length; i++) {\n    const r = values[i];\n    if (!r[1]) continue; // Kh\u00f4ng c\u00f3 username\n    const rawUsername = String(r[1]).trim().toLowerCase();\n    let rawRole = String(r[5] || \"member\").trim().toLowerCase();\n    // T\u00e0i kho\u1ea3n g\u1ed1c admin lu\u00f4n gi\u1eef quy\u1ec1n t\u1ed1i cao superadmin\n    if (rawUsername === \"admin\" && (rawRole === \"admin\" || !rawRole)) {\n      rawRole = \"superadmin\";\n    }\n    users.push({\n      id: String(r[0] || (\"u_\" + i)),\n      username: rawUsername,\n      displayName: String(r[2] || r[1]).trim(),\n      passwordHash: String(r[3] || \"\"),\n      salt: String(r[4] || \"\"),\n      role: rawRole,\n      status: String(r[6] || \"active\").trim().toLowerCase(),\n      createdAt: String(r[7] || new Date().toISOString()),\n      lastLogin: String(r[8] || \"\"),\n      failedAttempts: Number(r[9]) || 0,\n      lockUntil: Number(r[10]) || 0\n    });\n  }\n  return users;\n}\n\nfunction writeAllUsers(usersSheet, users) {\n  const lastRow = usersSheet.getLastRow();\n  if (lastRow > 1) {\n    usersSheet.getRange(2, 1, lastRow - 1, 11).clearContent();\n  }\n  if (users.length === 0) return;\n  const rows = users.map(u => [\n    u.id,\n    u.username.toLowerCase(),\n    u.displayName,\n    u.passwordHash,\n    u.salt,\n    u.role || \"member\",\n    u.status || \"active\",\n    u.createdAt || new Date().toISOString(),\n    u.lastLogin || \"\",\n    Number(u.failedAttempts) || 0,\n    Number(u.lockUntil) || 0\n  ]);\n  usersSheet.getRange(2, 1, rows.length, 11).setValues(rows);\n}\n\nfunction writeAllRecords(mainSheet, records) {\n  const lastRow = mainSheet.getLastRow();\n  if (lastRow > 1) {\n    mainSheet.getRange(2, 1, lastRow - 1, 11).clearContent();\n  }\n  if (records.length === 0) return;\n  const rows = records.map(item => [\n    item.id,\n    item.name,\n    item.location,\n    item.region || \"Mi\u1ec1n Nam\",\n    Number(item.lunarDay) || 15,\n    Number(item.lunarMonth) || 1,\n    item.lunarLabel || (String(item.lunarDay || 15).padStart(2, \"0\") + \"/\" + String(item.lunarMonth || 1).padStart(2, \"0\") + \" \u00c2L\"),\n    item.duration || \"1 \u2013 3 ng\u00e0y\",\n    item.highlights || \"\",\n    item.updatedAt || new Date().toISOString(),\n    Boolean(item.deleted)\n  ]);\n  mainSheet.getRange(2, 1, rows.length, 11).setValues(rows);\n}\n\nfunction saveBackupSnapshot(backupSheet, actionName, currentRecords) {\n  const activeCount = currentRecords.filter(r => !r.deleted).length;\n  backupSheet.appendRow([\n    new Date().toISOString(),\n    actionName,\n    activeCount,\n    JSON.stringify(currentRecords)\n  ]);\n  const totalRows = backupSheet.getLastRow();\n  if (totalRows > MAX_BACKUPS + 1) {\n    backupSheet.deleteRows(2, totalRows - (MAX_BACKUPS + 1));\n  }\n}\n\nfunction makeFingerprint(item) {\n  return [\n    String(item.name || \"\").trim().toLowerCase(),\n    String(item.location || \"\").trim().toLowerCase(),\n    Number(item.lunarDay) || 0,\n    Number(item.lunarMonth) || 0\n  ].join(\"|\");\n}\n\nfunction parseTimeMs(isoStr) {\n  const t = Date.parse(isoStr || \"\");\n  return Number.isFinite(t) ? t : 0;\n}\n\nfunction jsonResponse(obj) {\n  return ContentService\n    .createTextOutput(JSON.stringify(obj))\n    .setMimeType(ContentService.MimeType.JSON);\n}\n\n// API \u0110\u1eccC D\u1eee LI\u1ec6U (Ai c\u00f3 link \u0111\u1ec1u tra c\u1ee9u \u0111\u01b0\u1ee3c danh s\u00e1ch m\u1edbi nh\u1ea5t)\nfunction doGet(e) {\n  try {\n    const { mainSheet } = ensureSheetsExist();\n    const allRecords = readAllRecords(mainSheet);\n    const activeItems = allRecords.filter(r => !r.deleted);\n    const deletedIds = allRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }));\n    return jsonResponse({\n      ok: true,\n      serverTime: new Date().toISOString(),\n      items: activeItems,\n      deletedIds: deletedIds\n    });\n  } catch (err) {\n    return jsonResponse({ ok: false, error: String(err.message || err) });\n  }\n}\n\n// API GHI & \u0110\u1ed2NG B\u1ed8 D\u1eee LI\u1ec6U (Ch\u1ec9 Ch\u1ee7 s\u1edf h\u1eefu c\u00f3 M\u00e3 kh\u00f3a m\u1edbi th\u1ef1c hi\u1ec7n \u0111\u01b0\u1ee3c)\nfunction doPost(e) {\n  const lock = LockService.getScriptLock();\n  try {\n    lock.waitLock(15000);\n  } catch (lockErr) {\n    return jsonResponse({ ok: false, error: \"H\u1ec7 th\u1ed1ng \u0111ang b\u1eadn x\u1eed l\u00fd \u0111\u1ed3ng b\u1ed9 kh\u00e1c, vui l\u00f2ng th\u1eed l\u1ea1i sau v\u00e0i gi\u00e2y.\" });\n  }\n\n  try {\n    const payload = JSON.parse(e.postData.contents || \"{}\");\n    const action = payload.action || \"\";\n    const adminKey = payload.adminKey || \"\";\n\n    // ========================================================================\n    // A. H\u1ec6 TH\u1ed0NG X\u00c1C TH\u1ef0C NG\u01af\u1edcI D\u00d9NG (\u0110\u0102NG K\u00dd, \u0110\u0102NG NH\u1eacP, QU\u1ea2N L\u00dd T\u00c0I KHO\u1ea2N)\n    // ========================================================================\n    \n    // 1. \u0110\u0103ng k\u00fd t\u00e0i kho\u1ea3n m\u1edbi (D\u00e0nh cho th\u00e0nh vi\u00ean t\u1ef1 \u0111\u0103ng k\u00fd)\n    if (action === \"register\") {\n      const { usersSheet } = ensureSheetsExist();\n      const users = readAllUsers(usersSheet);\n      const rawUser = String(payload.username || \"\").trim().toLowerCase();\n      const rawName = String(payload.displayName || rawUser).trim();\n      const rawPass = String(payload.password || \"\");\n\n      if (!rawUser || rawUser.length < 3 || rawUser.length > 30) {\n        return jsonResponse({ ok: false, error: \"T\u00ean \u0111\u0103ng nh\u1eadp ph\u1ea3i t\u1eeb 3 \u0111\u1ebfn 30 k\u00fd t\u1ef1 (vi\u1ebft li\u1ec1n kh\u00f4ng d\u1ea5u).\" });\n      }\n      if (!/^[a-zA-Z0-9_.-]+$/.test(rawUser)) {\n        return jsonResponse({ ok: false, error: \"T\u00ean \u0111\u0103ng nh\u1eadp ch\u1ec9 ch\u1ee9a ch\u1eef c\u00e1i, s\u1ed1 v\u00e0 d\u1ea5u g\u1ea1ch d\u01b0\u1edbi (_).\" });\n      }\n      if (!rawPass || rawPass.length < 4) {\n        return jsonResponse({ ok: false, error: \"M\u1eadt kh\u1ea9u ph\u1ea3i c\u00f3 \u00edt nh\u1ea5t 4 k\u00fd t\u1ef1.\" });\n      }\n\n      const exists = users.find(u => u.username === rawUser);\n      if (exists) {\n        return jsonResponse({ ok: false, error: \"T\u00ean \u0111\u0103ng nh\u1eadp n\u00e0y \u0111\u00e3 \u0111\u01b0\u1ee3c s\u1eed d\u1ee5ng! Vui l\u00f2ng ch\u1ecdn t\u00ean kh\u00e1c.\" });\n      }\n\n      const salt = generateRandomSalt();\n      const passwordHash = hashPasswordWithSalt(rawPass, salt);\n      const nowIso = new Date().toISOString();\n      const newUser = {\n        id: \"u_\" + Date.now(),\n        username: rawUser,\n        displayName: rawName || rawUser,\n        passwordHash: passwordHash,\n        salt: salt,\n        role: \"member\",\n        status: \"active\",\n        createdAt: nowIso,\n        lastLogin: nowIso,\n        failedAttempts: 0,\n        lockUntil: 0\n      };\n\n      users.push(newUser);\n      writeAllUsers(usersSheet, users);\n\n      return jsonResponse({\n        ok: true,\n        message: \"\u0110\u0103ng k\u00fd t\u00e0i kho\u1ea3n th\u00e0nh c\u00f4ng!\",\n        user: {\n          id: newUser.id,\n          username: newUser.username,\n          displayName: newUser.displayName,\n          role: newUser.role,\n          status: newUser.status\n        },\n        token: \"tk_\" + newUser.id + \"_\" + Utilities.getUuid()\n      });\n    }    // 2. \u0110\u0103ng nh\u1eadp t\u00e0i kho\u1ea3n (Gi\u1edbi h\u1ea1n sai t\u1ed1i \u0111a 5 l\u1ea7n, kh\u00f3a 60 gi\u00e2y)\n    if (action === \"login\") {\n      const { usersSheet } = ensureSheetsExist();\n      const users = readAllUsers(usersSheet);\n      const rawUser = String(payload.username || \"\").trim().toLowerCase();\n      const rawPass = String(payload.password || \"\");\n      const nowMs = Date.now();\n\n      if (!rawUser || !rawPass) {\n        return jsonResponse({ ok: false, error: \"Vui l\u00f2ng nh\u1eadp \u0111\u1ea7y \u0111\u1ee7 t\u00ean \u0111\u0103ng nh\u1eadp v\u00e0 m\u1eadt kh\u1ea9u!\" });\n      }\n\n      // T\u00ecm t\u00e0i kho\u1ea3n ng\u01b0\u1eddi d\u00f9ng\n      let target = users.find(u => u.username === rawUser);\n\n      // N\u1ebfu l\u00e0 t\u00e0i kho\u1ea3n admin nh\u01b0ng ch\u01b0a c\u00f3 trong danh s\u00e1ch sheet\n      if (rawUser === \"admin\" && !target) {\n        const adminSalt = generateRandomSalt();\n        const adminHash = hashPasswordWithSalt(\"HIEUADMIN\", adminSalt);\n        target = {\n          id: \"u_admin\",\n          username: \"admin\",\n          displayName: \"Ch\u1ee7 s\u1edf h\u1eefu (MH-SAMA)\",\n          passwordHash: adminHash,\n          salt: adminSalt,\n          role: \"superadmin\",\n          status: \"active\",\n          createdAt: new Date().toISOString(),\n          lastLogin: \"\",\n          failedAttempts: 0,\n          lockUntil: 0\n        };\n        users.push(target);\n      }\n\n      if (!target) {\n        return jsonResponse({ ok: false, error: \"T\u00ean \u0111\u0103ng nh\u1eadp ho\u1eb7c m\u1eadt kh\u1ea9u kh\u00f4ng ch\u00ednh x\u00e1c!\" });\n      }\n\n      // Ki\u1ec3m tra t\u00e0i kho\u1ea3n b\u1ecb qu\u1ea3n tr\u1ecb vi\u00ean kh\u00f3a v\u0129nh vi\u1ec5n\n      if (target.status === \"locked\") {\n        return jsonResponse({ ok: false, error: \"T\u00e0i kho\u1ea3n c\u1ee7a b\u1ea1n \u0111ang b\u1ecb kh\u00f3a b\u1edfi Qu\u1ea3n tr\u1ecb vi\u00ean. Vui l\u00f2ng li\u00ean h\u1ec7 Admin!\" });\n      }\n\n      // Ki\u1ec3m tra th\u1eddi gian t\u1ea1m kh\u00f3a 60 gi\u00e2y do nh\u1eadp sai qu\u00e1 5 l\u1ea7n\n      if (target.lockUntil && target.lockUntil > nowMs) {\n        const remainingSec = Math.ceil((target.lockUntil - nowMs) / 1000);\n        return jsonResponse({\n          ok: false,\n          locked: true,\n          retryAfter: remainingSec,\n          error: \"T\u00e0i kho\u1ea3n t\u1ea1m th\u1eddi b\u1ecb kh\u00f3a do nh\u1eadp sai m\u1eadt kh\u1ea9u 5 l\u1ea7n. Vui l\u00f2ng th\u1eed l\u1ea1i sau \" + remainingSec + \" gi\u00e2y.\"\n        });\n      }\n\n      // N\u1ebfu \u0111\u00e3 h\u1ebft h\u1ea1n kh\u00f3a 60 gi\u00e2y, reset s\u1ed1 l\u1ea7n sai\n      if (target.lockUntil && nowMs >= target.lockUntil) {\n        target.lockUntil = 0;\n        target.failedAttempts = 0;\n      }\n\n      // X\u00e1c th\u1ef1c m\u1eadt kh\u1ea9u\n      let isValidPass = false;\n      if (target.username === \"admin\") {\n        const computedHash = target.salt ? hashPasswordWithSalt(rawPass, target.salt) : \"\";\n        isValidPass = (computedHash === target.passwordHash) || (rawPass === getAdminKey()) || verifyKey(rawPass);\n      } else {\n        const computedHash = hashPasswordWithSalt(rawPass, target.salt);\n        isValidPass = (computedHash === target.passwordHash);\n      }\n\n      if (!isValidPass) {\n        target.failedAttempts = (Number(target.failedAttempts) || 0) + 1;\n        if (target.failedAttempts >= 5) {\n          target.lockUntil = nowMs + 60000; // Kh\u00f3a 60 gi\u00e2y\n          target.failedAttempts = 0;\n          writeAllUsers(usersSheet, users);\n          return jsonResponse({\n            ok: false,\n            locked: true,\n            retryAfter: 60,\n            error: \"B\u1ea1n \u0111\u00e3 nh\u1eadp sai m\u1eadt kh\u1ea9u 5 l\u1ea7n li\u00ean ti\u1ebfp! T\u00e0i kho\u1ea3n b\u1ecb t\u1ea1m kh\u00f3a trong 60 gi\u00e2y.\"\n          });\n        }\n        const attemptsLeft = 5 - target.failedAttempts;\n        writeAllUsers(usersSheet, users);\n        return jsonResponse({\n          ok: false,\n          attemptsLeft: attemptsLeft,\n          error: \"M\u1eadt kh\u1ea9u kh\u00f4ng ch\u00ednh x\u00e1c! B\u1ea1n c\u00f2n \" + attemptsLeft + \" l\u1ea7n th\u1eed tr\u01b0\u1edbc khi b\u1ecb kh\u00f3a 60 gi\u00e2y.\"\n        });\n      }\n\n      // \u0110\u0103ng nh\u1eadp th\u00e0nh c\u00f4ng -> Reset s\u1ed1 l\u1ea7n sai v\u00e0 th\u1eddi gian kh\u00f3a\n      target.failedAttempts = 0;\n      target.lockUntil = 0;\n      target.lastLogin = new Date().toISOString();\n      writeAllUsers(usersSheet, users);\n\n      const isPrivileged = (target.role === \"superadmin\" || target.role === \"moderator\" || target.role === \"admin\");\n      return jsonResponse({\n        ok: true,\n        message: target.role === \"superadmin\" ? \"\u0110\u0103ng nh\u1eadp Ch\u1ee7 s\u1edf h\u1eefu th\u00e0nh c\u00f4ng!\" : \"\u0110\u0103ng nh\u1eadp th\u00e0nh c\u00f4ng!\",\n        user: {\n          id: target.id,\n          username: target.username,\n          displayName: target.displayName,\n          role: target.role,\n          status: target.status\n        },\n        adminKey: isPrivileged ? getAdminKey() : \"\",\n        token: \"tk_\" + target.id + \"_\" + Utilities.getUuid()\n      });\n    }\n\n    // 3. L\u1ea5y danh s\u00e1ch th\u00e0nh vi\u00ean (Ch\u1ec9 Super Admin v\u00e0 Ki\u1ec3m duy\u1ec7t vi\u00ean m\u1edbi c\u00f3 quy\u1ec1n)\n    if (action === \"getUsersList\") {\n      if (!verifyKey(adminKey)) {\n        return jsonResponse({ ok: false, error: \"T\u1eeb ch\u1ed1i truy c\u1eadp! Ch\u1ec9 Qu\u1ea3n tr\u1ecb vi\u00ean m\u1edbi c\u00f3 quy\u1ec1n xem danh s\u00e1ch th\u00e0nh vi\u00ean.\" });\n      }\n      const { usersSheet } = ensureSheetsExist();\n      const users = readAllUsers(usersSheet);\n      const nowMs = Date.now();\n      const safeUsers = users.map(u => ({\n        id: u.id,\n        username: u.username,\n        displayName: u.displayName,\n        role: u.role,\n        status: u.status,\n        createdAt: u.createdAt,\n        lastLogin: u.lastLogin,\n        failedAttempts: u.failedAttempts || 0,\n        isLockedUntil: (u.lockUntil && u.lockUntil > nowMs) ? Math.ceil((u.lockUntil - nowMs) / 1000) : 0\n      }));\n      return jsonResponse({\n        ok: true,\n        users: safeUsers\n      });\n    }\n\n    // 4. C\u1eadp nh\u1eadt tr\u1ea1ng th\u00e1i th\u00e0nh vi\u00ean (Kh\u00f3a/M\u1edf kh\u00f3a ho\u1eb7c Ph\u00e2n quy\u1ec1n)\n    if (action === \"updateUserStatus\") {\n      if (!verifyKey(adminKey)) {\n        return jsonResponse({ ok: false, error: \"T\u1eeb ch\u1ed1i truy c\u1eadp! Ch\u1ec9 Qu\u1ea3n tr\u1ecb vi\u00ean m\u1edbi c\u00f3 quy\u1ec1n c\u1eadp nh\u1eadt th\u00e0nh vi\u00ean.\" });\n      }\n      const { usersSheet } = ensureSheetsExist();\n      const users = readAllUsers(usersSheet);\n      const targetUserId = String(payload.userId || \"\");\n      const newStatus = payload.status; // 'active' ho\u1eb7c 'locked'\n      const newRole = payload.role;     // 'moderator' ho\u1eb7c 'member'\n      const callerRole = String(payload.callerRole || \"\").toLowerCase();\n\n      const user = users.find(u => u.id === targetUserId);\n      if (!user) {\n        return jsonResponse({ ok: false, error: \"Kh\u00f4ng t\u00ecm th\u1ea5y ng\u01b0\u1eddi d\u00f9ng n\u00e0y.\" });\n      }\n\n      // B\u1ea2O V\u1ec6 TUY\u1ec6T \u0110\u1ed0I: T\u00e0i kho\u1ea3n Ch\u1ee7 s\u1edf h\u1eefu t\u1ed1i cao kh\u00f4ng th\u1ec3 b\u1ecb kh\u00f3a ho\u1eb7c h\u1ea1 quy\u1ec1n\n      if (user.username === \"admin\" || user.role === \"superadmin\") {\n        if (newStatus === \"locked\" || (newRole && newRole !== \"superadmin\")) {\n          return jsonResponse({ ok: false, error: \"Kh\u00f4ng th\u1ec3 kh\u00f3a ho\u1eb7c thay \u0111\u1ed5i quy\u1ec1n c\u1ee7a Ch\u1ee7 s\u1edf h\u1eefu t\u1ed1i cao!\" });\n        }\n      }\n\n      // Ki\u1ec3m tra quy\u1ec1n c\u1ee7a ng\u01b0\u1eddi g\u1ecdi thao t\u00e1c:\n      if (callerRole === \"moderator\") {\n        // Ki\u1ec3m duy\u1ec7t vi\u00ean KH\u00d4NG \u0111\u01b0\u1ee3c quy\u1ec1n ph\u00e2n vai tr\u00f2\n        if (newRole) {\n          return jsonResponse({ ok: false, error: \"Ki\u1ec3m duy\u1ec7t vi\u00ean kh\u00f4ng c\u00f3 quy\u1ec1n thay \u0111\u1ed5i vai tr\u00f2 t\u00e0i kho\u1ea3n!\" });\n        }\n        // Ki\u1ec3m duy\u1ec7t vi\u00ean kh\u00f4ng \u0111\u01b0\u1ee3c can thi\u1ec7p v\u00e0o t\u00e0i kho\u1ea3n ki\u1ec3m duy\u1ec7t kh\u00e1c ho\u1eb7c superadmin\n        if (user.role === \"superadmin\" || user.role === \"moderator\") {\n          return jsonResponse({ ok: false, error: \"B\u1ea1n kh\u00f4ng c\u00f3 quy\u1ec1n can thi\u1ec7p v\u00e0o t\u00e0i kho\u1ea3n qu\u1ea3n tr\u1ecb c\u1ea5p cao!\" });\n        }\n      }\n\n      // X\u1eed l\u00fd Kh\u00f3a / M\u1edf kh\u00f3a\n      if (newStatus) {\n        user.status = newStatus;\n        if (newStatus === \"active\") {\n          user.failedAttempts = 0;\n          user.lockUntil = 0;\n        }\n      }\n\n      // X\u1eed l\u00fd Ph\u00e2n quy\u1ec1n (Ch\u1ec9 Super Admin m\u1edbi \u0111\u1ed5i \u0111\u01b0\u1ee3c vai tr\u00f2)\n      if (newRole && (newRole === \"moderator\" || newRole === \"member\")) {\n        user.role = newRole;\n      }\n\n      writeAllUsers(usersSheet, users);\n      return jsonResponse({\n        ok: true,\n        message: \"\u0110\u00e3 c\u1eadp nh\u1eadt t\u00e0i kho\u1ea3n th\u00e0nh c\u00f4ng!\",\n        user: {\n          id: user.id,\n          username: user.username,\n          displayName: user.displayName,\n          role: user.role,\n          status: user.status\n        }\n      });\n    }\n\n    // 5. \u0110\u1ed5i m\u1eadt kh\u1ea9u c\u00e1 nh\u00e2n\n    if (action === \"changePassword\") {\n      const { usersSheet } = ensureSheetsExist();\n      const users = readAllUsers(usersSheet);\n      const targetUserId = String(payload.userId || \"\");\n      const oldPass = String(payload.oldPassword || \"\");\n      const newPass = String(payload.newPassword || \"\");\n\n      if (!newPass || newPass.length < 4) {\n        return jsonResponse({ ok: false, error: \"M\u1eadt kh\u1ea9u m\u1edbi ph\u1ea3i c\u00f3 \u00edt nh\u1ea5t 4 k\u00fd t\u1ef1.\" });\n      }\n\n      const user = users.find(u => u.id === targetUserId);\n      if (!user) {\n        return jsonResponse({ ok: false, error: \"Kh\u00f4ng t\u00ecm th\u1ea5y t\u00e0i kho\u1ea3n ng\u01b0\u1eddi d\u00f9ng.\" });\n      }\n\n      // X\u00e1c th\u1ef1c m\u1eadt kh\u1ea9u c\u0169\n      let isOldValid = false;\n      if (user.username === \"admin\") {\n        const computedOld = user.salt ? hashPasswordWithSalt(oldPass, user.salt) : \"\";\n        isOldValid = (computedOld === user.passwordHash) || (oldPass === getAdminKey()) || verifyKey(oldPass);\n      } else {\n        const computedOld = hashPasswordWithSalt(oldPass, user.salt);\n        isOldValid = (computedOld === user.passwordHash);\n      }\n\n      if (!isOldValid) {\n        return jsonResponse({ ok: false, error: \"M\u1eadt kh\u1ea9u c\u0169 kh\u00f4ng ch\u00ednh x\u00e1c!\" });\n      }\n\n      user.salt = generateRandomSalt();\n      user.passwordHash = hashPasswordWithSalt(newPass, user.salt);\n      user.failedAttempts = 0;\n      user.lockUntil = 0;\n      writeAllUsers(usersSheet, users);\n\n      return jsonResponse({\n        ok: true,\n        message: \"\u0110\u00e3 \u0111\u1ed5i m\u1eadt kh\u1ea9u th\u00e0nh c\u00f4ng!\"\n      });\n    }\n\n\n\n    // Cho ph\u00e9p Kh\u00e1ch g\u1eedi \u0111\u1ec1 xu\u1ea5t l\u1ec5 h\u1ed9i m\u1edbi v\u00e0o H\u00e0ng ch\u1edd x\u00e9t duy\u1ec7t ([CH\u1edc DUY\u1ec6T])\n    if (action === \"submitPending\") {\n      const { mainSheet, backupSheet } = ensureSheetsExist();\n      const currentRecords = readAllRecords(mainSheet);\n      const incoming = payload.item;\n      if (!incoming || !incoming.name || !incoming.location) {\n        return jsonResponse({ ok: false, error: \"D\u1eef li\u1ec7u l\u1ec5 h\u1ed9i \u0111\u1ec1 xu\u1ea5t kh\u00f4ng h\u1ee3p l\u1ec7.\" });\n      }\n      saveBackupSnapshot(backupSheet, \"GUEST_PROPOSE: \" + incoming.name, currentRecords);\n      const nowIso = new Date().toISOString();\n      const rawLabel = String(incoming.lunarLabel || \"15/01 \u00c2L\").replace(/^\\[CH\u1edc DUY\u1ec6T\\]\\s*/i, \"\").trim();\n      const pendingLabel = \"[CH\u1edc DUY\u1ec6T] \" + rawLabel;\n      currentRecords.push({\n        id: incoming.id || Date.now(),\n        name: String(incoming.name).trim(),\n        location: String(incoming.location).trim(),\n        region: incoming.region || \"Mi\u1ec1n Nam\",\n        lunarDay: Number(incoming.lunarDay) || 15,\n        lunarMonth: Number(incoming.lunarMonth) || 1,\n        lunarLabel: pendingLabel,\n        duration: incoming.duration || \"1 \u2013 3 ng\u00e0y\",\n        highlights: incoming.highlights || \"\",\n        updatedAt: nowIso,\n        deleted: false\n      });\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\n        ok: true,\n        serverTime: nowIso,\n        items: currentRecords.filter(r => !r.deleted),\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    if (!verifyKey(adminKey)) {\n      return jsonResponse({\n        ok: false,\n        authError: true,\n        error: \"M\u00e3 kh\u00f3a Ch\u1ee7 s\u1edf h\u1eefu kh\u00f4ng ch\u00ednh x\u00e1c! T\u1eeb ch\u1ed1i quy\u1ec1n ch\u1ec9nh s\u1eeda.\"\n      });\n    }\n\n    const { mainSheet, backupSheet } = ensureSheetsExist();\n    const currentRecords = readAllRecords(mainSheet);\n\n    if (action === \"verifyAuth\") {\n      return jsonResponse({\n        ok: true,\n        message: \"X\u00e1c th\u1ef1c Ch\u1ee7 s\u1edf h\u1eefu th\u00e0nh c\u00f4ng!\",\n        serverTime: new Date().toISOString()\n      });\n    }\n\n    // 1. Th\u00eam ho\u1eb7c c\u1eadp nh\u1eadt 1 l\u1ec5 h\u1ed9i \u0111\u01a1n l\u1ebb (Kh\u00f4ng \u0111\u1ee5ng ch\u1ea1m c\u00e1c d\u00f2ng kh\u00e1c)\n    if (action === \"upsert\") {\n      const incoming = payload.item;\n      if (!incoming || !incoming.name || !incoming.location) {\n        return jsonResponse({ ok: false, error: \"D\u1eef li\u1ec7u l\u1ec5 h\u1ed9i kh\u00f4ng h\u1ee3p l\u1ec7.\" });\n      }\n      saveBackupSnapshot(backupSheet, \"UPSERT: \" + incoming.name, currentRecords);\n\n      const nowIso = incoming.updatedAt || new Date().toISOString();\n      const targetId = String(incoming.id);\n      const targetFp = makeFingerprint(incoming);\n      let found = false;\n\n      for (let i = 0; i < currentRecords.length; i++) {\n        if (String(currentRecords[i].id) === targetId || (!currentRecords[i].deleted && makeFingerprint(currentRecords[i]) === targetFp)) {\n          currentRecords[i] = {\n            id: currentRecords[i].id,\n            name: String(incoming.name).trim(),\n            location: String(incoming.location).trim(),\n            region: incoming.region || \"Mi\u1ec1n Nam\",\n            lunarDay: Number(incoming.lunarDay) || 15,\n            lunarMonth: Number(incoming.lunarMonth) || 1,\n            lunarLabel: incoming.lunarLabel || (String(incoming.lunarDay).padStart(2, \"0\") + \"/\" + String(incoming.lunarMonth).padStart(2, \"0\") + \" \u00c2L\"),\n            duration: incoming.duration || \"1 \u2013 3 ng\u00e0y\",\n            highlights: incoming.highlights || \"\",\n            updatedAt: nowIso,\n            deleted: false\n          };\n          found = true;\n          break;\n        }\n      }\n\n      if (!found) {\n        currentRecords.push({\n          id: incoming.id || Date.now(),\n          name: String(incoming.name).trim(),\n          location: String(incoming.location).trim(),\n          region: incoming.region || \"Mi\u1ec1n Nam\",\n          lunarDay: Number(incoming.lunarDay) || 15,\n          lunarMonth: Number(incoming.lunarMonth) || 1,\n          lunarLabel: incoming.lunarLabel || (String(incoming.lunarDay).padStart(2, \"0\") + \"/\" + String(incoming.lunarMonth).padStart(2, \"0\") + \" \u00c2L\"),\n          duration: incoming.duration || \"1 \u2013 3 ng\u00e0y\",\n          highlights: incoming.highlights || \"\",\n          updatedAt: nowIso,\n          deleted: false\n        });\n      }\n\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\n        ok: true,\n        serverTime: new Date().toISOString(),\n        items: currentRecords.filter(r => !r.deleted),\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    // 2. X\u00f3a m\u1ec1m 1 l\u1ec5 h\u1ed9i (C\u00f3 l\u01b0u v\u00e0o Backup_LichSu tr\u01b0\u1edbc khi x\u00f3a)\n    if (action === \"delete\") {\n      const targetId = String(payload.id);\n      saveBackupSnapshot(backupSheet, \"DELETE ID: \" + targetId, currentRecords);\n      const nowIso = new Date().toISOString();\n      for (let i = 0; i < currentRecords.length; i++) {\n        if (String(currentRecords[i].id) === targetId) {\n          currentRecords[i].deleted = true;\n          currentRecords[i].updatedAt = nowIso;\n        }\n      }\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\n        ok: true,\n        serverTime: nowIso,\n        items: currentRecords.filter(r => !r.deleted),\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    // 3. \u0110\u1ed3ng b\u1ed9 G\u1ed9p 2 Chi\u1ec1u (Safe Merge: Kh\u00f4ng l\u00e0m m\u1ea5t d\u1eef li\u1ec7u tr\u00ean Sheet l\u1eabn tr\u00ean m\u00e1y)\n    if (action === \"syncMerge\") {\n      const incomingList = Array.isArray(payload.items) ? payload.items : [];\n      saveBackupSnapshot(backupSheet, \"SYNC_MERGE (\" + incomingList.length + \" m\u1ee5c t\u1eeb tr\u00ecnh duy\u1ec7t)\", currentRecords);\n\n      const byId = {};\n      const byFp = {};\n      currentRecords.forEach(rec => {\n        byId[String(rec.id)] = rec;\n        if (!rec.deleted) {\n          byFp[makeFingerprint(rec)] = rec;\n        }\n      });\n\n      let addedCount = 0;\n      let updatedCount = 0;\n\n      incomingList.forEach(inc => {\n        if (!inc || !inc.name || !inc.location) return;\n        const incId = String(inc.id);\n        const incFp = makeFingerprint(inc);\n        const incTime = parseTimeMs(inc.updatedAt);\n        const existing = byId[incId] || byFp[incFp];\n\n        if (!existing) {\n          const newRec = {\n            id: inc.id || Date.now(),\n            name: String(inc.name).trim(),\n            location: String(inc.location).trim(),\n            region: inc.region || \"Mi\u1ec1n Nam\",\n            lunarDay: Number(inc.lunarDay) || 15,\n            lunarMonth: Number(inc.lunarMonth) || 1,\n            lunarLabel: inc.lunarLabel || (String(inc.lunarDay).padStart(2, \"0\") + \"/\" + String(inc.lunarMonth).padStart(2, \"0\") + \" \u00c2L\"),\n            duration: inc.duration || \"1 \u2013 3 ng\u00e0y\",\n            highlights: inc.highlights || \"\",\n            updatedAt: inc.updatedAt || new Date().toISOString(),\n            deleted: false\n          };\n          currentRecords.push(newRec);\n          byId[String(newRec.id)] = newRec;\n          byFp[incFp] = newRec;\n          addedCount++;\n        } else {\n          const sheetTime = parseTimeMs(existing.updatedAt);\n          if (existing.deleted && sheetTime >= incTime) {\n            return;\n          }\n          if (incTime > sheetTime) {\n            existing.name = String(inc.name).trim();\n            existing.location = String(inc.location).trim();\n            existing.region = inc.region || existing.region || \"Mi\u1ec1n Nam\";\n            existing.lunarDay = Number(inc.lunarDay) || existing.lunarDay || 15;\n            existing.lunarMonth = Number(inc.lunarMonth) || existing.lunarMonth || 1;\n            existing.lunarLabel = inc.lunarLabel || (String(existing.lunarDay).padStart(2, \"0\") + \"/\" + String(existing.lunarMonth).padStart(2, \"0\") + \" \u00c2L\");\n            existing.duration = inc.duration || existing.duration || \"1 \u2013 3 ng\u00e0y\";\n            existing.highlights = inc.highlights !== undefined ? inc.highlights : existing.highlights;\n            existing.updatedAt = inc.updatedAt || new Date().toISOString();\n            existing.deleted = false;\n            updatedCount++;\n          }\n        }\n      });\n\n      writeAllRecords(mainSheet, currentRecords);\n      return jsonResponse({\n        ok: true,\n        addedCount: addedCount,\n        updatedCount: updatedCount,\n        serverTime: new Date().toISOString(),\n        items: currentRecords.filter(r => !r.deleted),\n        deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    // 4. Kh\u00f4i ph\u1ee5c t\u1eeb b\u1ea3n sao l\u01b0u g\u1ea7n nh\u1ea5t trong trang t\u00ednh Backup_LichSu\n    if (action === \"restoreBackup\") {\n      const bLastRow = backupSheet.getLastRow();\n      if (bLastRow <= 1) {\n        return jsonResponse({ ok: false, error: \"Ch\u01b0a c\u00f3 b\u1ea3n sao l\u01b0u n\u00e0o trong sheet Backup_LichSu.\" });\n      }\n      const snapshotJson = backupSheet.getRange(bLastRow, 4).getValue();\n      const restoredRecords = JSON.parse(snapshotJson || \"[]\");\n      if (!Array.isArray(restoredRecords) || restoredRecords.length === 0) {\n        return jsonResponse({ ok: false, error: \"B\u1ea3n sao l\u01b0u g\u1ea7n nh\u1ea5t tr\u1ed1ng ho\u1eb7c kh\u00f4ng h\u1ee3p l\u1ec7.\" });\n      }\n      backupSheet.deleteRow(bLastRow);\n      writeAllRecords(mainSheet, restoredRecords);\n      return jsonResponse({\n        ok: true,\n        serverTime: new Date().toISOString(),\n        items: restoredRecords.filter(r => !r.deleted),\n        deletedIds: restoredRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))\n      });\n    }\n\n    return jsonResponse({ ok: false, error: \"H\u00e0nh \u0111\u1ed9ng kh\u00f4ng \u0111\u01b0\u1ee3c h\u1ed7 tr\u1ee3: \" + action });\n  } catch (err) {\n    return jsonResponse({ ok: false, error: String(err.message || err) });\n  } finally {\n    lock.releaseLock();\n  }\n}\n\nfunction restoreLatestBackupFromMenu() {\n  const ui = SpreadsheetApp.getUi();\n  const { mainSheet, backupSheet } = ensureSheetsExist();\n  const bLastRow = backupSheet.getLastRow();\n  if (bLastRow <= 1) {\n    ui.alert(\"Ch\u01b0a c\u00f3 b\u1ea3n sao l\u01b0u n\u00e0o trong trang t\u00ednh Backup_LichSu!\");\n    return;\n  }\n  const snapshotJson = backupSheet.getRange(bLastRow, 4).getValue();\n  const restoredRecords = JSON.parse(snapshotJson || \"[]\");\n  backupSheet.deleteRow(bLastRow);\n  writeAllRecords(mainSheet, restoredRecords);\n  ui.alert(\"\u0110\u00e3 kh\u00f4i ph\u1ee5c th\u00e0nh c\u00f4ng b\u1ea3n sao l\u01b0u g\u1ea7n nh\u1ea5t!\");\n}";
 
   // Hàm bọc localStorage an toàn chống lỗi trình duyệt chặn bộ nhớ
   function safeGetStorage(key) {
@@ -1873,6 +3779,11 @@
           : approvedList.filter(f => f.region === reg).length;
         const safeArg = escapeHTML(reg).replace(/'/g, "\\'");
         html += `<button type="button" class="tab-btn ${isActive}" onclick="setRegion('${safeArg}')">${escapeHTML(reg)} <span class="tab-count">${count}</span></button>`;
+        if (reg === "Tất cả") {
+          const isFavActive = (currentRegion === "Yêu thích") ? "active" : "";
+          const favCount = (typeof favorites !== "undefined" && Array.isArray(favorites)) ? favorites.length : 0;
+          html += `<button type="button" class="tab-btn btn-fav-tab ${isFavActive}" onclick="setRegion('Yêu thích')">❤️ Yêu thích <span class="tab-count" id="favCountBadge">${favCount}</span></button>`;
+        }
       });
       html += `<button type="button" class="tab-btn-add owner-only" onclick="openManageRegionsModal()" title="Tạo hoặc quản lý thêm vùng miền mới">+ Thêm miền</button>`;
       tabsContainer.innerHTML = html;
@@ -2457,7 +4368,7 @@
       } else {
         const localExpectedKey = safeGetStorage("vn_festivals_custom_local_key") || DEFAULT_LOCAL_ADMIN_KEY;
         if (keyInput !== localExpectedKey) {
-          showToast("Mã khóa không đúng! (Mặc định khi chưa gắn Sheet là: HIEUADMIN)", "error");
+          showToast("Mã khóa quản trị không chính xác!", "error");
           btn.disabled = false;
           btn.textContent = "🔓 Xác thực & Mở khóa";
           return;
@@ -2953,7 +4864,7 @@
     const year = parseInt(document.getElementById("yearSelect").value, 10);
     const monthFilterVal = document.getElementById("solarMonthSelect") ? document.getElementById("solarMonthSelect").value : "all";
     const selectedSolarMonth = monthFilterVal === "all" ? null : parseInt(monthFilterVal, 10);
-    const sortMode = document.getElementById("sortSelect") ? document.getElementById("sortSelect").value : "region";
+    const sortMode = document.getElementById("sortSelect") ? document.getElementById("sortSelect").value : "upcoming";
     const rawKeyword = document.getElementById("searchInput").value.trim();
     const normKeyword = removeVietnameseTones(rawKeyword);
 
@@ -2968,8 +4879,16 @@
     const tbody = document.getElementById("tableBody");
     tbody.innerHTML = "";
 
+    updateFavBadges();
     let filtered = getApprovedFestivals().filter(f => {
-      const matchRegion = (currentRegion === "Tất cả") || (f.region === currentRegion);
+      let matchRegion = false;
+      if (currentRegion === "Tất cả") {
+        matchRegion = true;
+      } else if (currentRegion === "Yêu thích") {
+        matchRegion = isFavorite(f.id);
+      } else {
+        matchRegion = (f.region === currentRegion);
+      }
       const searchableText = removeVietnameseTones(`${f.name} ${f.location} ${f.region || ""} ${f.lunarLabel || ""} ${f.highlights || ""}`);
       const matchKeyword = !normKeyword || searchableText.includes(normKeyword);
       const festSolarMonth = getSolarMonthOfFestival(f, year);
@@ -3001,6 +4920,9 @@
       return getFestivalSolarInfo(a, year).timestamp - getFestivalSolarInfo(b, year).timestamp;
     });
 
+    const gridEl = document.getElementById("festGrid");
+    if (gridEl) gridEl.innerHTML = "";
+
     if (filtered.length === 0) {
       const emptyTr = document.createElement("tr");
       emptyTr.innerHTML = `
@@ -3009,6 +4931,16 @@
         </td>
       `;
       tbody.appendChild(emptyTr);
+
+      if (gridEl) {
+        gridEl.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 40px 16px; background: var(--bg-card); border-radius: 16px; border: 1px dashed var(--border);">
+            <div style="font-size: 2.5rem; margin-bottom: 8px;">🏮</div>
+            <div style="font-size: 1.05rem; font-weight: 600; color: #cbd5e1;">Không tìm thấy lễ hội phù hợp</div>
+            <p style="font-size: 0.85rem; margin-top: 4px;">Thử chọn lại vùng miền, tháng hoặc tìm từ khóa khác nhé!</p>
+          </div>
+        `;
+      }
       return;
     }
 
@@ -3016,14 +4948,20 @@
       const solarInfo = getFestivalSolarInfo(f, year);
       const countdownHTML = getCountdownBadgeHTML(solarInfo);
       const subnoteHTML = solarInfo.note ? `<div class="solar-subnote">${escapeHTML(solarInfo.note)}</div>` : "";
+      const favActive = isFavorite(f.id) ? "active" : "";
 
+      // 1. Render dòng dữ liệu trong Bảng (Table View)
       const tr = document.createElement("tr");
       tr.className = "main-row";
       tr.onclick = () => toggleDetail(f.id);
       tr.innerHTML = `
         <td>
-          <div class="fest-name">${escapeHTML(f.name)} <span style="color:#64748b;font-size:0.8rem;">▼</span></div>
-          <div class="fest-loc">${escapeHTML(f.location)}</div>
+          <div class="fest-name">
+            <button type="button" class="btn-fav ${favActive}" onclick="toggleFavorite(event, '${escapeHTML(f.id)}')" title="Đánh dấu yêu thích">❤️</button>
+            ${escapeHTML(f.name)}
+            <span style="color:#64748b;font-size:0.8rem;">▼</span>
+          </div>
+          <div class="fest-loc">📍 ${escapeHTML(f.location)}</div>
         </td>
         <td><span class="${badgeClass(f.region)}">${escapeHTML(f.region)}</span></td>
         <td>${escapeHTML(f.lunarLabel)}</td>
@@ -3055,6 +4993,59 @@
         </td>
       `;
       tbody.appendChild(detailTr);
+
+      // 2. Render Thẻ bài sinh động (Card Grid View)
+      if (gridEl) {
+        const card = document.createElement("div");
+        card.className = "fest-card";
+        card.innerHTML = `
+          <div class="fest-card-header">
+            <div class="fest-card-title-group">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap;">
+                <span class="${badgeClass(f.region)}">${escapeHTML(f.region)}</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);">⏱️ ${escapeHTML(f.duration)}</span>
+              </div>
+              <div class="fest-card-title">${escapeHTML(f.name)}</div>
+              <div class="fest-card-location">📍 ${escapeHTML(f.location)}</div>
+            </div>
+            <button type="button" class="btn-fav ${favActive}" onclick="toggleFavorite(event, '${escapeHTML(f.id)}')" title="Đánh dấu lễ hội yêu thích">❤️</button>
+          </div>
+
+          <div class="fest-card-dates">
+            <div class="fest-date-box">
+              <span class="fest-date-lbl">Mốc Âm Lịch</span>
+              <span class="fest-date-val lunar">${escapeHTML(f.lunarLabel)}</span>
+            </div>
+            <div class="fest-date-box right">
+              <span class="fest-date-lbl">Chính hội ${year} (Dương)</span>
+              <span class="fest-date-val solar">${solarInfo.text}</span>
+            </div>
+          </div>
+
+          <div>
+            ${countdownHTML}
+            ${subnoteHTML}
+          </div>
+
+          <div class="fest-card-desc">
+            📌 <strong>Đặc trưng:</strong> ${escapeHTML(f.highlights || "Lễ hội văn hóa truyền thống đặc sắc.")}
+          </div>
+
+          <div class="fest-card-actions">
+            <button type="button" class="cal-btn" style="flex:1;min-width:135px;" onclick="addToGoogleCalendar(event, '${escapeHTML(f.id)}')">📅 Lưu lịch (${year})</button>
+            <button type="button" class="btn" style="padding:6px 11px;font-size:0.8rem;" onclick="toggleCardDetail(event, '${escapeHTML(f.id)}')">🗓️ Xem các năm</button>
+            <button type="button" class="cal-multi-btn" style="padding:6px 11px;font-size:0.8rem;" onclick="openMultiYearCalendarModal(event, '${escapeHTML(f.id)}')">⚡ 2026–2099</button>
+            <button type="button" class="edit-btn owner-only" style="padding:6px 10px;" onclick="openEditFestival(event, '${escapeHTML(f.id)}')">✏️ Sửa</button>
+            <button type="button" class="delete-btn owner-only" style="padding:6px 10px;" onclick="deleteFestival(event, '${escapeHTML(f.id)}')">🗑</button>
+          </div>
+
+          <div class="fest-card-detail-drawer" id="card-drawer-${f.id}">
+            <p style="font-size:0.82rem;color:#fde68a;margin-bottom:8px;">📅 Đối chiếu Dương lịch từ ${START_YEAR} đến ${END_YEAR} (bấm vào từng năm để lưu Google Calendar):</p>
+            <div class="ten-year-grid" id="card-grid-${f.id}"></div>
+          </div>
+        `;
+        gridEl.appendChild(card);
+      }
     });
   }
 
@@ -3091,7 +5082,7 @@
       document.getElementById("fModalMode").value = "owner";
       document.getElementById("guestProposalBanner").style.display = "none";
       document.getElementById("contributorGroup").style.display = "none";
-      document.getElementById("fContributor").value = "";
+      document.getElementById("fContributor").value = currentUser ? (currentUser.displayName || currentUser.username) : "";
       document.getElementById("saveFestivalSubmitBtn").textContent = "Tự động tính tới 2099 & Lưu";
       document.getElementById("fName").value = "";
       document.getElementById("fLocation").value = "";
@@ -3756,15 +5747,50 @@
       renderTable();
     }
   });
+  // ==========================================================================
+  // XỬ LÝ NÚT CUỘN NHANH LÊN ĐẦU TRANG (BACK TO TOP)
+  // ==========================================================================
+  window.addEventListener("scroll", () => {
+    const btn = document.getElementById("backToTopBtn");
+    if (!btn) return;
+    if (window.scrollY > 280) {
+      btn.classList.add("visible");
+    } else {
+      btn.classList.remove("visible");
+    }
+  }, { passive: true });
 
-  // Khởi chạy ban đầu
-  reloadFestivalsFromLocalStorage();
-  updateCloudStatusUI();
-  renderRegionControls();
-  renderTable();
-  if (cloudConfig.scriptUrl && cloudConfig.autoSync !== false) {
-    pullFromCloud(false);
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
   }
+
+  // ==========================================================================
+  // KHỞI CHẠY HỆ THỐNG BAN ĐẦU (Đặt ở cuối cùng sau khi nạp toàn bộ biến & hàm)
+  // ==========================================================================
+  try {
+    reloadFestivalsFromLocalStorage();
+    updateCloudStatusUI();
+    renderRegionControls();
+    updateTodayBanner();
+    updateViewModeUI();
+    updateFavBadges();
+    renderTable();
+    if (cloudConfig.scriptUrl && cloudConfig.autoSync !== false) {
+      pullFromCloud(false);
+    }
+  } catch (err) {
+    console.error("Lỗi khởi chạy ứng dụng:", err);
+  }
+
 </script>
+
+  <!-- Nút cuộn nhanh lên đầu trang (Back to Top FAB) -->
+  <button type="button" id="backToTopBtn" class="back-to-top-btn" onclick="scrollToTop()" title="Lên đầu trang" aria-label="Cuộn lên đầu trang">
+    <span class="btn-top-icon">▲</span>
+    <span class="btn-top-text">Lên đầu</span>
+  </button>
 </body>
 </html>

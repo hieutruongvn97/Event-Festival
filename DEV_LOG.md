@@ -122,6 +122,24 @@
 
 ---
 
+### [Phiên bản 3.5.1] Tối Ưu Bố Cục Di Động (Mobile UX/UI) & Nút Nổi Cuộn Đầu Trang (Back-to-Top FAB)
+- **Sửa triệt để lỗi nhảy dòng chữ (Word-break & Overflow Fix):**
+  - Tiêu đề mạ vàng: Chia thành 2 cụm độc lập 🏮 Tra Cứu Lễ Hội và Địa Phương Việt Nam 🏮, đảm bảo không bao giờ bị đứt đôi chữ Địa \n Phương.
+  - Khung Hôm Nay: Tái cấu trúc thành 2 dòng rõ ràng Dương lịch (DL) và Âm lịch (ÂL), loại bỏ hoàn toàn dấu chấm tròn đơn độc • và lỗi rớt chữ (Dương \n lịch).
+- **Thu gọn chiều cao đầu trang, đưa danh sách lễ hội lên gần tầm mắt:**
+  - **Thanh Vùng Miền:** Chuyển từ 4 hàng nút bấm rối mắt thành **1 thanh cuộn ngang mượt mà (Swipable Horizontal Tabs)** tự ẩn thanh cuộn chuẩn phong cách app di động hiện đại.
+  - **Thanh Trạng Thái & Đăng Nhập:** Giảm 65% chiều cao chiếm chỗ, các huy hiệu và nút bấm co giãn thông minh theo tỷ lệ màn hình điện thoại.
+  - **Thanh Bộ Lọc & Tìm Kiếm:** Sắp xếp gọn gàng 3 hàng (Tìm kiếm 100% $\rightarrow$ Chế độ xem & Sắp xếp $\rightarrow$ Tháng & Năm song hành 50/50).
+  - **Thẻ bài Lễ Hội:** Tinh gọn padding và kích thước chữ, hiển thị vừa vặn, không bị kéo dài lê thê.
+- **Tích hợp Nút nổi Cuộn lên đầu trang (Back to Top FAB):**
+  - Nút bấm tròn mạ vàng ánh cam nổi bật ▲ Lên đầu cố định góc dưới bên phải màn hình.
+  - Tự động hiện mượt mà khi người dùng cuộn xuống quá 280px, ẩn đi khi ở đầu trang.
+  - Bấm 1 chạm sẽ cuộn êm (smooth scroll) về ngay đỉnh trang.
+- **Đồng bộ Android Assets:**
+  - Cập nhật toàn bộ mã nguồn sang ndroid/app/src/main/assets/www/index.html để biên dịch APK mới.
+
+---
+
 ## 📌 TRẠNG THÁI HIỆN TẠI & KẾ HOẠCH BƯỚC TIẾP THEO
 
 - [x] Đã hoàn thành Bước 1: Giao diện Đêm Hội Hoa Đăng, Thẻ bài di động, Lịch Vạn Niên & Yêu thích (v3.3.0).
