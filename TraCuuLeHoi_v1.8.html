@@ -708,7 +708,7 @@
       padding: 16px;
       overflow-y: auto;
     }
-    .modal-overlay.open { display: flex; }
+    .modal-overlay.open, .modal-overlay.active { display: flex !important; }
     .modal {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -2940,7 +2940,7 @@
 <!-- Modal Quản Lý Thành Viên (Chỉ dành cho Admin) -->
 
 <!-- Modal Bảng Điều Hành Lễ Hội & Kéo Thả Phân Quyền (Admin Workspace) -->
-<div class="modal-overlay" id="adminKanbanModal" style="z-index: 9999;">
+<div class="modal-overlay" id="adminKanbanModal" onclick="if(event.target===this)closeAdminKanbanModal()" style="z-index: 9999;">
   <div class="modal modal-kanban-board">
     <div class="kanban-header">
       <div class="kanban-title-area">
@@ -3016,7 +3016,7 @@
 </div>
 
 <!-- Modal Thiết Lập Phân Quyền Nhanh khi Thả vào Khung Nội Bộ -->
-<div class="modal-overlay" id="kanbanQuickPermModal" style="z-index: 10005;">
+<div class="modal-overlay" id="kanbanQuickPermModal" onclick="if(event.target===this)closeKanbanQuickPermModal()" style="z-index: 10005;">
   <div class="modal" style="max-width: 540px;">
     <h2>
       <span>🎯 Thiết Lập Phân Quyền Người Xem</span>
@@ -7330,21 +7330,33 @@
   let kanbanCachedMembers = [];
 
   function openAdminKanbanModal() {
-    if (!currentUser || (currentUser.role !== "superadmin" && currentUser.username !== "admin" && currentUser.role !== "moderator" && !isOwnerUnlocked)) {
+    const isSuperAdmin = (currentUser && (currentUser.role === "superadmin" || currentUser.username === "admin" || (currentUser.email && (currentUser.email === "truongminhhieu58@gmail.com" || currentUser.email.startsWith("truongminhhieu58@")))));
+    const isModerator = (currentUser && (currentUser.role === "moderator" || currentUser.role === "admin"));
+    const isPrivileged = isSuperAdmin || isModerator || Boolean(isOwnerUnlocked);
+
+    if (!isPrivileged) {
       showToast("🔒 Tính năng Bảng Điều Hành Kéo Thả chỉ dành cho Admin & Kiểm duyệt viên!", "warn");
       return;
     }
     const modal = document.getElementById("adminKanbanModal");
     if (!modal) return;
+    modal.classList.add("open");
     modal.classList.add("active");
-    populateKanbanRegionFilter();
-    loadKanbanMembersCache();
-    renderAdminKanbanBoard();
+    try {
+      populateKanbanRegionFilter();
+      loadKanbanMembersCache();
+      renderAdminKanbanBoard();
+    } catch (e) {
+      console.error("Lỗi nạp dữ liệu Kanban:", e);
+    }
   }
 
   function closeAdminKanbanModal() {
     const modal = document.getElementById("adminKanbanModal");
-    if (modal) modal.classList.remove("active");
+    if (modal) {
+      modal.classList.remove("open");
+      modal.classList.remove("active");
+    }
     // Cập nhật lại giao diện trang chính
     renderRegionControls();
     renderTable();
@@ -7639,12 +7651,18 @@
     setKanbanQuickPermChoice(initialVis);
     renderKanbanMemberList(item.allowedUsers || []);
 
-    if (modal) modal.classList.add("active");
+    if (modal) {
+      modal.classList.add("open");
+      modal.classList.add("active");
+    }
   }
 
   function closeKanbanQuickPermModal() {
     const modal = document.getElementById("kanbanQuickPermModal");
-    if (modal) modal.classList.remove("active");
+    if (modal) {
+      modal.classList.remove("open");
+      modal.classList.remove("active");
+    }
     kanbanQuickPermTarget = null;
   }
 
