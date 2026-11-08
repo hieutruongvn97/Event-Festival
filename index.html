@@ -1458,22 +1458,30 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     }
 
-    /* Bảng danh sách thành viên trong Admin Modal */
+/* Bảng danh sách thành viên trong Admin Modal */
+    .modal.modal-user-mgmt {
+      max-width: 980px !important;
+      width: 95vw;
+    }
     .user-table-wrap {
-      max-height: 50vh;
+      max-height: 60vh;
+      overflow-x: auto;
       overflow-y: auto;
       border: 1px solid var(--border);
       border-radius: 10px;
-      background: rgba(14, 18, 30, 0.6);
+      background: rgba(14, 18, 30, 0.75);
       margin-top: 10px;
+      padding: 2px;
     }
     .user-table {
       width: 100%;
-      border-collapse: collapse;
+      min-width: 860px;
+      border-collapse: separate;
+      border-spacing: 0;
       font-size: 0.84rem;
     }
     .user-table th {
-      padding: 10px 12px;
+      padding: 10px 14px;
       background: rgba(22, 30, 52, 0.95);
       border-bottom: 1px solid var(--border);
       text-align: left;
@@ -1481,18 +1489,42 @@
       position: sticky;
       top: 0;
       z-index: 2;
+      white-space: nowrap;
     }
     .user-table td {
-      padding: 10px 12px;
+      padding: 12px 14px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       vertical-align: middle;
+      white-space: nowrap;
+    }
+    .user-table th:nth-child(3),
+    .user-table td:nth-child(3),
+    .user-table th:nth-child(4),
+    .user-table td:nth-child(4),
+    .user-table th:nth-child(5),
+    .user-table td:nth-child(5) {
+      text-align: center;
+    }
+    .user-table th:last-child,
+    .user-table td:last-child {
+      text-align: right;
+    }
+    .user-role-badge {
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 96px;
+      padding: 4px 10px;
+      font-size: 0.76rem;
+      border-radius: 999px;
     }
     .user-status-dot {
       display: inline-block;
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      margin-right: 5px;
+      margin-right: 6px;
     }
     .user-status-dot.active { background: #34d399; box-shadow: 0 0 8px #10b981; }
     .user-status-dot.locked { background: #f87171; box-shadow: 0 0 8px #ef4444; }
@@ -1851,6 +1883,332 @@
       }
     }
 
+
+    /* ==========================================================================
+       ADMIN KANBAN BOARD / DRAG & DROP PERMISSION MANAGER
+       ========================================================================== */
+    .btn-kanban {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.35) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.55);
+      color: #fde68a;
+      font-weight: 700;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
+    }
+    .btn-kanban:hover {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.4) 0%, rgba(217, 119, 6, 0.5) 100%);
+      color: #fff;
+      border-color: #fbbf24;
+      box-shadow: 0 0 18px rgba(245, 158, 11, 0.4);
+    }
+
+    .modal-kanban-board {
+      max-width: 1320px !important;
+      width: 96vw;
+      height: 92vh;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 24px;
+      background: linear-gradient(145deg, #0b0f19 0%, #111827 100%);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85), 0 0 35px rgba(245, 158, 11, 0.18);
+    }
+    .kanban-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .kanban-title-area h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--gold-primary);
+      margin: 0 0 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .kanban-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .kanban-header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .kanban-filter-bar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .kanban-search-box {
+      flex: 1;
+      min-width: 240px;
+    }
+    .kanban-search-box input {
+      width: 100%;
+      padding: 7px 12px;
+      font-size: 0.82rem;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      color: #fff;
+    }
+    .kanban-region-box select {
+      padding: 7px 12px;
+      font-size: 0.82rem;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      color: #fff;
+      cursor: pointer;
+    }
+    .kanban-stats-badges {
+      display: flex;
+      gap: 8px;
+    }
+    .kanban-stat-pill {
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .kanban-stat-pill.public {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+    .kanban-stat-pill.restricted {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+
+    /* Workspace 2 Columns */
+    .kanban-workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      flex: 1;
+      min-height: 0;
+    }
+    @media (max-width: 860px) {
+      .kanban-workspace-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .kanban-column {
+      display: flex;
+      flex-direction: column;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 0;
+    }
+    .kanban-column.col-public {
+      border-top: 3px solid #10b981;
+    }
+    .kanban-column.col-restricted {
+      border-top: 3px solid #f59e0b;
+    }
+    .kanban-col-header {
+      margin-bottom: 10px;
+    }
+    .kanban-col-title-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .kanban-col-title-line h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin: 0;
+      color: #fff;
+    }
+    .kanban-count-badge {
+      margin-left: auto;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .kanban-col-desc {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin: 4px 0 0 0;
+    }
+
+    /* Dropzone Container */
+    .kanban-dropzone {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.22);
+      border: 2px dashed rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      min-height: 250px;
+      transition: all 0.2s ease;
+    }
+    .kanban-dropzone.drag-over {
+      background: rgba(56, 189, 248, 0.08);
+      border-color: #38bdf8;
+      box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.2);
+    }
+    .col-public .kanban-dropzone.drag-over {
+      border-color: #10b981;
+      box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.25);
+    }
+    .col-restricted .kanban-dropzone.drag-over {
+      border-color: #f59e0b;
+      box-shadow: inset 0 0 20px rgba(245, 158, 11, 0.25);
+    }
+
+    /* Draggable Card */
+    .kanban-card {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: grab;
+      transition: transform 0.16s, box-shadow 0.16s, border-color 0.16s;
+      user-select: none;
+      position: relative;
+    }
+    .kanban-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 215, 0, 0.4);
+    }
+    .kanban-card:active {
+      cursor: grabbing;
+    }
+    .kanban-card.dragging {
+      opacity: 0.35;
+      transform: scale(0.96);
+      border: 2px dashed #f59e0b;
+    }
+    .kanban-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .kanban-drag-handle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      cursor: grab;
+      line-height: 1;
+    }
+    .kanban-card-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #f8fafc;
+      flex: 1;
+      line-height: 1.3;
+    }
+    .kanban-card-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .kanban-card-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .kanban-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      flex-wrap: wrap;
+    }
+    .kanban-btn-action {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.06);
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .kanban-btn-action:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border-color: #94a3b8;
+    }
+    .kanban-btn-action.move-right {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
+    }
+    .kanban-btn-action.move-right:hover {
+      background: rgba(245, 158, 11, 0.25);
+    }
+    .kanban-btn-action.move-left {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.35);
+      color: #34d399;
+    }
+    .kanban-btn-action.move-left:hover {
+      background: rgba(16, 185, 129, 0.25);
+    }
+    .kanban-btn-action.btn-perm {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+    }
+    .kanban-btn-action.btn-perm:hover {
+      background: rgba(56, 189, 248, 0.25);
+    }
+    .kanban-perm-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .kanban-perm-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 215, 0, 0.35);
+    }
+    .kanban-perm-card.active {
+      border-color: var(--gold-primary);
+      background: rgba(245, 158, 11, 0.12);
+    }
+
 </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -1940,6 +2298,7 @@
             <span class="user-role-badge member" id="userRoleBadge">Thành viên</span>
           </div>
           <div class="user-quick-actions">
+            <button type="button" class="user-action-link owner-only" onclick="openAdminKanbanModal()" title="Bảng điều hành kéo thả phân quyền">🎛️ Bảng Kéo Thả</button>
             <button type="button" class="user-action-link owner-only" id="btnAdminManageUsers" onclick="openUserManagementModal()" title="Quản lý thành viên gia đình (khóa/mở khóa)">👥 Thành viên</button>
             <button type="button" class="user-action-link" onclick="openChangePasswordModal()" title="Đổi mật khẩu cá nhân">🔑 Đổi MK</button>
             <button type="button" class="user-action-link logout" onclick="logoutUser()" title="Đăng xuất khỏi tài khoản">🚪 Thoát</button>
@@ -2008,6 +2367,7 @@
 
   <div class="action-bar">
     <button class="btn btn-primary owner-only" onclick="openModal()">+ Thêm lễ hội mới</button>
+    <button class="btn btn-kanban owner-only" id="btnOpenKanbanModal" onclick="openAdminKanbanModal()" title="Bảng điều hành kéo thả phân quyền: Công khai &amp; Nội bộ thành viên">🎛️ Bảng Kéo Thả Phân Quyền</button>
     <button class="btn btn-family" id="btnAddFamilyEvent" style="display:none;" onclick="openAddFamilyEventModal()" title="Thêm ngày giỗ, kỷ niệm gia đình nội bộ (chỉ riêng tài khoản của bạn xem được)">🏡 Thêm Lễ / Đám Giỗ Gia Đình</button>
     <button class="btn btn-propose guest-only" onclick="openGuestProposalModal()" title="Đề xuất thêm ngày lễ hội mới vào hàng chờ để Admin xét duyệt">📝 Đề xuất lễ hội mới</button>
     <button class="btn btn-queue owner-only" id="pendingQueueBtn" onclick="openPendingQueueModal()" title="Xem và xét duyệt các lễ hội do Khách truy cập đề xuất">⏳ Hàng chờ duyệt <span class="queue-badge" id="pendingQueueCountBadge">0</span></button>
@@ -2578,8 +2938,139 @@
 </div>
 
 <!-- Modal Quản Lý Thành Viên (Chỉ dành cho Admin) -->
+
+<!-- Modal Bảng Điều Hành Lễ Hội & Kéo Thả Phân Quyền (Admin Workspace) -->
+<div class="modal-overlay" id="adminKanbanModal" style="z-index: 9999;">
+  <div class="modal modal-kanban-board">
+    <div class="kanban-header">
+      <div class="kanban-title-area">
+        <h2>
+          <span>🎛️ Bảng Điều Hành Lễ Hội &amp; Phân Quyền (Kéo Thả)</span>
+        </h2>
+        <p class="kanban-subtitle">
+          Kéo thả các thẻ lễ hội giữa 2 khung để chuyển đổi ngay lập tức giữa <strong>Công khai (🌐)</strong> và <strong>Nội bộ / Chỉ định tài khoản xem (🔒)</strong>.
+        </p>
+      </div>
+      <div class="kanban-header-actions">
+        <button type="button" class="btn btn-cloud" onclick="syncNowFromKanban()" title="Đồng bộ ngay mọi thay đổi lên Google Sheets">☁️ Đồng bộ Google Sheets</button>
+        <button type="button" class="btn" onclick="refreshAdminKanbanBoard()" title="Làm mới lại các thẻ">🔄 Làm mới</button>
+        <button type="button" class="btn btn-primary" onclick="closeAdminKanbanModal()">✕ Đóng</button>
+      </div>
+    </div>
+
+    <!-- Thanh tìm kiếm & lọc nhanh trong Kanban -->
+    <div class="kanban-filter-bar">
+      <div class="kanban-search-box">
+        <input type="text" id="kanbanSearchInput" placeholder="🔍 Tìm kiếm lễ hội theo tên, địa phương trong cả 2 khung..." oninput="filterKanbanCards()" />
+      </div>
+      <div class="kanban-region-box">
+        <select id="kanbanRegionFilter" onchange="filterKanbanCards()">
+          <option value="all">Tất cả vùng miền</option>
+        </select>
+      </div>
+      <div class="kanban-stats-badges">
+        <span class="kanban-stat-pill public" id="kanbanStatPublic">🌐 Công khai: 0</span>
+        <span class="kanban-stat-pill restricted" id="kanbanStatRestricted">🔒 Phân quyền: 0</span>
+      </div>
+    </div>
+
+    <!-- Khung làm việc 2 cột Kéo Thả (Split Kanban Columns) -->
+    <div class="kanban-workspace-grid">
+      <!-- CỘT 1: CÔNG KHAI -->
+      <div class="kanban-column col-public" id="kanbanColPublic">
+        <div class="kanban-col-header">
+          <div class="kanban-col-title-line">
+            <span class="kanban-col-icon">🌐</span>
+            <h3>Khung Công Khai Toàn Dân</h3>
+            <span class="kanban-count-badge" id="kanbanPublicCount">0</span>
+          </div>
+          <p class="kanban-col-desc">Khách vãng lai và mọi tài khoản khi vào web đều xem được.</p>
+        </div>
+        <div class="kanban-dropzone" id="kanbanPublicDropzone"
+             ondragover="kanbanOnDragOver(event)"
+             ondragleave="kanbanOnDragLeave(event)"
+             ondrop="kanbanOnDrop(event, 'public')">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+      <!-- CỘT 2: NỘI BỘ & PHÂN QUYỀN -->
+      <div class="kanban-column col-restricted" id="kanbanColRestricted">
+        <div class="kanban-col-header">
+          <div class="kanban-col-title-line">
+            <span class="kanban-col-icon">🔒</span>
+            <h3>Khung Nội Bộ &amp; Phân Quyền</h3>
+            <span class="kanban-count-badge" id="kanbanRestrictedCount">0</span>
+          </div>
+          <p class="kanban-col-desc">Chỉ tài khoản Thành viên hoặc Danh sách tài khoản được tick chọn mới thấy.</p>
+        </div>
+        <div class="kanban-dropzone" id="kanbanRestrictedDropzone"
+             ondragover="kanbanOnDragOver(event)"
+             ondragleave="kanbanOnDragLeave(event)"
+             ondrop="kanbanOnDrop(event, 'restricted')">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Thiết Lập Phân Quyền Nhanh khi Thả vào Khung Nội Bộ -->
+<div class="modal-overlay" id="kanbanQuickPermModal" style="z-index: 10005;">
+  <div class="modal" style="max-width: 540px;">
+    <h2>
+      <span>🎯 Thiết Lập Phân Quyền Người Xem</span>
+    </h2>
+    <p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:12px;">
+      Chọn nhóm đối tượng tài khoản được quyền xem lễ hội <strong id="kanbanPermItemName" style="color:var(--gold-primary);"></strong>:
+    </p>
+    <input type="hidden" id="kanbanPermItemId" value="" />
+    
+    <div class="kanban-perm-options">
+      <label class="kanban-perm-card active" id="kanbanPermOptMembers" onclick="setKanbanQuickPermChoice('members')">
+        <input type="radio" name="kanbanPermRadio" value="members" checked />
+        <div style="flex:1;">
+          <strong style="color:#60a5fa;display:block;">👥 Cho Tất Cả Thành Viên Đã Đăng Ký</strong>
+          <span style="font-size:0.78rem;color:var(--text-muted);">Mọi tài khoản có đăng ký/đăng nhập đều thấy. Ẩn với khách vãng lai.</span>
+        </div>
+      </label>
+
+      <label class="kanban-perm-card" id="kanbanPermOptSelected" onclick="setKanbanQuickPermChoice('selected')">
+        <input type="radio" name="kanbanPermRadio" value="selected" />
+        <div style="flex:1;">
+          <strong style="color:#f59e0b;display:block;">🎯 Chỉ Định Danh Sách Tài Khoản Cụ Thể</strong>
+          <span style="font-size:0.78rem;color:var(--text-muted);">Chỉ những thành viên được tick chọn bên dưới mới thấy lễ hội này.</span>
+        </div>
+      </label>
+    </div>
+
+    <!-- Danh sách checkbox thành viên (chỉ hiện khi chọn 'selected') -->
+    <div id="kanbanPermUserPicker" style="display:none;margin-top:10px;background:rgba(0,0,0,0.25);border:1px solid var(--border);border-radius:10px;padding:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-size:0.8rem;color:var(--gold-primary);font-weight:600;">Chọn thành viên được xem:</span>
+        <div style="display:flex;gap:4px;">
+          <button type="button" class="btn" style="font-size:0.72rem;padding:3px 6px;" onclick="kanbanToggleAllUsers(true)">Tất cả</button>
+          <button type="button" class="btn" style="font-size:0.72rem;padding:3px 6px;" onclick="kanbanToggleAllUsers(false)">Bỏ chọn</button>
+        </div>
+      </div>
+      <input type="text" id="kanbanSearchMemberInput" placeholder="🔍 Tìm tên hoặc email..." oninput="filterKanbanMemberList()" style="font-size:0.78rem;padding:5px 8px;margin-bottom:6px;width:100%;" />
+      <div id="kanbanMemberListCheckbox" style="max-height:160px;overflow-y:auto;padding:4px;">
+        <!-- Members checkboxes rendered here -->
+      </div>
+      <div style="margin-top:6px;">
+        <input type="text" id="kanbanManualAllowedInput" placeholder="Gõ thêm email/username tùy ý (cách nhau bởi dấu phẩy)..." style="font-size:0.76rem;padding:5px 8px;width:100%;" />
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top:16px;">
+      <button type="button" class="btn btn-primary" onclick="saveKanbanPermissionChoice()">✅ Áp Dụng &amp; Lưu</button>
+      <button type="button" class="btn" onclick="closeKanbanQuickPermModal()">Hủy</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="userManagementModal">
-  <div class="modal modal-wide">
+  <div class="modal modal-wide modal-user-mgmt">
     <h2>
       <span>👥 Quản Lý Thành Viên Gia Đình</span>
       <span class="badge badge-other" id="userTotalCountBadge">0 thành viên</span>
@@ -3367,8 +3858,8 @@
         }
 
         let statusHTML = isLocked
-          ? '<span class="user-status-dot locked"></span><span style="color:#f87171;font-weight:600;">Đã khóa</span>'
-          : '<span class="user-status-dot active"></span><span style="color:#34d399;font-weight:600;">Hoạt động</span>';
+          ? '<span style="white-space:nowrap;display:inline-flex;align-items:center;"><span class="user-status-dot locked"></span><span style="color:#f87171;font-weight:600;">Đã khóa</span></span>'
+          : '<span style="white-space:nowrap;display:inline-flex;align-items:center;"><span class="user-status-dot active"></span><span style="color:#34d399;font-weight:600;">Hoạt động</span></span>';
 
         if (u.isLockedUntil > 0) {
           statusHTML += ` <small style="color:#fbbf24;font-size:0.75rem;">(Khóa tạm ${u.isLockedUntil}s)</small>`;
@@ -3379,7 +3870,7 @@
         // Thao tác dựa trên cấp bậc
         let actionButtonsHTML = "";
         if (isTargetSuper) {
-          actionButtonsHTML = '<span style="color:#fbbf24;font-size:0.8rem;font-weight:700;">👑 Tối cao (Cố định)</span>';
+          actionButtonsHTML = '<span style="color:#fbbf24;font-size:0.8rem;font-weight:700;white-space:nowrap;">👑 Tối cao (Cố định)</span>';
         } else if (isSuperAdmin) {
           // Super Admin có toàn quyền với tất cả mọi người
           const lockBtn = isLocked
@@ -6830,6 +7321,478 @@
   }
 
   // ==========================================================================
+  
+  // ==========================================================================
+  // HỆ THỐNG BẢNG ĐIỀU HÀNH LỄ HỘI KÉO THẢ PHÂN QUYỀN (ADMIN KANBAN BOARD)
+  // ==========================================================================
+  let kanbanDraggedId = null;
+  let kanbanQuickPermTarget = null;
+  let kanbanCachedMembers = [];
+
+  function openAdminKanbanModal() {
+    if (!currentUser || (currentUser.role !== "superadmin" && currentUser.username !== "admin" && currentUser.role !== "moderator" && !isOwnerUnlocked)) {
+      showToast("🔒 Tính năng Bảng Điều Hành Kéo Thả chỉ dành cho Admin & Kiểm duyệt viên!", "warn");
+      return;
+    }
+    const modal = document.getElementById("adminKanbanModal");
+    if (!modal) return;
+    modal.classList.add("active");
+    populateKanbanRegionFilter();
+    loadKanbanMembersCache();
+    renderAdminKanbanBoard();
+  }
+
+  function closeAdminKanbanModal() {
+    const modal = document.getElementById("adminKanbanModal");
+    if (modal) modal.classList.remove("active");
+    // Cập nhật lại giao diện trang chính
+    renderRegionControls();
+    renderTable();
+  }
+
+  function populateKanbanRegionFilter() {
+    const sel = document.getElementById("kanbanRegionFilter");
+    if (!sel) return;
+    const currentVal = sel.value || "all";
+    const allRegs = ["all", ...getAllRegions()];
+    sel.innerHTML = "";
+    allRegs.forEach(reg => {
+      const opt = document.createElement("option");
+      opt.value = reg;
+      opt.textContent = reg === "all" ? "Tất cả vùng miền" : reg;
+      if (reg === currentVal) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  }
+
+  async function loadKanbanMembersCache() {
+    if (kanbanCachedMembers.length > 0) return;
+    try {
+      const raw = safeGetStorage("vn_festivals_cached_members");
+      if (raw) kanbanCachedMembers = JSON.parse(raw) || [];
+    } catch (e) {}
+
+    if (cloudConfig.scriptUrl && isOwnerUnlocked) {
+      try {
+        const res = await callAppsScriptPost({
+          action: "getMembersForPicker",
+          adminKey: ownerAdminKey || DEFAULT_LOCAL_ADMIN_KEY
+        });
+        if (res && res.ok && Array.isArray(res.members)) {
+          kanbanCachedMembers = res.members;
+          safeSetStorage("vn_festivals_cached_members", JSON.stringify(kanbanCachedMembers));
+        }
+      } catch (err) {}
+    }
+  }
+
+  function getAllKanbanItems() {
+    const publicList = festivals.filter(f => !isPendingFestival(f));
+    const privateList = (Array.isArray(myPrivateEvents) ? myPrivateEvents : []).filter(f => !f.deleted);
+    const existingIds = new Set(publicList.map(p => String(p.id)));
+    const cleanPrivate = privateList.filter(p => !existingIds.has(String(p.id)));
+    return [...publicList, ...cleanPrivate];
+  }
+
+  function findItemByIdAnywhere(id) {
+    const strId = String(id);
+    let item = festivals.find(f => String(f.id) === strId);
+    let source = "festivals";
+    if (!item && Array.isArray(myPrivateEvents)) {
+      item = myPrivateEvents.find(f => String(f.id) === strId);
+      source = "private";
+    }
+    return { item, source };
+  }
+
+  function renderAdminKanbanBoard() {
+    const pubZone = document.getElementById("kanbanPublicDropzone");
+    const resZone = document.getElementById("kanbanRestrictedDropzone");
+    const countPubEl = document.getElementById("kanbanPublicCount");
+    const countResEl = document.getElementById("kanbanRestrictedCount");
+    const statPubEl = document.getElementById("kanbanStatPublic");
+    const statResEl = document.getElementById("kanbanStatRestricted");
+    const q = (document.getElementById("kanbanSearchInput")?.value || "").trim().toLowerCase();
+    const regFilter = document.getElementById("kanbanRegionFilter")?.value || "all";
+
+    if (!pubZone || !resZone) return;
+
+    const allItems = getAllKanbanItems();
+    let publicItems = [];
+    let restrictedItems = [];
+
+    allItems.forEach(f => {
+      const isPriv = Boolean(f.isPrivate);
+      const vis = f.visibility || (isPriv ? "only_me" : "public");
+      if (vis === "public") {
+        publicItems.push(f);
+      } else {
+        restrictedItems.push(f);
+      }
+    });
+
+    if (statPubEl) statPubEl.textContent = `🌐 Công khai: ${publicItems.length}`;
+    if (statResEl) statResEl.textContent = `🔒 Phân quyền: ${restrictedItems.length}`;
+
+    // Áp dụng bộ lọc tìm kiếm & vùng miền
+    const applyFilter = (list) => {
+      return list.filter(f => {
+        if (regFilter !== "all" && f.region !== regFilter) return false;
+        if (q) {
+          const matchName = removeVietnameseTones(f.name).includes(removeVietnameseTones(q));
+          const matchLoc = removeVietnameseTones(f.location).includes(removeVietnameseTones(q));
+          if (!matchName && !matchLoc) return false;
+        }
+        return true;
+      });
+    };
+
+    const filteredPub = applyFilter(publicItems);
+    const filteredRes = applyFilter(restrictedItems);
+
+    if (countPubEl) countPubEl.textContent = `${filteredPub.length} / ${publicItems.length}`;
+    if (countResEl) countResEl.textContent = `${filteredRes.length} / ${restrictedItems.length}`;
+
+    // 1. Render Public Column
+    if (filteredPub.length === 0) {
+      pubZone.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:30px 10px;font-size:0.82rem;">Không có lễ hội công khai nào phù hợp bộ lọc.<br/><small>Bạn có thể kéo thẻ từ cột Phân quyền thả vào đây!</small></div>';
+    } else {
+      pubZone.innerHTML = filteredPub.map(f => createKanbanCardHTML(f, "public")).join("");
+    }
+
+    // 2. Render Restricted Column
+    if (filteredRes.length === 0) {
+      resZone.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:30px 10px;font-size:0.82rem;">Không có sự kiện nội bộ/phân quyền nào.<br/><small>Kéo bất kỳ thẻ lễ hội nào từ cột Công khai thả vào đây để chuyển quyền!</small></div>';
+    } else {
+      resZone.innerHTML = filteredRes.map(f => createKanbanCardHTML(f, "restricted")).join("");
+    }
+  }
+
+  function createKanbanCardHTML(f, colType) {
+    const safeId = escapeHTML(String(f.id));
+    const safeName = escapeHTML(f.name);
+    const safeLoc = escapeHTML(f.location || "");
+    const safeReg = escapeHTML(f.region || "Chung");
+    const safeLunar = escapeHTML(f.lunarLabel || `${f.lunarDay}/${f.lunarMonth} ÂL`);
+    const vis = f.visibility || (f.isPrivate ? "only_me" : "public");
+
+    let badgeHTML = "";
+    if (vis === "public") {
+      badgeHTML = '<span class="kanban-stat-pill public" style="padding:2px 8px;font-size:0.7rem;">🌐 Công khai</span>';
+    } else if (vis === "members") {
+      badgeHTML = '<span class="badge-members" style="font-size:0.7rem;">👥 Tất cả Thành viên</span>';
+    } else if (vis === "selected") {
+      const allowedCount = Array.isArray(f.allowedUsers) ? f.allowedUsers.length : 0;
+      badgeHTML = `<span class="badge-selected" style="font-size:0.7rem;">🎯 Chỉ định (${allowedCount} người)</span>`;
+    } else if (vis === "only_me") {
+      badgeHTML = '<span style="font-size:0.7rem;color:#f87171;background:rgba(239,68,68,0.15);padding:2px 7px;border-radius:999px;font-weight:600;">🔒 Chỉ mình tôi</span>';
+    }
+
+    let actionsHTML = "";
+    if (colType === "public") {
+      actionsHTML = `
+        <button type="button" class="kanban-btn-action move-right" onclick="kanbanDirectMove('${safeId}', 'restricted')" title="Chuyển thẻ sang khung Nội bộ / Phân quyền">
+          <span>Khóa / Phân quyền</span> ➡️
+        </button>
+      `;
+    } else {
+      actionsHTML = `
+        <div style="display:flex;gap:4px;flex-wrap:wrap;">
+          <button type="button" class="kanban-btn-action move-left" onclick="kanbanDirectMove('${safeId}', 'public')" title="Chuyển thẻ sang khung Công khai toàn dân">
+            ⬅️ <span>Công khai</span>
+          </button>
+          <button type="button" class="kanban-btn-action btn-perm" onclick="openKanbanQuickPermModal('${safeId}')" title="Chỉnh sửa danh sách tài khoản được xem">
+            ⚙️ <span>Phân quyền</span>
+          </button>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="kanban-card" id="kanban-card-${safeId}" draggable="true"
+           ondragstart="kanbanDragStart(event, '${safeId}')"
+           ondragend="kanbanDragEnd(event)">
+        <div class="kanban-card-header">
+          <span class="kanban-drag-handle" title="Cầm và kéo thả sang khung khác">⠿</span>
+          <div class="kanban-card-title">${safeName}</div>
+          ${badgeHTML}
+        </div>
+        <div class="kanban-card-meta">
+          <span>📅 ${safeLunar}</span>
+          <span>📍 ${safeLoc}</span>
+          <span style="color:#60a5fa;background:rgba(59,130,246,0.1);padding:1px 6px;border-radius:4px;">${safeReg}</span>
+        </div>
+        <div class="kanban-card-footer">
+          <small style="color:var(--text-muted);font-size:0.7rem;">ID: #${safeId}</small>
+          ${actionsHTML}
+        </div>
+      </div>
+    `;
+  }
+
+  function filterKanbanCards() {
+    renderAdminKanbanBoard();
+  }
+
+  // --- SỰ KIỆN KÉO THẢ DRAG & DROP HTML5 ---
+  function kanbanDragStart(e, id) {
+    kanbanDraggedId = String(id);
+    e.dataTransfer.setData("text/plain", String(id));
+    e.dataTransfer.effectAllowed = "move";
+    const cardEl = document.getElementById("kanban-card-" + id);
+    if (cardEl) {
+      setTimeout(() => cardEl.classList.add("dragging"), 0);
+    }
+  }
+
+  function kanbanDragEnd(e) {
+    kanbanDraggedId = null;
+    document.querySelectorAll(".kanban-card").forEach(el => el.classList.remove("dragging"));
+    document.querySelectorAll(".kanban-dropzone").forEach(el => el.classList.remove("drag-over"));
+  }
+
+  function kanbanOnDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    e.currentTarget.classList.add("drag-over");
+  }
+
+  function kanbanOnDragLeave(e) {
+    e.currentTarget.classList.remove("drag-over");
+  }
+
+  async function kanbanOnDrop(e, targetZone) {
+    e.preventDefault();
+    e.currentTarget.classList.remove("drag-over");
+    const id = kanbanDraggedId || e.dataTransfer.getData("text/plain");
+    if (!id) return;
+
+    if (targetZone === "public") {
+      await moveFestivalToPublic(id);
+    } else if (targetZone === "restricted") {
+      openKanbanQuickPermModal(id);
+    }
+  }
+
+  async function kanbanDirectMove(id, targetZone) {
+    if (targetZone === "public") {
+      await moveFestivalToPublic(id);
+    } else if (targetZone === "restricted") {
+      openKanbanQuickPermModal(id);
+    }
+  }
+
+  async function moveFestivalToPublic(id) {
+    const { item, source } = findItemByIdAnywhere(id);
+    if (!item) {
+      showToast("Không tìm thấy thông tin lễ hội!", "error");
+      return;
+    }
+
+    item.visibility = "public";
+    item.allowedUsers = [];
+    item.isPrivate = false;
+    item.updatedAt = new Date().toISOString();
+
+    if (source === "private") {
+      // Chuyển từ sự kiện riêng tư thành lễ hội công khai chính thức
+      festivals.unshift(item);
+      saveToStorage();
+      if (Array.isArray(myPrivateEvents)) {
+        myPrivateEvents = myPrivateEvents.filter(p => String(p.id) !== String(id));
+        saveMyPrivateEventsToStorage();
+      }
+    } else {
+      saveToStorage();
+    }
+
+    renderAdminKanbanBoard();
+    showToast(`🌐 Đã chuyển lễ hội "${item.name}" sang Công Khai cho mọi người!`, "success");
+
+    // Đồng bộ lên Sheets
+    if (cloudConfig.scriptUrl && isOwnerUnlocked) {
+      try {
+        await callAppsScriptPost({
+          action: "upsert",
+          adminKey: ownerAdminKey,
+          item: item
+        });
+      } catch (err) {}
+    }
+  }
+
+  function openKanbanQuickPermModal(id) {
+    const { item } = findItemByIdAnywhere(id);
+    if (!item) {
+      showToast("Không tìm thấy lễ hội!", "error");
+      return;
+    }
+    kanbanQuickPermTarget = item;
+    const modal = document.getElementById("kanbanQuickPermModal");
+    const nameEl = document.getElementById("kanbanPermItemName");
+    const idInput = document.getElementById("kanbanPermItemId");
+
+    if (nameEl) nameEl.textContent = `"${item.name}"`;
+    if (idInput) idInput.value = String(item.id);
+
+    const initialVis = item.visibility === "selected" ? "selected" : "members";
+    setKanbanQuickPermChoice(initialVis);
+    renderKanbanMemberList(item.allowedUsers || []);
+
+    if (modal) modal.classList.add("active");
+  }
+
+  function closeKanbanQuickPermModal() {
+    const modal = document.getElementById("kanbanQuickPermModal");
+    if (modal) modal.classList.remove("active");
+    kanbanQuickPermTarget = null;
+  }
+
+  function setKanbanQuickPermChoice(choice) {
+    const optMem = document.getElementById("kanbanPermOptMembers");
+    const optSel = document.getElementById("kanbanPermOptSelected");
+    const picker = document.getElementById("kanbanPermUserPicker");
+
+    if (choice === "members") {
+      if (optMem) {
+        optMem.classList.add("active");
+        const radio = optMem.querySelector("input[type='radio']");
+        if (radio) radio.checked = true;
+      }
+      if (optSel) optSel.classList.remove("active");
+      if (picker) picker.style.display = "none";
+    } else {
+      if (optSel) {
+        optSel.classList.add("active");
+        const radio = optSel.querySelector("input[type='radio']");
+        if (radio) radio.checked = true;
+      }
+      if (optMem) optMem.classList.remove("active");
+      if (picker) picker.style.display = "block";
+    }
+  }
+
+  function renderKanbanMemberList(preSelected = []) {
+    const box = document.getElementById("kanbanMemberListCheckbox");
+    if (!box) return;
+
+    const preSet = new Set((preSelected || []).map(u => String(u).trim().toLowerCase()));
+
+    if (!Array.isArray(kanbanCachedMembers) || kanbanCachedMembers.length === 0) {
+      box.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:0.78rem;padding:8px;">Chưa có danh sách thành viên nào khác trong bộ nhớ. Bạn có thể gõ email/username vào ô bên dưới.</div>';
+      return;
+    }
+
+    let html = "";
+    kanbanCachedMembers.forEach(m => {
+      const uId = String(m.id || "").toLowerCase();
+      const uName = String(m.username || "").toLowerCase();
+      const uEmail = String(m.email || "").toLowerCase();
+      const isChecked = preSet.has(uId) || preSet.has(uName) || (uEmail && preSet.has(uEmail));
+
+      const checkedAttr = isChecked ? "checked" : "";
+      const val = uEmail || uName || uId;
+      const dName = escapeHTML(m.displayName || m.username || "Thành viên");
+      const subInfo = escapeHTML(uEmail || uName);
+
+      html += `
+        <label class="user-picker-item" style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;cursor:pointer;margin-bottom:3px;background:rgba(255,255,255,0.03);">
+          <input type="checkbox" value="${escapeHTML(val)}" ${checkedAttr} />
+          <div style="flex:1;font-size:0.78rem;line-height:1.2;">
+            <strong style="color:#fff;">${dName}</strong>
+            <small style="color:var(--text-muted);display:block;">${subInfo}</small>
+          </div>
+        </label>
+      `;
+    });
+    box.innerHTML = html;
+  }
+
+  function kanbanToggleAllUsers(check) {
+    const cbs = document.querySelectorAll("#kanbanMemberListCheckbox input[type='checkbox']");
+    cbs.forEach(cb => { cb.checked = check; });
+  }
+
+  function filterKanbanMemberList() {
+    const q = (document.getElementById("kanbanSearchMemberInput")?.value || "").trim().toLowerCase();
+    const items = document.querySelectorAll("#kanbanMemberListCheckbox .user-picker-item");
+    items.forEach(el => {
+      const text = el.textContent.toLowerCase();
+      el.style.display = text.includes(q) ? "flex" : "none";
+    });
+  }
+
+  async function saveKanbanPermissionChoice() {
+    if (!kanbanQuickPermTarget) {
+      closeKanbanQuickPermModal();
+      return;
+    }
+    const item = kanbanQuickPermTarget;
+    const isSelectedMode = document.getElementById("kanbanPermOptSelected")?.classList.contains("active");
+
+    let allowedUsersList = [];
+    if (isSelectedMode) {
+      const checked = document.querySelectorAll("#kanbanMemberListCheckbox input[type='checkbox']:checked");
+      checked.forEach(cb => {
+        if (cb.value) allowedUsersList.push(cb.value.trim().toLowerCase());
+      });
+      const manualVal = (document.getElementById("kanbanManualAllowedInput")?.value || "").trim();
+      if (manualVal) {
+        manualVal.split(",").forEach(s => {
+          const clean = s.trim().toLowerCase();
+          if (clean && !allowedUsersList.includes(clean)) allowedUsersList.push(clean);
+        });
+      }
+    }
+
+    item.visibility = isSelectedMode ? "selected" : "members";
+    item.allowedUsers = allowedUsersList;
+    item.updatedAt = new Date().toISOString();
+
+    saveToStorage();
+    if (Array.isArray(myPrivateEvents)) {
+      saveMyPrivateEventsToStorage();
+    }
+
+    closeKanbanQuickPermModal();
+    renderAdminKanbanBoard();
+
+    const desc = isSelectedMode ? `chỉ định cho ${allowedUsersList.length} tài khoản xem` : "dành cho Tất cả Thành viên";
+    showToast(`🔒 Đã chuyển "${item.name}" sang khung Nội bộ (${desc})!`, "success");
+
+    // Đồng bộ lên Google Sheets
+    if (cloudConfig.scriptUrl && isOwnerUnlocked) {
+      try {
+        await callAppsScriptPost({
+          action: "upsert",
+          adminKey: ownerAdminKey,
+          item: item
+        });
+      } catch (err) {}
+    }
+  }
+
+  function refreshAdminKanbanBoard() {
+    loadKanbanMembersCache();
+    renderAdminKanbanBoard();
+    showToast("Đã làm mới bảng phân quyền!", "info");
+  }
+
+  async function syncNowFromKanban() {
+    if (!cloudConfig.scriptUrl) {
+      showToast("Chưa cấu hình URL Google Sheets!", "warn");
+      return;
+    }
+    showToast("⏳ Đang đồng bộ toàn bộ bảng phân quyền lên Sheets...", "info");
+    try {
+      await syncMergeWithCloud();
+      renderAdminKanbanBoard();
+      showToast("☁️ Đồng bộ bảng điều hành thành công!", "success");
+    } catch (err) {
+      showToast("Lỗi đồng bộ: " + err.message, "error");
+    }
+  }
+
   // KHỞI CHẠY HỆ THỐNG BAN ĐẦU (Đặt ở cuối cùng sau khi nạp toàn bộ biến & hàm)
   // ==========================================================================
   try {
