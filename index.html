@@ -233,6 +233,11 @@
       background: rgba(16, 185, 129, 0.15);
       color: #34d399;
     }
+    .auth-pill.member {
+      border-color: rgba(56, 189, 248, 0.45);
+      background: rgba(56, 189, 248, 0.14);
+      color: #38bdf8;
+    }
     .sync-actions {
       display: flex;
       flex-wrap: wrap;
@@ -2852,6 +2857,8 @@
       if (isPrivileged) {
         isOwnerUnlocked = true;
         ownerAdminKey = safeGetStorage("vn_festivals_owner_key") || DEFAULT_LOCAL_ADMIN_KEY;
+        safeSetStorage("vn_festivals_owner_key", ownerAdminKey);
+        safeSetStorage("vn_festivals_last_verified_key", ownerAdminKey);
         document.body.classList.remove("guest-mode");
         if (btnManageUsers) btnManageUsers.style.display = "inline-block";
       } else {
@@ -5169,7 +5176,12 @@
     if (authBtn) {
       if (isOwnerUnlocked) {
         authBtn.className = "auth-pill unlocked";
-        authBtn.innerHTML = "🔓 Chủ sở hữu (Được phép chỉnh sửa)";
+        const titleRole = (currentUser && (currentUser.role === "moderator" || currentUser.role === "admin")) ? "Kiểm duyệt viên" : "Chủ sở hữu";
+        authBtn.innerHTML = `🔓 ${titleRole} (Được phép chỉnh sửa)`;
+      } else if (currentUser) {
+        authBtn.className = "auth-pill member";
+        authBtn.innerHTML = "🌱 Chế độ: Thành viên";
+        authBtn.title = "Đang đăng nhập: " + (currentUser.displayName || currentUser.username);
       } else {
         authBtn.className = "auth-pill";
         authBtn.innerHTML = "🔒 Chế độ: Khách (Chỉ xem)";
@@ -6822,6 +6834,7 @@
   // ==========================================================================
   try {
     reloadFestivalsFromLocalStorage();
+    updateUserAuthUI();
     updateCloudStatusUI();
     renderRegionControls();
     updateTodayBanner();
