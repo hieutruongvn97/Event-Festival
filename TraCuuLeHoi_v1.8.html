@@ -2205,7 +2205,7 @@
     </div>
     <div class="form-group">
       <label>Google OAuth Client ID (Tùy chọn - Dành cho đăng nhập 1 chạm Google trên web)</label>
-      <input type="text" id="cfgGoogleClientId" placeholder="VD: 123456789-xxx.apps.googleusercontent.com" />
+      <input type="text" id="cfgGoogleClientId" placeholder="VD: 675765947005-ljjagpotmhjdffr1a74073qf4d7gl3gr.apps.googleusercontent.com" />
     </div>
     <label class="checkbox-row">
       <input type="checkbox" id="cfgAutoSync" checked />
@@ -2468,7 +2468,7 @@
 
     <div class="form-group">
       <label>Mã Google Client ID của bạn:</label>
-      <input type="text" id="cfgGoogleClientIdInput" placeholder="Ví dụ: 123456789-abc.apps.googleusercontent.com" />
+      <input type="text" id="cfgGoogleClientIdInput" placeholder="Ví dụ: 675765947005-ljjagpotmhjdffr1a74073qf4d7gl3gr.apps.googleusercontent.com" />
     </div>
 
     <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;font-size:0.82rem;color:var(--text-muted);line-height:1.6;margin-bottom:16px;">
@@ -2722,8 +2722,14 @@
     }
   }
 
+  const DEFAULT_GOOGLE_CLIENT_ID = "675765947005-ljjagpotmhjdffr1a74073qf4d7gl3gr.apps.googleusercontent.com";
+
   function getGoogleClientId() {
-    return safeGetStorage("vn_festivals_google_client_id") || window.GOOGLE_CLIENT_ID || "";
+    const stored = (safeGetStorage("vn_festivals_google_client_id") || "").trim();
+    if (stored && stored.includes(".apps.googleusercontent.com")) {
+      return stored;
+    }
+    return window.GOOGLE_CLIENT_ID || DEFAULT_GOOGLE_CLIENT_ID;
   }
 
   function openGoogleSetupModal() {
@@ -2780,6 +2786,8 @@
       if (btnOfficial) {
         btnOfficial.innerHTML = "";
         btnOfficial.style.display = "flex";
+        const parentW = btnOfficial.parentElement ? btnOfficial.parentElement.offsetWidth : 360;
+        const btnW = Math.max(220, Math.min(380, parentW || 360));
         window.google.accounts.id.renderButton(btnOfficial, {
           type: "standard",
           theme: "outline",
@@ -2787,7 +2795,7 @@
           text: "continue_with",
           shape: "pill",
           logo_alignment: "left",
-          width: Math.min(360, (btnOfficial.parentElement ? btnOfficial.parentElement.offsetWidth : 360) || 360)
+          width: btnW
         });
       }
       if (btnFallback) btnFallback.style.display = "none";
@@ -2815,10 +2823,13 @@
 
     if (window.google && window.google.accounts && window.google.accounts.id) {
       try {
+        initGoogleIdentity();
         window.google.accounts.id.prompt();
       } catch (e) {
         console.warn("startGoogleAuthFlow prompt error:", e);
       }
+    } else {
+      openGoogleSetupModal();
     }
   }
 
@@ -2892,10 +2903,13 @@
 
 
   function openUserAuthModal(tab = "login") {
-    initGoogleIdentity();
     switchAuthTab(tab);
     checkExistingLockout();
-    document.getElementById("userAuthModal").classList.add("open");
+    const modal = document.getElementById("userAuthModal");
+    if (modal) modal.classList.add("open");
+    setTimeout(() => {
+      initGoogleIdentity();
+    }, 50);
   }
 
   function closeUserAuthModal() {
@@ -6150,12 +6164,17 @@
     updateViewModeUI();
     updateFavBadges();
     renderTable();
+    initGoogleIdentity();
     if (cloudConfig.scriptUrl && cloudConfig.autoSync !== false) {
       pullFromCloud(false);
     }
   } catch (err) {
     console.error("Lỗi khởi chạy ứng dụng:", err);
   }
+
+  window.addEventListener("load", () => {
+    try { initGoogleIdentity(); } catch (e) {}
+  });
 
 </script>
 
