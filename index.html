@@ -339,6 +339,97 @@
       border-color: rgba(245, 158, 11, 0.45);
     }
 
+    /* Quyền riêng tư & Sự kiện cá nhân / Gia đình */
+    .privacy-selector-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .privacy-option-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .privacy-option-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .privacy-option-card.active {
+      border-color: #ec4899;
+      background: rgba(236, 72, 153, 0.14);
+      box-shadow: 0 0 12px rgba(236, 72, 153, 0.2);
+    }
+    .privacy-option-card.active.public {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+    }
+    .privacy-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+    .privacy-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .privacy-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .privacy-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.25;
+    }
+    .badge-private {
+      background: rgba(236, 72, 153, 0.18);
+      color: #f472b6;
+      border: 1px solid rgba(236, 72, 153, 0.35);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-family {
+      background: linear-gradient(135deg, #db2777 0%, #be185d 100%) !important;
+      color: #fff !important;
+      border: 1px solid rgba(244, 114, 182, 0.4) !important;
+      font-weight: 600 !important;
+      box-shadow: 0 2px 10px rgba(219, 39, 119, 0.35) !important;
+    }
+    .btn-family:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+    .family-chip-btn {
+      background: rgba(236, 72, 153, 0.12);
+      border: 1px solid rgba(236, 72, 153, 0.35);
+      color: #f472b6;
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+    .family-chip-btn:hover {
+      background: rgba(236, 72, 153, 0.25);
+      border-color: #f472b6;
+      transform: translateY(-1px);
+    }
+
     /* Thanh nút hành động */
     .action-bar {
       display: flex;
@@ -1912,6 +2003,7 @@
 
   <div class="action-bar">
     <button class="btn btn-primary owner-only" onclick="openModal()">+ Thêm lễ hội mới</button>
+    <button class="btn btn-family" id="btnAddFamilyEvent" style="display:none;" onclick="openAddFamilyEventModal()" title="Thêm ngày giỗ, kỷ niệm gia đình nội bộ (chỉ riêng tài khoản của bạn xem được)">🏡 Thêm Lễ / Đám Giỗ Gia Đình</button>
     <button class="btn btn-propose guest-only" onclick="openGuestProposalModal()" title="Đề xuất thêm ngày lễ hội mới vào hàng chờ để Admin xét duyệt">📝 Đề xuất lễ hội mới</button>
     <button class="btn btn-queue owner-only" id="pendingQueueBtn" onclick="openPendingQueueModal()" title="Xem và xét duyệt các lễ hội do Khách truy cập đề xuất">⏳ Hàng chờ duyệt <span class="queue-badge" id="pendingQueueCountBadge">0</span></button>
     <button class="btn owner-only" onclick="openManageRegionsModal()">🗺️ Quản lý Vùng miền</button>
@@ -1954,6 +2046,38 @@
     <h2 id="festivalModalTitle">Thêm Lễ Hội / Sự Kiện Mới</h2>
     <input type="hidden" id="fEditId" value="" />
     <input type="hidden" id="fModalMode" value="owner" />
+    <!-- Quyền riêng tư của sự kiện: Công khai hoặc Riêng tư gia đình -->
+    <div class="form-group" id="fPrivacyGroup" style="margin-bottom:12px;">
+      <label style="font-weight:600;display:flex;align-items:center;gap:6px;">
+        <span>Phạm vi hiển thị (Quyền riêng tư) *</span>
+      </label>
+      <input type="hidden" id="fPrivacyVal" value="public" />
+      <div class="privacy-selector-grid">
+        <label class="privacy-option-card public active" id="optPrivacyPublic" onclick="selectEventPrivacy('public')">
+          <span class="privacy-icon">🌐</span>
+          <div class="privacy-info">
+            <strong class="privacy-title">Lễ hội công khai</strong>
+            <span class="privacy-desc">Mọi người vào web đều xem được</span>
+          </div>
+        </label>
+        <label class="privacy-option-card" id="optPrivacyPrivate" onclick="selectEventPrivacy('private')">
+          <span class="privacy-icon">🔒</span>
+          <div class="privacy-info">
+            <strong class="privacy-title">Riêng tư / Gia đình</strong>
+            <span class="privacy-desc">Đám giỗ, kỷ niệm... Chỉ mình tôi thấy</span>
+          </div>
+        </label>
+      </div>
+      <!-- Gợi ý mẫu nhanh cho sự kiện gia đình -->
+      <div id="familyTemplateWrap" style="display:none;margin-top:10px;padding:8px 10px;background:rgba(236,72,153,0.06);border:1px dashed rgba(236,72,153,0.3);border-radius:8px;">
+        <div style="font-size:0.75rem;color:#f472b6;font-weight:600;margin-bottom:6px;">💡 Gợi ý mẫu nhanh cho gia đình:</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="family-chip-btn" onclick="applyFamilyTemplate('giỗ')">🕯️ Đám giỗ Ông/Bà</button>
+          <button type="button" class="family-chip-btn" onclick="applyFamilyTemplate('kỷ_niệm')">🎂 Kỷ niệm / Sinh nhật</button>
+          <button type="button" class="family-chip-btn" onclick="applyFamilyTemplate('họ_tộc')">🏡 Lễ tế Họ tộc nội bộ</button>
+        </div>
+      </div>
+    </div>
     <div id="guestProposalBanner" class="info-callout" style="display:none;">
       💡 <strong>Đóng góp lễ hội mới:</strong> Thông tin bạn nhập sẽ được đưa vào <strong>Hàng chờ xét duyệt</strong>. Sau khi Admin (<strong>MH-SAMA</strong>) kiểm tra và phê duyệt, lễ hội sẽ hiển thị chính thức trên bảng tra cứu!
     </div>
@@ -2656,9 +2780,13 @@
     const roleBadge = document.getElementById("userRoleBadge");
     const btnManageUsers = document.getElementById("btnAdminManageUsers");
 
+    const btnAddFamily = document.getElementById("btnAddFamilyEvent");
     if (currentUser) {
       if (btnOpenAuth) btnOpenAuth.style.display = "none";
       if (profileBadge) profileBadge.style.display = "inline-flex";
+      if (btnAddFamily) btnAddFamily.style.display = "inline-block";
+      loadMyPrivateEventsFromStorage();
+      pullMyPrivateEventsFromCloud();
 
       const name = currentUser.displayName || currentUser.username || "Thành viên";
       if (displayNameEl) displayNameEl.textContent = name;
@@ -2699,6 +2827,8 @@
     } else {
       if (btnOpenAuth) btnOpenAuth.style.display = "inline-flex";
       if (profileBadge) profileBadge.style.display = "none";
+      if (btnAddFamily) btnAddFamily.style.display = "none";
+      myPrivateEvents = [];
       if (!isOwnerUnlocked) {
         document.body.classList.add("guest-mode");
       }
@@ -4163,6 +4293,11 @@
           const isFavActive = (currentRegion === "Yêu thích") ? "active" : "";
           const favCount = (typeof favorites !== "undefined" && Array.isArray(favorites)) ? favorites.length : 0;
           html += `<button type="button" class="tab-btn btn-fav-tab ${isFavActive}" onclick="setRegion('Yêu thích')">❤️ Yêu thích <span class="tab-count" id="favCountBadge">${favCount}</span></button>`;
+          if (currentUser) {
+            const privCount = getMyPrivateEvents().length;
+            const isMyActive = (currentRegion === "Của tôi") ? "active" : "";
+            html += `<button type="button" class="tab-btn ${isMyActive}" style="border-color:rgba(236,72,153,0.4);background:${isMyActive ? 'rgba(236,72,153,0.25)' : 'transparent'};color:#f472b6;" onclick="setRegion('Của tôi')">🏡 Của tôi <span class="tab-count" style="background:#ec4899;color:#fff;">${privCount}</span></button>`;
+          }
         }
       });
       html += `<button type="button" class="tab-btn-add owner-only" onclick="openManageRegionsModal()" title="Tạo hoặc quản lý thêm vùng miền mới">+ Thêm miền</button>`;
@@ -4519,8 +4654,173 @@
     } catch (e) {}
   }
 
+  // ============================================================================
+  // HỆ THỐNG QUẢN LÝ SỰ KIỆN RIÊNG TƯ / NỘI BỘ GIA ĐÌNH (PERSONAL / FAMILY EVENTS)
+  // ============================================================================
+  let myPrivateEvents = [];
+
+  function loadMyPrivateEventsFromStorage() {
+    if (!currentUser) {
+      myPrivateEvents = [];
+      return;
+    }
+    const storageKey = "vn_festivals_private_" + (currentUser.id || currentUser.username);
+    try {
+      const raw = safeGetStorage(storageKey);
+      myPrivateEvents = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(myPrivateEvents)) myPrivateEvents = [];
+    } catch (e) {
+      myPrivateEvents = [];
+    }
+  }
+
+  function saveMyPrivateEventsToStorage() {
+    if (!currentUser) return;
+    const storageKey = "vn_festivals_private_" + (currentUser.id || currentUser.username);
+    safeSetStorage(storageKey, JSON.stringify(myPrivateEvents));
+  }
+
+  function isMyPrivateEvent(f) {
+    if (!f || !f.isPrivate || !currentUser) return false;
+    return (
+      (f.ownerId && currentUser.id && String(f.ownerId) === String(currentUser.id)) ||
+      (f.ownerUsername && currentUser.username && String(f.ownerUsername).toLowerCase() === String(currentUser.username).toLowerCase()) ||
+      (f.ownerEmail && currentUser.email && String(f.ownerEmail).toLowerCase() === String(currentUser.email).toLowerCase())
+    );
+  }
+
+  function canViewFestival(f) {
+    if (!f.isPrivate) return true;
+    return isMyPrivateEvent(f);
+  }
+
+  function getMyPrivateEvents() {
+    return myPrivateEvents.filter(f => !f.deleted);
+  }
+
+  async function pullMyPrivateEventsFromCloud() {
+    if (!currentUser || !cloudConfig.scriptUrl) return;
+    try {
+      const res = await callAppsScriptPost({
+        action: "getMyPrivateEvents",
+        userId: currentUser.id,
+        username: currentUser.username,
+        email: currentUser.email || currentUser.username
+      });
+      if (res && res.ok && Array.isArray(res.items)) {
+        // Gộp sự kiện từ Cloud với sự kiện Local
+        const byId = {};
+        myPrivateEvents.forEach(e => { byId[String(e.id)] = e; });
+        res.items.forEach(cItem => {
+          const cid = String(cItem.id);
+          if (!byId[cid] || new Date(cItem.updatedAt || 0) > new Date(byId[cid].updatedAt || 0)) {
+            byId[cid] = cItem;
+          }
+        });
+        myPrivateEvents = Object.values(byId).filter(e => !e.deleted);
+        saveMyPrivateEventsToStorage();
+        renderRegionControls();
+        renderTable();
+      }
+    } catch (err) {
+      console.warn("Lỗi tải sự kiện riêng từ Google Sheets:", err);
+    }
+  }
+
+  function selectEventPrivacy(mode) {
+    const valInput = document.getElementById("fPrivacyVal");
+    if (valInput) valInput.value = mode;
+
+    const optPub = document.getElementById("optPrivacyPublic");
+    const optPriv = document.getElementById("optPrivacyPrivate");
+    const familyWrap = document.getElementById("familyTemplateWrap");
+    const submitBtn = document.getElementById("saveFestivalSubmitBtn");
+    const modeInput = document.getElementById("fModalMode");
+
+    if (mode === "private") {
+      if (!currentUser) {
+        showToast("💡 Vui lòng Đăng Nhập để lưu trữ sự kiện gia đình riêng tư chỉ mình bạn thấy!", "info");
+        closeModal();
+        openUserAuthModal("login");
+        return;
+      }
+      if (optPub) optPub.classList.remove("active");
+      if (optPriv) optPriv.classList.add("active");
+      if (familyWrap) familyWrap.style.display = "block";
+      if (modeInput) modeInput.value = "private";
+      if (submitBtn) submitBtn.textContent = "🔒 Tự động tính tới 2099 & Lưu vào lịch của tôi";
+
+      const regEl = document.getElementById("fRegion");
+      if (regEl && (!regEl.value || regEl.value === "Miền Nam")) {
+        regEl.value = "Gia đình";
+      }
+    } else {
+      if (optPub) optPub.classList.add("active");
+      if (optPriv) optPriv.classList.remove("active");
+      if (familyWrap) familyWrap.style.display = "none";
+      if (modeInput) modeInput.value = isOwnerUnlocked ? "owner" : "guest";
+      if (submitBtn) {
+        submitBtn.textContent = isOwnerUnlocked ? "Tự động tính tới 2099 & Lưu" : "📨 Gửi đề xuất chờ Admin duyệt";
+      }
+    }
+  }
+
+  function applyFamilyTemplate(type) {
+    const fName = document.getElementById("fName");
+    const fCal = document.getElementById("fCalendarType");
+    const fDur = document.getElementById("fDuration");
+    const fHigh = document.getElementById("fHighlights");
+
+    if (type === "giỗ") {
+      if (fName) {
+        fName.value = "Đám giỗ ";
+        fName.focus();
+        fName.setSelectionRange(fName.value.length, fName.value.length);
+      }
+      if (fCal) { fCal.value = "lunar"; handleCalendarTypeChange(); }
+      if (fDur) fDur.value = "1 ngày";
+      if (fHigh) fHigh.value = "Ngày cúng giỗ truyền thống gia đình. Tự động tính ngày Dương lịch hàng năm tới 2099.";
+    } else if (type === "kỷ_niệm") {
+      if (fName) {
+        fName.value = "Kỷ niệm ";
+        fName.focus();
+        fName.setSelectionRange(fName.value.length, fName.value.length);
+      }
+      if (fCal) { fCal.value = "solar"; handleCalendarTypeChange(); }
+      if (fDur) fDur.value = "1 ngày";
+      if (fHigh) fHigh.value = "Ngày kỷ niệm đặc biệt của gia đình.";
+    } else if (type === "họ_tộc") {
+      if (fName) {
+        fName.value = "Lễ tế Họ tộc ";
+        fName.focus();
+        fName.setSelectionRange(fName.value.length, fName.value.length);
+      }
+      if (fCal) { fCal.value = "lunar"; handleCalendarTypeChange(); }
+      if (fDur) fDur.value = "1 – 2 ngày";
+      if (fHigh) fHigh.value = "Lễ hội họp và cúng tổ tiên họ tộc nội bộ.";
+    }
+    showToast("Đã áp dụng mẫu gợi ý! Hãy hoàn tất ngày tháng và bấm Lưu nhé.", "info");
+  }
+
+  function openAddFamilyEventModal() {
+    if (!currentUser) {
+      showToast("💡 Vui lòng Đăng Nhập để thêm ngày lễ / đám giỗ gia đình riêng tư!", "info");
+      openUserAuthModal("login");
+      return;
+    }
+    openModal();
+    document.getElementById("festivalModalTitle").textContent = "🏡 Thêm Sự Kiện / Đám Giỗ Gia Đình";
+    selectEventPrivacy("private");
+    const locEl = document.getElementById("fLocation");
+    if (locEl && !locEl.value) locEl.value = "Gia đình";
+  }
+
   function getApprovedFestivals() {
-    return festivals.filter(f => !isPendingFestival(f));
+    const publicApproved = festivals.filter(f => !isPendingFestival(f) && !f.isPrivate);
+    if (!currentUser || myPrivateEvents.length === 0) {
+      return publicApproved;
+    }
+    return [...myPrivateEvents, ...publicApproved];
   }
 
   function getPendingFestivals() {
@@ -5269,11 +5569,13 @@
     let filtered = getApprovedFestivals().filter(f => {
       let matchRegion = false;
       if (currentRegion === "Tất cả") {
-        matchRegion = true;
+        matchRegion = canViewFestival(f);
       } else if (currentRegion === "Yêu thích") {
-        matchRegion = isFavorite(f.id);
+        matchRegion = isFavorite(f.id) && canViewFestival(f);
+      } else if (currentRegion === "Của tôi") {
+        matchRegion = isMyPrivateEvent(f);
       } else {
-        matchRegion = (f.region === currentRegion);
+        matchRegion = (f.region === currentRegion) && canViewFestival(f);
       }
       const searchableText = removeVietnameseTones(`${f.name} ${f.location} ${f.region || ""} ${f.lunarLabel || ""} ${f.highlights || ""}`);
       const matchKeyword = !normKeyword || searchableText.includes(normKeyword);
@@ -5345,11 +5647,12 @@
           <div class="fest-name">
             <button type="button" class="btn-fav ${favActive}" onclick="toggleFavorite(event, '${escapeHTML(f.id)}')" title="Đánh dấu yêu thích">❤️</button>
             ${escapeHTML(f.name)}
+            ${f.isPrivate ? '<span class="badge-private">🔒 Riêng tư</span>' : ''}
             <span style="color:#64748b;font-size:0.8rem;">▼</span>
           </div>
           <div class="fest-loc">📍 ${escapeHTML(f.location)}</div>
         </td>
-        <td><span class="${badgeClass(f.region)}">${escapeHTML(f.region)}</span></td>
+        <td><span class="${f.isPrivate ? 'badge-private' : badgeClass(f.region)}">${escapeHTML(f.region)}</span></td>
         <td>${escapeHTML(f.lunarLabel)}</td>
         <td>${escapeHTML(f.duration)}</td>
         <td>
@@ -5372,8 +5675,9 @@
             <div class="detail-actions">
               <button type="button" class="cal-btn" onclick="addToGoogleCalendar(event, '${escapeHTML(f.id)}')">📅 Thêm vào Google Calendar (${year})</button>
               <button type="button" class="cal-multi-btn" onclick="openMultiYearCalendarModal(event, '${escapeHTML(f.id)}')">🗓️ Lưu nhiều năm vào Google Calendar (2026–2099)</button>
-              <button type="button" class="edit-btn owner-only" onclick="openEditFestival(event, '${escapeHTML(f.id)}')">✏️ Sửa lễ hội này</button>
-              <button type="button" class="delete-btn owner-only" onclick="deleteFestival(event, '${escapeHTML(f.id)}')">🗑 Xóa lễ hội này</button>
+              ${f.isPrivate ? `<button type="button" class="edit-btn" style="background:rgba(236,72,153,0.2);color:#f472b6;border-color:rgba(236,72,153,0.4);" onclick="openEditFestival(event, '${escapeHTML(f.id)}')">✏️ Sửa sự kiện riêng này</button>
+              <button type="button" class="delete-btn" style="background:rgba(239,68,68,0.2);color:#fca5a5;" onclick="deleteFestival(event, '${escapeHTML(f.id)}')">🗑 Xóa sự kiện riêng này</button>` : `<button type="button" class="edit-btn owner-only" onclick="openEditFestival(event, '${escapeHTML(f.id)}')">✏️ Sửa lễ hội này</button>
+              <button type="button" class="delete-btn owner-only" onclick="deleteFestival(event, '${escapeHTML(f.id)}')">🗑 Xóa lễ hội này</button>`}
             </div>
           </div>
         </td>
@@ -5388,7 +5692,8 @@
           <div class="fest-card-header">
             <div class="fest-card-title-group">
               <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap;">
-                <span class="${badgeClass(f.region)}">${escapeHTML(f.region)}</span>
+                <span class="${f.isPrivate ? 'badge-private' : badgeClass(f.region)}">${escapeHTML(f.region)}</span>
+                ${f.isPrivate ? '<span class="badge-private" style="background:#be185d;color:#fff;">🔒 Chỉ mình bạn thấy</span>' : ''}
                 <span style="font-size:0.75rem;color:var(--text-muted);">⏱️ ${escapeHTML(f.duration)}</span>
               </div>
               <div class="fest-card-title">${escapeHTML(f.name)}</div>
@@ -5421,8 +5726,9 @@
             <button type="button" class="cal-btn" style="flex:1;min-width:135px;" onclick="addToGoogleCalendar(event, '${escapeHTML(f.id)}')">📅 Lưu lịch (${year})</button>
             <button type="button" class="btn" style="padding:6px 11px;font-size:0.8rem;" onclick="toggleCardDetail(event, '${escapeHTML(f.id)}')">🗓️ Xem các năm</button>
             <button type="button" class="cal-multi-btn" style="padding:6px 11px;font-size:0.8rem;" onclick="openMultiYearCalendarModal(event, '${escapeHTML(f.id)}')">⚡ 2026–2099</button>
-            <button type="button" class="edit-btn owner-only" style="padding:6px 10px;" onclick="openEditFestival(event, '${escapeHTML(f.id)}')">✏️ Sửa</button>
-            <button type="button" class="delete-btn owner-only" style="padding:6px 10px;" onclick="deleteFestival(event, '${escapeHTML(f.id)}')">🗑</button>
+            ${f.isPrivate ? `<button type="button" class="edit-btn" style="padding:6px 10px;background:rgba(236,72,153,0.2);color:#f472b6;border-color:rgba(236,72,153,0.4);" onclick="openEditFestival(event, '${escapeHTML(f.id)}')">✏️ Sửa</button>
+            <button type="button" class="delete-btn" style="padding:6px 10px;background:rgba(239,68,68,0.2);color:#fca5a5;" onclick="deleteFestival(event, '${escapeHTML(f.id)}')">🗑</button>` : `<button type="button" class="edit-btn owner-only" style="padding:6px 10px;" onclick="openEditFestival(event, '${escapeHTML(f.id)}')">✏️ Sửa</button>
+            <button type="button" class="delete-btn owner-only" style="padding:6px 10px;" onclick="deleteFestival(event, '${escapeHTML(f.id)}')">🗑</button>`}
           </div>
 
           <div class="fest-card-detail-drawer" id="card-drawer-${f.id}">
@@ -5461,15 +5767,17 @@
   }
 
   function openModal() {
-    requireOwnerAuth(() => {
+    const isPrivileged = currentUser && (currentUser.role === "superadmin" || currentUser.role === "moderator" || isOwnerUnlocked);
+    const runOpen = () => {
       renderRegionControls();
       document.getElementById("festivalModalTitle").textContent = "Thêm Lễ Hội / Sự Kiện Mới";
       document.getElementById("fEditId").value = "";
-      document.getElementById("fModalMode").value = "owner";
+      document.getElementById("fModalMode").value = isPrivileged ? "owner" : "private";
+      selectEventPrivacy(isPrivileged ? "public" : "private");
       document.getElementById("guestProposalBanner").style.display = "none";
       document.getElementById("contributorGroup").style.display = "none";
       document.getElementById("fContributor").value = currentUser ? (currentUser.displayName || currentUser.username) : "";
-      document.getElementById("saveFestivalSubmitBtn").textContent = "Tự động tính tới 2099 & Lưu";
+      document.getElementById("saveFestivalSubmitBtn").textContent = isPrivileged ? "Tự động tính tới 2099 & Lưu" : "🔒 Lưu vào lịch của tôi";
       document.getElementById("fName").value = "";
       document.getElementById("fLocation").value = "";
       const defaultRegion = (currentRegion !== "Tất cả" && getAllRegions().includes(currentRegion)) ? currentRegion : "Miền Nam";
@@ -5483,7 +5791,13 @@
       document.getElementById("fDuration").value = "";
       document.getElementById("fHighlights").value = "";
       document.getElementById("addModal").classList.add("open");
-    }, "Thêm lễ hội mới");
+    };
+
+    if (isPrivileged || currentUser) {
+      runOpen();
+    } else {
+      requireOwnerAuth(runOpen, "Thêm lễ hội mới");
+    }
   }
 
   // Cho phép Khách truy cập mở form đề xuất ngày lễ mới mà không cần mật khẩu Admin
@@ -5513,22 +5827,26 @@
 
   function openEditFestival(e, id) {
     if (e) e.stopPropagation();
-    requireOwnerAuth(() => {
-      const target = festivals.find(item => String(item.id) === String(id));
-      if (!target) return;
+    const target = festivals.find(item => String(item.id) === String(id)) ||
+                   myPrivateEvents.find(item => String(item.id) === String(id));
+    if (!target) return;
+
+    const doPopulate = () => {
       ensureRegionsFromFestivals([target]);
       renderRegionControls();
       const wasPending = isPendingFestival(target);
-      document.getElementById("festivalModalTitle").textContent = wasPending
-        ? "✏️ Kiểm Tra & Duyệt Lễ Hội Đề Xuất"
-        : "Chỉnh Sửa Thông Tin Lễ Hội";
+      const isPriv = Boolean(target.isPrivate);
+      document.getElementById("festivalModalTitle").textContent = isPriv
+        ? "✏️ Chỉnh Sửa Sự Kiện Gia Đình"
+        : (wasPending ? "📋 Kiểm Tra & Duyệt Lễ Hội Đề Xuất" : "Chỉnh Sửa Thông Tin Lễ Hội");
       document.getElementById("fEditId").value = String(target.id);
-      document.getElementById("fModalMode").value = "owner";
+      document.getElementById("fModalMode").value = isPriv ? "private" : "owner";
+      selectEventPrivacy(isPriv ? "private" : "public");
       document.getElementById("guestProposalBanner").style.display = "none";
       document.getElementById("contributorGroup").style.display = "none";
-      document.getElementById("saveFestivalSubmitBtn").textContent = wasPending
-        ? "✅ Lưu & Duyệt đăng chính thức"
-        : "Tự động tính tới 2099 & Lưu";
+      document.getElementById("saveFestivalSubmitBtn").textContent = isPriv
+        ? "💾 Cập nhật sự kiện gia đình"
+        : (wasPending ? "✅ Lưu & Duyệt đăng chính thức" : "Tự động tính tới 2099 & Lưu");
       document.getElementById("fName").value = target.name || "";
       document.getElementById("fLocation").value = target.location || "";
       document.getElementById("fRegion").value = target.region || "Miền Nam";
@@ -5543,7 +5861,18 @@
       document.getElementById("fDuration").value = target.duration || "";
       document.getElementById("fHighlights").value = target.highlights || "";
       document.getElementById("addModal").classList.add("open");
-    }, "Chỉnh sửa thông tin lễ hội");
+    };
+
+    if (target.isPrivate) {
+      if (!isMyPrivateEvent(target)) {
+        showToast("Bạn không có quyền chỉnh sửa sự kiện riêng của người khác!", "error");
+        return;
+      }
+      doPopulate();
+      return;
+    }
+
+    requireOwnerAuth(doPopulate, "Chỉnh sửa thông tin lễ hội");
   }
 
   function closeModal() {
@@ -5625,8 +5954,10 @@
   }
 
   async function saveNewFestival() {
+    const privacyVal = document.getElementById("fPrivacyVal")?.value || "public";
     const modalMode = document.getElementById("fModalMode").value || "owner";
-    const isGuestSubmission = (modalMode === "guest");
+    const isPrivateSubmission = (privacyVal === "private" || modalMode === "private");
+    const isGuestSubmission = (!isPrivateSubmission && modalMode === "guest");
     const editId = document.getElementById("fEditId").value.trim();
     const name = document.getElementById("fName").value.trim();
     const location = document.getElementById("fLocation").value.trim();
@@ -5658,6 +5989,62 @@
     const nowIso = new Date().toISOString();
     const suffix = calendarType === "solar" ? "DL" : "ÂL";
     const baseLabel = `${String(day).padStart(2, "0")}/${String(month).padStart(2, "0")} ${suffix}`;
+
+    // Luồng 0: Sự kiện riêng tư / Nội bộ gia đình (Chỉ mình tôi thấy)
+    if (isPrivateSubmission) {
+      if (!currentUser) {
+        showToast("Vui lòng đăng nhập để lưu sự kiện gia đình riêng tư!", "warn");
+        return;
+      }
+      const privateId = editId || ("priv_" + Date.now());
+      const privateItem = {
+        id: privateId,
+        name,
+        location: location || "Gia đình",
+        region: region || "Gia đình",
+        calendarType,
+        lunarDay: day,
+        lunarMonth: month,
+        lunarLabel: baseLabel,
+        duration: duration || "1 ngày",
+        highlights: highlights || "Ngày kỷ niệm / giỗ chạp nội bộ gia đình.",
+        isPrivate: true,
+        ownerId: currentUser.id,
+        ownerUsername: currentUser.username,
+        ownerEmail: currentUser.email || currentUser.username,
+        ownerName: currentUser.displayName,
+        updatedAt: nowIso,
+        deleted: false
+      };
+
+      const existingIdx = myPrivateEvents.findIndex(p => String(p.id) === String(privateId));
+      if (existingIdx >= 0) {
+        myPrivateEvents[existingIdx] = privateItem;
+      } else {
+        myPrivateEvents.unshift(privateItem);
+      }
+
+      saveMyPrivateEventsToStorage();
+      renderRegionControls();
+      renderTable();
+      closeModal();
+      showToast(editId ? `🎉 Đã cập nhật sự kiện riêng "${name}"!` : `🎉 Đã lưu sự kiện riêng "${name}"! Chỉ riêng tài khoản của bạn mới nhìn thấy.`, "success");
+
+      if (cloudConfig.scriptUrl) {
+        try {
+          await callAppsScriptPost({
+            action: "savePrivateEvent",
+            userId: currentUser.id,
+            username: currentUser.username,
+            email: currentUser.email || currentUser.username,
+            item: privateItem
+          });
+        } catch (err) {
+          console.warn("Lỗi lưu sự kiện riêng lên Sheet:", err);
+        }
+      }
+      return;
+    }
 
     // Luồng 1: Khách truy cập gửi đề xuất lễ hội mới -> Lưu vào Hàng chờ xét duyệt (status = "pending")
     if (isGuestSubmission) {
@@ -5992,6 +6379,42 @@
 
   function deleteFestival(e, id) {
     if (e) e.stopPropagation();
+    const target = festivals.find(f => String(f.id) === String(id)) ||
+                   myPrivateEvents.find(f => String(f.id) === String(id));
+    if (!target) return;
+
+    if (target.isPrivate) {
+      if (!isMyPrivateEvent(target)) {
+        showToast("Bạn không có quyền xóa sự kiện riêng của người khác!", "error");
+        return;
+      }
+      openConfirmModal(
+        "Xác nhận xóa sự kiện riêng",
+        `Bạn có chắc muốn xóa "${target.name}" khỏi danh sách sự kiện riêng của bạn?`,
+        async () => {
+          myPrivateEvents = myPrivateEvents.filter(f => String(f.id) !== String(id));
+          saveMyPrivateEventsToStorage();
+          renderRegionControls();
+          renderTable();
+          showToast(`Đã xóa sự kiện riêng "${target.name}".`, "info");
+          if (cloudConfig.scriptUrl && currentUser) {
+            try {
+              await callAppsScriptPost({
+                action: "deletePrivateEvent",
+                userId: currentUser.id,
+                username: currentUser.username,
+                email: currentUser.email || currentUser.username,
+                id: id
+              });
+            } catch (err) {
+              console.warn("Lỗi đồng bộ xóa sự kiện riêng lên Sheet:", err);
+            }
+          }
+        }
+      );
+      return;
+    }
+
     requireOwnerAuth(() => {
       const target = festivals.find(f => String(f.id) === String(id));
       const festName = target ? target.name : "lễ hội này";
