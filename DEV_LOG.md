@@ -159,11 +159,29 @@
 
 ---
 
+---
+
+### [Phiên bản 3.6.1] Chuẩn Hóa 1-Click Google Sign-In & Xóa Bỏ Form Nhập Gmail Thủ Công
+- **Xóa bỏ triệt để Form nhập Gmail thủ công gây hiểu lầm:**
+  - Loại bỏ hoàn toàn form bắt gõ tay idu@gmail.com ở Ảnh 2.
+  - Giao diện sạch sẽ, chỉ giữ nút Google nhận diện thương hiệu chuẩn.
+- **Tích hợp Chuẩn Google Identity Services (GIS) Popup:**
+  - Tự động hiển thị Nút Google chính thức do Google trực tiếp render (google.accounts.id.renderButton).
+  - Khi người dùng click, Google sẽ bật popup chọn tài khoản Gmail có sẵn trên trình duyệt/thiết bị để đăng nhập 1 chạm.
+  - Tự động giải mã JWT Token để lấy thông tin Email, Tên hiển thị và Ảnh đại diện (Avatar).
+- **Hộp thoại Hướng dẫn Cấu hình Client ID & GitHub Pages:**
+  - Khi mở trên ile:/// hoặc chưa có Client ID, hiển thị Modal hướng dẫn thân thiện và ô lưu Google Client ID vào localStorage.
+  - Hỗ trợ lưu Google Client ID trực tiếp trong bảng ⚙️ Cấu hình Google Sheets.
+- **Đồng bộ toàn bộ mã nguồn:**
+  - Đồng bộ index.html sang TraCuuLeHoi_v1.8.html và ndroid/app/src/main/assets/www/index.html.
+
+---
+
 ## 📌 TRẠNG THÁI HIỆN TẠI & KẾ HOẠCH BƯỚC TIẾP THEO
 
 - [x] Đã hoàn thành Bước 1: Giao diện Đêm Hội Hoa Đăng, Thẻ bài di động, Lịch Vạn Niên & Yêu thích (v3.3.0).
 - [x] Đã hoàn thành Bước 2: Hệ thống Tài khoản gia đình & Phân quyền Admin cơ bản (v3.4.0).
 - [x] Đã hoàn thành Nâng cấp v3.5.0: Phân quyền 3 cấp (Super Admin, Moderator, Member), Khóa 60s khi sai 5 lần, Icon mắt xem mật khẩu & Bảo mật xóa sạch gợi ý Admin.
-- [x] Đã nâng cấp v3.6.0: Đăng ký & Đăng nhập bằng tài khoản Google (GIS & Fast Gmail) trên cả Web và Android APK.
-- [ ] Chủ sở hữu copy mã `Code.gs` mới nhất dán vào Google Apps Script và Deploy Phiên bản Mới (New Version) để nạp action `googleAuth` và bảng `NguoiDung` (14 cột).
-- [ ] Trải nghiệm thực tế phân quyền và tính năng đếm ngược 60s.
+- [x] Đã nâng cấp v3.6.1: Chuẩn hóa 1-Click Google Sign-In chính thức, loại bỏ hoàn toàn form nhập Gmail thủ công.
+- [ ] Chủ sở hữu bật GitHub Pages (Settings > Pages > Branch main > Save) để có link web https://hieutruongvn97.github.io/Event-Festival/.
+- [ ] Chủ sở hữu copy mã Code.gs mới nhất dán vào Google Apps Script và Deploy Phiên bản Mới (New Version) nếu chưa deploy.

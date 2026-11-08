@@ -2309,9 +2309,10 @@
 <!-- Modal Đăng Ký / Đăng Nhập Tài Khoản -->
 <div class="modal-overlay" id="userAuthModal">
   <div class="modal" style="max-width:440px;">
-    <!-- Nút Đăng ký / Đăng nhập nhanh bằng Google -->
+    <!-- Nút Đăng ký / Đăng nhập bằng Google (Chuẩn 1-Click Google Identity Services) -->
     <div class="google-auth-wrapper">
-      <button type="button" class="btn-google-auth" id="btnGoogleAuth" onclick="startGoogleAuthFlow()">
+      <div id="googleOfficialBtn" style="display:flex;justify-content:center;min-height:44px;width:100%;"></div>
+      <button type="button" class="btn-google-auth" id="btnGoogleAuthFallback" onclick="startGoogleAuthFlow()">
         <svg class="google-svg-icon" viewBox="0 0 48 48">
           <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
           <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
@@ -2320,30 +2321,6 @@
         </svg>
         <span>Tiếp tục với Google</span>
       </button>
-      <div id="g_id_onload_container"></div>
-    </div>
-
-    <!-- Form Đăng Nhập / Đăng Ký Nhanh Bằng Tài Khoản Google (Gmail) -->
-    <div id="googleFastForm" class="google-fast-form" style="display:none;">
-      <div class="google-fast-header">
-        <span class="google-badge-pill">Google Account</span>
-        <h4>Đăng ký / Đăng nhập bằng Gmail</h4>
-        <p>Không cần nhớ mật khẩu! Nhập địa chỉ Gmail để tạo hoặc kết nối tài khoản ngay lập tức.</p>
-      </div>
-      <div class="form-group">
-        <label>Địa chỉ Gmail của bạn *</label>
-        <input type="email" id="googleFastEmail" placeholder="vidu@gmail.com" autocomplete="email" />
-      </div>
-      <div class="form-group">
-        <label>Tên gọi hiển thị (Tùy chọn - ví dụ: Hiếu, Bác Ba, Cô Tư)</label>
-        <input type="text" id="googleFastName" placeholder="Để trống sẽ dùng tên theo Gmail" />
-      </div>
-      <div class="modal-actions" style="margin-top:12px;">
-        <button type="button" class="btn" onclick="toggleGoogleFastForm(false)">Quay lại</button>
-        <button type="button" class="btn btn-google-primary" id="btnSubmitGoogleFast" onclick="submitGoogleFastLogin()">
-          ⚡ Kết Nối &amp; Vào Ngay
-        </button>
-      </div>
     </div>
 
     <div id="authStandardTabs">
@@ -2470,6 +2447,40 @@
 
     <div class="modal-actions" style="margin-top:16px;">
       <button type="button" class="btn btn-primary" onclick="closeUserManagementModal()">Đóng</button>
+    </div>
+  </div>
+</div>
+<!-- Modal Hướng dẫn & Thiết lập Google Client ID (Chuẩn 1-Click Google Sign-In) -->
+<div class="modal-overlay" id="googleSetupModal">
+  <div class="modal" style="max-width:480px;">
+    <h2>
+      <svg class="google-svg-icon" viewBox="0 0 48 48" style="vertical-align:middle;margin-right:8px;display:inline-block;">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      <span>Bật Đăng Nhập Google 1-Chạm</span>
+    </h2>
+    <div class="info-callout" style="line-height:1.5;font-size:0.86rem;margin-bottom:14px;">
+      Để Google mở popup <strong>Chọn tài khoản Gmail có sẵn</strong> của bạn, Google yêu cầu trang web chạy trên địa chỉ Web (như <em>GitHub Pages</em>) và cần 1 mã <strong>Google Client ID</strong> miễn phí.
+    </div>
+
+    <div class="form-group">
+      <label>Mã Google Client ID của bạn:</label>
+      <input type="text" id="cfgGoogleClientIdInput" placeholder="Ví dụ: 123456789-abc.apps.googleusercontent.com" />
+    </div>
+
+    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;font-size:0.82rem;color:var(--text-muted);line-height:1.6;margin-bottom:16px;">
+      <strong style="color:var(--gold-primary);">💡 Cách kích hoạt đăng nhập Google chuẩn 1-chạm:</strong><br/>
+      1. Bật <strong>GitHub Pages</strong>: Vào <a href="https://github.com/hieutruongvn97/Event-Festival/settings/pages" target="_blank" rel="noopener noreferrer" style="color:#60a5fa;text-decoration:underline;">GitHub Settings &gt; Pages</a> &gt; chọn branch <code>main</code> &gt; Save. Web sẽ chạy tại: <code style="color:#34d399;">https://hieutruongvn97.github.io/Event-Festival/</code><br/>
+      2. Mở <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer" style="color:#60a5fa;text-decoration:underline;">Google Cloud Console Credentials</a> &gt; Bấm <em>Create Credentials</em> &gt; <em>OAuth client ID</em> (Web application).<br/>
+      3. Thêm link web của bạn vào mục <em>Authorized JavaScript origins</em>, copy mã Client ID dán vào ô bên trên rồi bấm Lưu!
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn" onclick="closeGoogleSetupModal()">Đóng</button>
+      <button type="button" class="btn btn-primary" onclick="saveGoogleClientIdFromModal()">💾 Lưu &amp; Kích Hoạt</button>
     </div>
   </div>
 </div>
@@ -2695,10 +2706,8 @@
     updateCloudStatusUI();
     updatePendingQueueUI();
   }
-
-
   // ============================================================================
-  // HỆ THỐNG XÁC THỰC GOOGLE ACCOUNT (GOOGLE IDENTITY SERVICES & FAST GMAIL)
+  // HỆ THỐNG XÁC THỰC GOOGLE ACCOUNT (CHUẨN 1-CLICK GOOGLE IDENTITY SERVICES)
   // ============================================================================
   function parseJwt(token) {
     try {
@@ -2713,47 +2722,104 @@
     }
   }
 
-  function toggleGoogleFastForm(show) {
-    const fastForm = document.getElementById("googleFastForm");
-    const standardTabs = document.getElementById("authStandardTabs");
-    const googleBtn = document.getElementById("btnGoogleAuth");
-    if (!fastForm) return;
+  function getGoogleClientId() {
+    return safeGetStorage("vn_festivals_google_client_id") || window.GOOGLE_CLIENT_ID || "";
+  }
 
-    if (show) {
-      fastForm.style.display = "block";
-      if (standardTabs) standardTabs.style.display = "none";
-      if (googleBtn) googleBtn.style.display = "none";
-      const emailInput = document.getElementById("googleFastEmail");
-      if (emailInput) setTimeout(() => emailInput.focus(), 100);
-    } else {
-      fastForm.style.display = "none";
-      if (standardTabs) standardTabs.style.display = "block";
-      if (googleBtn) googleBtn.style.display = "flex";
+  function openGoogleSetupModal() {
+    const input = document.getElementById("cfgGoogleClientIdInput");
+    if (input) input.value = getGoogleClientId();
+    const modal = document.getElementById("googleSetupModal");
+    if (modal) modal.classList.add("open");
+  }
+
+  function closeGoogleSetupModal() {
+    const modal = document.getElementById("googleSetupModal");
+    if (modal) modal.classList.remove("open");
+  }
+
+  function saveGoogleClientIdFromModal() {
+    const input = document.getElementById("cfgGoogleClientIdInput");
+    const val = (input?.value || "").trim();
+    if (!val) {
+      showToast("Vui lòng nhập Google Client ID hợp lệ!", "warn");
+      return;
+    }
+    safeSetStorage("vn_festivals_google_client_id", val);
+    closeGoogleSetupModal();
+    showToast("✅ Đã lưu Google Client ID thành công! Đang khởi tạo nút Google...", "success");
+    initGoogleIdentity();
+  }
+
+  function initGoogleIdentity() {
+    const clientId = getGoogleClientId();
+    const btnOfficial = document.getElementById("googleOfficialBtn");
+    const btnFallback = document.getElementById("btnGoogleAuthFallback");
+
+    const isFileOrigin = window.location.protocol === "file:";
+
+    if (!clientId || isFileOrigin || !window.google || !window.google.accounts || !window.google.accounts.id) {
+      if (btnOfficial) {
+        btnOfficial.style.display = "none";
+        btnOfficial.innerHTML = "";
+      }
+      if (btnFallback) btnFallback.style.display = "flex";
+      return;
+    }
+
+    try {
+      window.google.accounts.id.initialize({
+        client_id: clientId,
+        callback: handleGoogleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+        context: "signin",
+        ux_mode: "popup"
+      });
+
+      if (btnOfficial) {
+        btnOfficial.innerHTML = "";
+        btnOfficial.style.display = "flex";
+        window.google.accounts.id.renderButton(btnOfficial, {
+          type: "standard",
+          theme: "outline",
+          size: "large",
+          text: "continue_with",
+          shape: "pill",
+          logo_alignment: "left",
+          width: Math.min(360, (btnOfficial.parentElement ? btnOfficial.parentElement.offsetWidth : 360) || 360)
+        });
+      }
+      if (btnFallback) btnFallback.style.display = "none";
+    } catch (err) {
+      console.warn("Lỗi khởi tạo Google Identity:", err);
+      if (btnOfficial) btnOfficial.style.display = "none";
+      if (btnFallback) btnFallback.style.display = "flex";
     }
   }
 
   function startGoogleAuthFlow() {
-    const customClientId = safeGetStorage("vn_festivals_google_client_id") || window.GOOGLE_CLIENT_ID;
-    if (window.google && window.google.accounts && window.google.accounts.id && customClientId) {
+    const isFileOrigin = window.location.protocol === "file:";
+    const clientId = getGoogleClientId();
+
+    if (isFileOrigin) {
+      showToast("Google yêu cầu trang web chạy trên địa chỉ Web (như link GitHub Pages) để bật popup chọn tài khoản!", "warn");
+      openGoogleSetupModal();
+      return;
+    }
+
+    if (!clientId) {
+      openGoogleSetupModal();
+      return;
+    }
+
+    if (window.google && window.google.accounts && window.google.accounts.id) {
       try {
-        window.google.accounts.id.initialize({
-          client_id: customClientId,
-          callback: handleGoogleCredentialResponse,
-          auto_select: false,
-          cancel_on_tap_outside: true
-        });
-        window.google.accounts.id.prompt((notification) => {
-          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            toggleGoogleFastForm(true);
-          }
-        });
-        return;
+        window.google.accounts.id.prompt();
       } catch (e) {
-        console.warn("Google GIS init error:", e);
+        console.warn("startGoogleAuthFlow prompt error:", e);
       }
     }
-    // Mở form Gmail nhanh tiện lợi (100% tương thích cả Android APK và web)
-    toggleGoogleFastForm(true);
   }
 
   async function handleGoogleCredentialResponse(response) {
@@ -2769,39 +2835,6 @@
       avatar: payload.picture || "",
       googleId: payload.sub || ""
     });
-  }
-
-  async function submitGoogleFastLogin() {
-    const emailInput = document.getElementById("googleFastEmail");
-    const nameInput = document.getElementById("googleFastName");
-    const btn = document.getElementById("btnSubmitGoogleFast");
-
-    const email = (emailInput?.value || "").trim().toLowerCase();
-    const displayName = (nameInput?.value || "").trim();
-
-    if (!email || !email.includes("@")) {
-      showToast("Vui lòng nhập địa chỉ Gmail hợp lệ (VD: ten@gmail.com)!", "warn");
-      return;
-    }
-
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = "⏳ Đang kết nối Google...";
-    }
-
-    try {
-      await executeGoogleAuthLogin({
-        email: email,
-        displayName: displayName || email.split("@")[0],
-        avatar: `https://ui-avatars.com/api/?background=4285F4&color=fff&bold=true&name=${encodeURIComponent(displayName || email.split("@")[0])}`,
-        googleId: "g_manual_" + email.replace(/[^a-zA-Z0-9]/g, "_")
-      });
-    } finally {
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = "⚡ Kết Nối & Vào Ngay";
-      }
-    }
   }
 
   async function executeGoogleAuthLogin({ email, displayName, avatar, googleId }) {
@@ -2828,7 +2861,7 @@
         if (res.token) safeSetStorage("vn_festivals_auth_token", res.token);
         if (res.adminKey) safeSetStorage("vn_festivals_owner_key", res.adminKey);
       } else {
-        // Dự phòng phiên làm việc cục bộ an toàn
+        // Dự phòng phiên làm việc an toàn
         const fallbackRole = isOwnerEmail ? "superadmin" : "member";
         currentUser = {
           id: "u_local_" + Date.now(),
@@ -2847,7 +2880,6 @@
 
       safeSetStorage("vn_festivals_current_user", JSON.stringify(currentUser));
       closeUserAuthModal();
-      toggleGoogleFastForm(false);
       updateUserAuthUI();
       renderTable();
 
@@ -2858,8 +2890,9 @@
     }
   }
 
+
   function openUserAuthModal(tab = "login") {
-    toggleGoogleFastForm(false);
+    initGoogleIdentity();
     switchAuthTab(tab);
     checkExistingLockout();
     document.getElementById("userAuthModal").classList.add("open");
@@ -5043,6 +5076,8 @@
     document.getElementById("cfgScriptUrl").value = cloudConfig.scriptUrl || "";
     document.getElementById("cfgAdminKey").value = ownerAdminKey || "";
     document.getElementById("cfgAutoSync").checked = cloudConfig.autoSync !== false;
+    const gCId = document.getElementById("cfgGoogleClientId");
+    if (gCId) gCId.value = getGoogleClientId();
     document.getElementById("cloudConfigModal").classList.add("open");
   }
 
@@ -5058,6 +5093,10 @@
     cloudConfig.scriptUrl = url;
     cloudConfig.autoSync = autoSync;
     safeSetStorage("vn_festivals_cloud_config", JSON.stringify(cloudConfig));
+
+    const gCIdVal = (document.getElementById("cfgGoogleClientId")?.value || "").trim();
+    safeSetStorage("vn_festivals_google_client_id", gCIdVal);
+    initGoogleIdentity();
 
     if (key) {
       ownerAdminKey = key;

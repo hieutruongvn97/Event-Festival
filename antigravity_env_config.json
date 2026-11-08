@@ -2,8 +2,8 @@
   "project_metadata": {
     "project_name": "Tra Cứu Lễ Hội Địa Phương Việt Nam (2026–2099)",
     "author": "MH-SAMA",
-    "version": "3.6.0",
-    "last_updated": "2026-11-07",
+    "version": "3.6.1",
+    "last_updated": "2026-11-08",
     "architecture": "Single-File Serverless Web App (HTML5 + CSS3 + Vanilla JS) with Google Sheets & Apps Script Backend",
     "primary_entry_file": "TraCuuLeHoi_v1.8.html",
     "web_entry_file": "index.html",
@@ -28,17 +28,83 @@
     "backup_sheet_name": "Backup_LichSu",
     "max_backups": 100,
     "columns": [
-      { "index": 1, "letter": "A", "name": "id", "type": "number|string", "description": "Unique festival ID (timestamp or integer)" },
-      { "index": 2, "letter": "B", "name": "name", "type": "string", "description": "Festival or event name" },
-      { "index": 3, "letter": "C", "name": "location", "type": "string", "description": "Province or city name" },
-      { "index": 4, "letter": "D", "name": "region", "type": "string", "description": "Region name (Miền Nam, Miền Trung, Miền Bắc, or custom region)" },
-      { "index": 5, "letter": "E", "name": "lunarDay", "type": "number", "description": "Day of month (1-30 for Lunar, 1-31 for Solar)" },
-      { "index": 6, "letter": "F", "name": "lunarMonth", "type": "number", "description": "Month of year (1-12)" },
-      { "index": 7, "letter": "G", "name": "lunarLabel", "type": "string", "description": "Formatted date label (e.g., '15/01 ÂL', '30/04 DL', or '[CHỜ DUYỆT] 15/08 ÂL')" },
-      { "index": 8, "letter": "H", "name": "duration", "type": "string", "description": "Duration description (e.g., '3 ngày')" },
-      { "index": 9, "letter": "I", "name": "highlights", "type": "string", "description": "Cultural highlights and optional guest contributor info" },
-      { "index": 10, "letter": "J", "name": "updatedAt", "type": "string", "description": "ISO 8601 timestamp for 2-way Safe Merge conflict resolution" },
-      { "index": 11, "letter": "K", "name": "deleted", "type": "boolean", "description": "Soft-delete tombstone flag (true/false)" }
+      {
+        "index": 1,
+        "letter": "A",
+        "name": "id",
+        "type": "number|string",
+        "description": "Unique festival ID (timestamp or integer)"
+      },
+      {
+        "index": 2,
+        "letter": "B",
+        "name": "name",
+        "type": "string",
+        "description": "Festival or event name"
+      },
+      {
+        "index": 3,
+        "letter": "C",
+        "name": "location",
+        "type": "string",
+        "description": "Province or city name"
+      },
+      {
+        "index": 4,
+        "letter": "D",
+        "name": "region",
+        "type": "string",
+        "description": "Region name (Miền Nam, Miền Trung, Miền Bắc, or custom region)"
+      },
+      {
+        "index": 5,
+        "letter": "E",
+        "name": "lunarDay",
+        "type": "number",
+        "description": "Day of month (1-30 for Lunar, 1-31 for Solar)"
+      },
+      {
+        "index": 6,
+        "letter": "F",
+        "name": "lunarMonth",
+        "type": "number",
+        "description": "Month of year (1-12)"
+      },
+      {
+        "index": 7,
+        "letter": "G",
+        "name": "lunarLabel",
+        "type": "string",
+        "description": "Formatted date label (e.g., '15/01 ÂL', '30/04 DL', or '[CHỜ DUYỆT] 15/08 ÂL')"
+      },
+      {
+        "index": 8,
+        "letter": "H",
+        "name": "duration",
+        "type": "string",
+        "description": "Duration description (e.g., '3 ngày')"
+      },
+      {
+        "index": 9,
+        "letter": "I",
+        "name": "highlights",
+        "type": "string",
+        "description": "Cultural highlights and optional guest contributor info"
+      },
+      {
+        "index": 10,
+        "letter": "J",
+        "name": "updatedAt",
+        "type": "string",
+        "description": "ISO 8601 timestamp for 2-way Safe Merge conflict resolution"
+      },
+      {
+        "index": 11,
+        "letter": "K",
+        "name": "deleted",
+        "type": "boolean",
+        "description": "Soft-delete tombstone flag (true/false)"
+      }
     ]
   },
   "local_storage_keys": {
