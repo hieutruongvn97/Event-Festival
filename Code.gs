@@ -153,6 +153,14 @@ function ensureSheetsExist() {
       item.duration, item.highlights, initIso, false
     ]);
     mainSheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
+  } else {
+    if (mainSheet.getLastColumn() < 13) {
+      mainSheet.getRange(1, 12, 1, 2).setValues([["visibility", "allowedUsers"]]);
+      mainSheet.getRange(1, 12, 1, 2)
+        .setFontWeight("bold")
+        .setBackground("#1e3a8a")
+        .setFontColor("#ffffff");
+    }
   }
 
   let backupSheet = ss.getSheetByName(SHEET_BACKUP);
@@ -224,6 +232,14 @@ function ensureSheetsExist() {
       .setBackground("#831843")
       .setFontColor("#ffffff");
     privateSheet.setFrozenRows(1);
+  } else {
+    if (privateSheet.getLastColumn() < 17) {
+      privateSheet.getRange(1, 16, 1, 2).setValues([["visibility", "allowedUsers"]]);
+      privateSheet.getRange(1, 16, 1, 2)
+        .setFontWeight("bold")
+        .setBackground("#831843")
+        .setFontColor("#ffffff");
+    }
   }
 
   return { ss, mainSheet, backupSheet, usersSheet, privateSheet };
@@ -237,12 +253,14 @@ function setupInitialSheet() {
 function readAllPrivateRecords(privateSheet) {
   const lastRow = privateSheet.getLastRow();
   if (lastRow <= 1) return [];
-  const values = privateSheet.getRange(2, 1, lastRow - 1, 15).getValues();
+  const lastCol = Math.max(privateSheet.getLastColumn(), 17);
+  const values = privateSheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
   const records = [];
   for (let i = 0; i < values.length; i++) {
     const r = values[i];
     const name = String(r[4] || "").trim();
     if (!name) continue;
+    const rawAllowed = String(r[16] || "").trim();
     records.push({
       id: String(r[0] || ""),
       ownerId: String(r[1] || ""),
@@ -259,7 +277,9 @@ function readAllPrivateRecords(privateSheet) {
       highlights: String(r[12] || ""),
       updatedAt: String(r[13] || new Date().toISOString()),
       deleted: Boolean(r[14]),
-      isPrivate: true
+      isPrivate: true,
+      visibility: String(r[15] || "only_me").trim() || "only_me",
+      allowedUsers: rawAllowed ? rawAllowed.split(",").map(s => s.trim().toLowerCase()).filter(Boolean) : []
     });
   }
   return records;
@@ -267,8 +287,9 @@ function readAllPrivateRecords(privateSheet) {
 
 function writeAllPrivateRecords(privateSheet, records) {
   const lastRow = privateSheet.getLastRow();
+  const lastCol = Math.max(privateSheet.getLastColumn(), 17);
   if (lastRow > 1) {
-    privateSheet.getRange(2, 1, lastRow - 1, 15).clearContent();
+    privateSheet.getRange(2, 1, lastRow - 1, lastCol).clearContent();
   }
   if (!records || records.length === 0) return;
   const rows = records.map(item => [
@@ -286,15 +307,18 @@ function writeAllPrivateRecords(privateSheet, records) {
     item.duration || "1 ngày",
     item.highlights || "",
     item.updatedAt || new Date().toISOString(),
-    Boolean(item.deleted)
+    Boolean(item.deleted),
+    item.visibility || (item.isPrivate ? "only_me" : "public"),
+    Array.isArray(item.allowedUsers) ? item.allowedUsers.join(",") : (item.allowedUsers || "")
   ]);
-  privateSheet.getRange(2, 1, rows.length, 15).setValues(rows);
+  privateSheet.getRange(2, 1, rows.length, 17).setValues(rows);
 }
 
 function readAllRecords(mainSheet) {
   const lastRow = mainSheet.getLastRow();
   if (lastRow <= 1) return [];
-  const values = mainSheet.getRange(2, 1, lastRow - 1, 11).getValues();
+  const lastCol = Math.max(mainSheet.getLastColumn(), 13);
+  const values = mainSheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
   const records = [];
   for (let i = 0; i < values.length; i++) {
     const r = values[i];
@@ -307,6 +331,9 @@ function readAllRecords(mainSheet) {
     const lunarLabel = String(r[6] || "").trim() || (String(lunarDay).padStart(2, "0") + "/" + String(lunarMonth).padStart(2, "0") + " ÂL");
     const updatedAt = r[9] ? String(r[9]) : "2026-01-01T00:00:00.000Z";
     const deleted = r[10] === true || String(r[10]).toUpperCase() === "TRUE";
+    const visibility = String(r[11] || "public").trim() || "public";
+    const rawAllowed = String(r[12] || "").trim();
+    const allowedUsers = rawAllowed ? rawAllowed.split(",").map(s => s.trim().toLowerCase()).filter(Boolean) : [];
     records.push({
       id: Number.isFinite(Number(id)) ? Number(id) : String(id),
       name: name,
@@ -318,12 +345,13 @@ function readAllRecords(mainSheet) {
       duration: String(r[7] || "1 – 3 ngày").trim(),
       highlights: String(r[8] || "").trim(),
       updatedAt: updatedAt,
-      deleted: deleted
+      deleted: deleted,
+      visibility: visibility,
+      allowedUsers: allowedUsers
     });
   }
   return records;
 }
-
 
 function readAllUsers(usersSheet) {
   const lastRow = usersSheet.getLastRow();
@@ -388,10 +416,11 @@ function writeAllUsers(usersSheet, users) {
 
 function writeAllRecords(mainSheet, records) {
   const lastRow = mainSheet.getLastRow();
+  const lastCol = Math.max(mainSheet.getLastColumn(), 13);
   if (lastRow > 1) {
-    mainSheet.getRange(2, 1, lastRow - 1, 11).clearContent();
+    mainSheet.getRange(2, 1, lastRow - 1, lastCol).clearContent();
   }
-  if (records.length === 0) return;
+  if (!records || records.length === 0) return;
   const rows = records.map(item => [
     item.id,
     item.name,
@@ -403,9 +432,11 @@ function writeAllRecords(mainSheet, records) {
     item.duration || "1 – 3 ngày",
     item.highlights || "",
     item.updatedAt || new Date().toISOString(),
-    Boolean(item.deleted)
+    Boolean(item.deleted),
+    item.visibility || "public",
+    Array.isArray(item.allowedUsers) ? item.allowedUsers.join(",") : (item.allowedUsers || "")
   ]);
-  mainSheet.getRange(2, 1, rows.length, 11).setValues(rows);
+  mainSheet.getRange(2, 1, rows.length, 13).setValues(rows);
 }
 
 function saveBackupSnapshot(backupSheet, actionName, currentRecords) {
@@ -447,7 +478,24 @@ function doGet(e) {
   try {
     const { mainSheet } = ensureSheetsExist();
     const allRecords = readAllRecords(mainSheet);
-    const activeItems = allRecords.filter(r => !r.deleted);
+    const paramUser = (e && e.parameter && (e.parameter.user || e.parameter.username || e.parameter.email) || "").trim().toLowerCase();
+    const paramKey = (e && e.parameter && (e.parameter.key || e.parameter.adminKey) || "").trim();
+    const isOwner = verifyKey(paramKey);
+
+    const activeItems = allRecords.filter(r => {
+      if (r.deleted) return false;
+      const vis = r.visibility || "public";
+      if (vis === "public") return true;
+      if (isOwner) return true;
+      if (!paramUser) return false;
+      if (vis === "members") return true;
+      if (vis === "selected") {
+        const allowed = Array.isArray(r.allowedUsers) ? r.allowedUsers : [];
+        return allowed.includes(paramUser);
+      }
+      return false;
+    });
+
     const deletedIds = allRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }));
     return jsonResponse({
       ok: true,
@@ -460,7 +508,6 @@ function doGet(e) {
   }
 }
 
-// API GHI & ĐỒNG BỘ DỮ LIỆU (Chỉ Chủ sở hữu có Mã khóa mới thực hiện được)
 function doPost(e) {
   const lock = LockService.getScriptLock();
   try {
@@ -645,6 +692,24 @@ function doPost(e) {
         },
         adminKey: isPrivileged ? getAdminKey() : "",
         token: "tk_" + target.id + "_" + Utilities.getUuid()
+      });
+    }
+
+    // Lấy danh sách thành viên cho bộ chọn chỉ định người xem
+    if (action === "getMembersForPicker") {
+      const { usersSheet } = ensureSheetsExist();
+      const users = readAllUsers(usersSheet);
+      const safeMembers = users.filter(u => u.status !== "locked").map(u => ({
+        id: u.id,
+        username: u.username,
+        displayName: u.displayName,
+        role: u.role,
+        avatar: u.avatar || "",
+        email: u.email || u.username
+      }));
+      return jsonResponse({
+        ok: true,
+        members: safeMembers
       });
     }
 
@@ -915,11 +980,19 @@ function doPost(e) {
         return jsonResponse({ ok: false, error: "Thiếu thông tin nhận diện tài khoản." });
       }
 
-      const userEvents = allPrivate.filter(r => !r.deleted && (
-        (userId && r.ownerId === userId) ||
-        (username && r.ownerUsername === username) ||
-        (email && r.ownerEmail === email)
-      ));
+      const userEvents = allPrivate.filter(r => {
+        if (r.deleted) return false;
+        const isOwner = (userId && r.ownerId === userId) ||
+                        (username && r.ownerUsername === username) ||
+                        (email && r.ownerEmail === email);
+        if (isOwner) return true;
+        if (r.visibility === "members" && (userId || username || email)) return true;
+        if (r.visibility === "selected") {
+          const allowed = Array.isArray(r.allowedUsers) ? r.allowedUsers : [];
+          if (allowed.some(a => a === username || a === email || a === userId)) return true;
+        }
+        return false;
+      });
 
       return jsonResponse({
         ok: true,
@@ -964,7 +1037,9 @@ function doPost(e) {
         highlights: String(item.highlights || "").trim(),
         updatedAt: nowIso,
         deleted: false,
-        isPrivate: true
+        isPrivate: true,
+        visibility: String(item.visibility || "only_me").trim(),
+        allowedUsers: Array.isArray(item.allowedUsers) ? item.allowedUsers : (item.allowedUsers ? String(item.allowedUsers).split(",").map(s => s.trim().toLowerCase()).filter(Boolean) : [])
       };
 
       if (existingIdx >= 0) {
@@ -1080,11 +1155,19 @@ function doPost(e) {
 
       writeAllPrivateRecords(privateSheet, allPrivate);
 
-      const userEvents = allPrivate.filter(r => !r.deleted && (
-        (userId && r.ownerId === userId) ||
-        (username && r.ownerUsername === username) ||
-        (email && r.ownerEmail === email)
-      ));
+      const userEvents = allPrivate.filter(r => {
+        if (r.deleted) return false;
+        const isOwner = (userId && r.ownerId === userId) ||
+                        (username && r.ownerUsername === username) ||
+                        (email && r.ownerEmail === email);
+        if (isOwner) return true;
+        if (r.visibility === "members" && (userId || username || email)) return true;
+        if (r.visibility === "selected") {
+          const allowed = Array.isArray(r.allowedUsers) ? r.allowedUsers : [];
+          if (allowed.some(a => a === username || a === email || a === userId)) return true;
+        }
+        return false;
+      });
 
       return jsonResponse({
         ok: true,
