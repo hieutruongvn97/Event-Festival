@@ -165,35 +165,41 @@
     }
     .app-footer strong { color: var(--accent-blue); }
 
-    /* Thanh trạng thái Đồng bộ Google Sheets & Quyền Chủ sở hữu */
+    /* Thanh trạng thái Đồng bộ Google Sheets & Phân quyền trên cùng (Top Nav Bar) */
     .sync-status-bar {
-      background: linear-gradient(135deg, rgba(23, 31, 51, 0.75) 0%, rgba(15, 20, 35, 0.85) 100%);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      border-radius: 14px;
-      padding: 14px 18px;
+      background: linear-gradient(135deg, rgba(20, 27, 45, 0.88) 0%, rgba(12, 17, 30, 0.94) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 12px;
+      padding: 6px 14px;
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 8px;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      margin-top: 4px;
+      margin-bottom: 12px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: all 0.25s ease;
     }
     .sync-info {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 10px;
-      font-size: 0.85rem;
+      gap: 8px;
+      font-size: 0.8rem;
+    }
+    .sync-time-text {
+      color: var(--text-muted);
+      font-size: 0.78rem;
     }
     .status-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 4px 11px;
+      gap: 5px;
+      padding: 3px 9px;
       border-radius: 999px;
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       font-weight: 600;
       border: 1px solid var(--border);
       background: #1f242d;
@@ -217,10 +223,10 @@
     .auth-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 4px 11px;
+      gap: 5px;
+      padding: 3px 9px;
       border-radius: 999px;
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
@@ -238,44 +244,73 @@
       background: rgba(56, 189, 248, 0.14);
       color: #38bdf8;
     }
+    .top-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-left: auto;
+    }
     .sync-actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
     }
 
-    /* Thanh công cụ điều khiển */
+    /* Thanh công cụ điều khiển - Tinh gọn & Có thể thu gọn */
     .toolbar {
-      background: linear-gradient(135deg, rgba(24, 32, 54, 0.8) 0%, rgba(16, 21, 38, 0.9) 100%);
-      border: 1px solid rgba(245, 158, 11, 0.28);
-      border-radius: 16px;
-      padding: 18px 20px;
+      background: linear-gradient(135deg, rgba(24, 32, 54, 0.82) 0%, rgba(16, 21, 38, 0.92) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 14px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: all 0.25s ease;
+    }
+    .toolbar.is-collapsed {
+      padding: 8px 12px;
+      margin-bottom: 10px;
+      gap: 0;
+    }
+    .toolbar.is-collapsed .toolbar-collapsible-zone {
+      display: none !important;
+    }
+
+    .toolbar-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .region-tabs {
       display: flex;
       flex-wrap: wrap;
-      gap: 14px;
-      justify-content: space-between;
+      gap: 6px;
       align-items: center;
-      margin-bottom: 18px;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      flex: 1 1 auto;
+      min-width: 0;
     }
-
-    .region-tabs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
     .tab-btn {
       background: rgba(32, 44, 72, 0.7);
       color: #e2e8f0;
       border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 8px 16px;
+      padding: 5px 12px;
       border-radius: 999px;
       cursor: pointer;
-      font-size: 0.86rem;
+      font-size: 0.8rem;
       font-weight: 600;
       transition: all 0.2s ease;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      gap: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     .tab-btn:hover {
       background: rgba(45, 62, 102, 0.85);
@@ -288,31 +323,23 @@
       color: #0b0f19;
       border-color: #fbbf24;
       font-weight: 700;
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-    }
-    .tab-btn.active .tab-count {
-      background: rgba(0, 0, 0, 0.35);
-      color: #fef08a;
+      box-shadow: 0 3px 10px rgba(245, 158, 11, 0.35);
     }
     .tab-count {
-      font-size: 0.74rem;
-      padding: 1px 6px;
+      font-size: 0.72rem;
+      padding: 1px 5px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.08);
       color: var(--text-muted);
-    }
-    .tab-btn.active .tab-count {
-      background: rgba(96, 165, 250, 0.22);
-      color: #fff;
     }
     .tab-btn-add {
       background: rgba(56, 189, 248, 0.12);
       color: #38bdf8;
       border: 1px dashed rgba(56, 189, 248, 0.45);
-      padding: 7px 13px;
+      padding: 5px 10px;
       border-radius: 999px;
       cursor: pointer;
-      font-size: 0.84rem;
+      font-size: 0.78rem;
       font-weight: 600;
       transition: 0.2s;
     }
@@ -321,23 +348,68 @@
       border-color: #38bdf8;
     }
 
-    .right-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    /* Nút thu gọn / mở rộng bộ lọc */
+    .btn-toggle-toolbar {
+      background: rgba(30, 41, 59, 0.85);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+    .btn-toggle-toolbar:hover {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: #f59e0b;
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .btn-toggle-toolbar.has-active-filters {
+      background: rgba(16, 185, 129, 0.16);
+      border-color: #34d399;
+      color: #34d399;
+    }
+
+    /* Vùng bộ lọc có thể thu gọn */
+    .toolbar-collapsible-zone {
+      width: 100%;
+    }
+    .right-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+    }
     .search-input, .year-select, .month-select, .sort-select {
       background: rgba(28, 38, 64, 0.8);
       color: #f8fafc;
       border: 1px solid rgba(245, 158, 11, 0.25);
       border-radius: 999px;
-      padding: 9px 15px;
-      font-size: 0.86rem;
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      height: 34px;
       outline: none;
       transition: all 0.2s ease;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
-    .search-input { min-width: 220px; }
+    .search-input {
+      flex: 1 1 200px;
+      min-width: 170px;
+      max-width: 320px;
+    }
     .search-input::placeholder { color: #818cf8; opacity: 0.75; }
     .search-input:focus, .year-select:focus, .month-select:focus, .sort-select:focus {
       border-color: #f59e0b;
-      box-shadow: 0 0 14px rgba(245, 158, 11, 0.35);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
       background: rgba(35, 48, 80, 0.95);
     }
     .search-input:hover, .year-select:hover, .month-select:hover, .sort-select:hover {
@@ -1679,12 +1751,13 @@
         font-size: 0.74rem;
       }
 
-      /* Thu gọn thanh trạng thái & Đăng nhập */
+      /* Thu gọn thanh trạng thái & Đăng nhập trên cùng */
       .sync-status-bar {
-        padding: 8px 10px;
-        margin-bottom: 10px;
-        border-radius: 12px;
-        gap: 6px;
+        padding: 6px 8px;
+        margin-top: 2px;
+        margin-bottom: 8px;
+        border-radius: 10px;
+        gap: 5px;
       }
       .sync-info {
         width: 100%;
@@ -1694,52 +1767,71 @@
         gap: 4px;
       }
       .status-pill, .auth-pill {
-        font-size: 0.72rem;
-        padding: 3px 8px;
+        font-size: 0.7rem;
+        padding: 2px 7px;
         white-space: nowrap;
       }
       #lastSyncTimeText {
-        font-size: 0.68rem !important;
-        width: 100%;
-        text-align: right;
+        font-size: 0.65rem !important;
         margin: 0;
       }
-      .user-auth-zone {
+      .top-nav-right {
         width: 100%;
-        margin: 2px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        margin-left: 0;
+      }
+      .user-auth-zone {
+        flex: 1;
+        margin: 0;
       }
       .btn-user-login {
         width: 100%;
-        padding: 7px 10px;
-        font-size: 0.8rem;
+        padding: 5px 8px;
+        font-size: 0.76rem;
         justify-content: center;
       }
       .sync-actions {
-        width: 100%;
-        display: grid;
-        grid-template-columns: 1fr;
+        display: flex;
         gap: 4px;
       }
       .sync-actions .btn-cloud {
-        width: 100%;
-        padding: 7px 10px;
-        font-size: 0.8rem;
-        justify-content: center;
+        padding: 5px 8px;
+        font-size: 0.76rem;
       }
       .sync-actions .btn:not(.btn-cloud) {
-        font-size: 0.74rem;
-        padding: 5px 8px;
+        font-size: 0.72rem;
+        padding: 4px 6px;
       }
 
-      /* Thanh Vùng Miền vuốt ngang mượt mà (Horizontal Swipable Tabs) */
+      /* Thanh Vùng Miền & Nút Thu gọn */
+      .toolbar {
+        padding: 8px 10px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        gap: 6px;
+      }
+      .toolbar.is-collapsed {
+        padding: 6px 8px;
+        margin-bottom: 8px;
+      }
+      .toolbar-top-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        width: 100%;
+      }
       .region-tabs {
         display: flex;
         flex-wrap: nowrap;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
-        padding: 2px 2px 6px;
-        gap: 6px;
-        width: 100%;
+        padding: 2px 2px 4px;
+        gap: 5px;
+        flex: 1;
         scrollbar-width: none;
       }
       .region-tabs::-webkit-scrollbar {
@@ -1748,17 +1840,15 @@
       .tab-btn {
         flex-shrink: 0;
         white-space: nowrap;
-        padding: 6px 12px;
-        font-size: 0.78rem;
+        padding: 4px 10px;
+        font-size: 0.76rem;
+      }
+      .btn-toggle-toolbar {
+        padding: 4px 8px;
+        font-size: 0.74rem;
       }
 
       /* Khung tìm kiếm và bộ lọc gọn gàng */
-      .toolbar {
-        padding: 10px 10px;
-        margin-bottom: 10px;
-        border-radius: 12px;
-        gap: 8px;
-      }
       .right-controls {
         width: 100%;
         display: flex;
@@ -1767,9 +1857,11 @@
       }
       .search-input {
         width: 100%;
+        max-width: 100%;
         min-width: 0;
-        padding: 7px 12px;
-        font-size: 0.82rem;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        height: 32px;
       }
       .controls-middle-row {
         display: flex;
@@ -1780,16 +1872,19 @@
       .view-toggle-wrap {
         flex-shrink: 0;
         padding: 2px;
+        height: 32px;
       }
       .view-toggle-btn {
-        padding: 5px 9px;
-        font-size: 0.76rem;
+        padding: 4px 8px;
+        font-size: 0.74rem;
       }
       .sort-select {
         flex: 1;
         min-width: 0;
-        padding: 7px 10px;
-        font-size: 0.78rem;
+        max-width: 100%;
+        padding: 5px 8px;
+        font-size: 0.76rem;
+        height: 32px;
         text-overflow: ellipsis;
       }
       .filter-row-date {
@@ -1797,6 +1892,7 @@
         grid-template-columns: 1fr 1fr;
         gap: 6px;
         width: 100%;
+        margin-left: 0;
       }
       .filter-col {
         display: flex;
@@ -1805,15 +1901,16 @@
         width: 100%;
       }
       .filter-lbl {
-        font-size: 0.76rem;
+        font-size: 0.74rem;
         color: var(--text-muted);
         white-space: nowrap;
       }
       .month-select, .year-select {
         width: 100%;
         flex: 1;
-        padding: 7px 8px;
-        font-size: 0.78rem;
+        padding: 5px 6px;
+        font-size: 0.76rem;
+        height: 32px;
       }
 
       /* Thanh nút hành động */
@@ -2214,6 +2311,50 @@
 </head>
 <body class="guest-mode">
 <div class="container">
+  <!-- Thanh trạng thái Đồng bộ Google Sheets & Tài khoản trên cùng (Top Nav Bar) -->
+  <div class="sync-status-bar top-nav-bar" id="topNavBar">
+    <div class="sync-info">
+      <span id="cloudStatusPill" class="status-pill">☁️ Chưa kết nối Google Sheets (Lưu cục bộ)</span>
+      <button type="button" id="authStatusBtn" class="auth-pill" onclick="handleAuthPillClick()" title="Bấm để mở khóa hoặc khóa quyền chỉnh sửa của Chủ sở hữu">
+        🔒 Chế độ: Khách (Chỉ xem)
+      </button>
+      <button type="button" id="pendingNotifyPill" class="auth-pill" style="display:none;border-color:rgba(56,189,248,0.45);background:rgba(56,189,248,0.14);color:#38bdf8;" onclick="openPendingQueueModal()" title="Bấm để mở Hàng chờ xét duyệt các lễ hội do Khách đề xuất">
+        ⏳ 0 chờ duyệt
+      </button>
+      <span id="lastSyncTimeText" class="sync-time-text"></span>
+    </div>
+
+    <!-- KHU VỰC TÀI KHOẢN & ĐỒNG BỘ Ở GÓC TRÊN BÊN PHẢI -->
+    <div class="top-nav-right">
+      <div class="user-auth-zone" id="userAuthZone">
+        <button type="button" class="btn-user-login" id="btnOpenAuthModal" onclick="openUserAuthModal('login')">
+          👤 Đăng Nhập / Đăng Ký
+        </button>
+        <div class="user-profile-badge" id="userProfileBadge" style="display:none;">
+          <span class="user-avatar" id="userAvatarChar">A</span>
+          <div class="user-profile-info">
+            <div class="user-name-line">
+              <strong id="userDisplayNameText">Tên thành viên</strong>
+              <span class="user-role-badge member" id="userRoleBadge">Thành viên</span>
+            </div>
+            <div class="user-quick-actions">
+              <button type="button" class="user-action-link owner-only" onclick="openAdminKanbanModal()" title="Bảng điều hành kéo thả phân quyền">🎛️ Bảng Kéo Thả</button>
+              <button type="button" class="user-action-link owner-only" id="btnAdminManageUsers" onclick="openUserManagementModal()" title="Quản lý thành viên gia đình (khóa/mở khóa)">👥 Thành viên</button>
+              <button type="button" class="user-action-link" onclick="openChangePasswordModal()" title="Đổi mật khẩu cá nhân">🔑 Đổi MK</button>
+              <button type="button" class="user-action-link logout" onclick="logoutUser()" title="Đăng xuất khỏi tài khoản">🚪 Thoát</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sync-actions">
+        <button type="button" class="btn btn-cloud" onclick="syncNowButton()">🔄 Đồng bộ ngay</button>
+        <button type="button" class="btn btn-share owner-only" onclick="exportGuestHTML()" title="Tải ra 1 file HTML đã nhúng sẵn link Google Sheets của bạn để gửi cho Khách mở xem ngay không cần cài đặt">📤 Xuất file</button>
+        <button type="button" class="btn owner-only" onclick="openCloudConfigModal()">⚙️ Cấu hình</button>
+        <button type="button" class="btn owner-only" onclick="openGuideModal()">📖 Hướng dẫn</button>
+      </div>
+    </div>
+  </div>
   <!-- Cặp lồng đèn lụa Hội An đung đưa 2 bên -->
   <div class="header-wrapper">
     <svg class="lantern lantern-left" viewBox="0 0 100 150" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2273,93 +2414,61 @@
   <!-- ★ VỊ TRÍ 1 (ĐẦU TRANG): Sửa tên tác giả ở dòng dưới đây ★ -->
   <div class="author-badge-gold">✨ Phát triển &amp; Biên soạn: <strong>MH-SAMA</strong></div>
 
-  <!-- Thanh trạng thái Đồng bộ Google Sheets & Phân quyền Chủ sở hữu -->
-  <div class="sync-status-bar">
-    <div class="sync-info">
-      <span id="cloudStatusPill" class="status-pill">☁️ Chưa kết nối Google Sheets (Lưu cục bộ)</span>
-      <button type="button" id="authStatusBtn" class="auth-pill" onclick="handleAuthPillClick()" title="Bấm để mở khóa hoặc khóa quyền chỉnh sửa của Chủ sở hữu">
-        🔒 Chế độ: Khách (Chỉ xem)
-      </button>
-      <button type="button" id="pendingNotifyPill" class="auth-pill" style="display:none;border-color:rgba(56,189,248,0.45);background:rgba(56,189,248,0.14);color:#38bdf8;" onclick="openPendingQueueModal()" title="Bấm để mở Hàng chờ xét duyệt các lễ hội do Khách đề xuất">
-        ⏳ 0 chờ duyệt
-      </button>
-      <span id="lastSyncTimeText" style="color:var(--text-muted);font-size:0.8rem;"></span>
-    </div>
-    <!-- KHU VỰC TÀI KHOẢN NGƯỜI DÙNG & PHÂN QUYỀN GIA ĐÌNH -->
-    <div class="user-auth-zone" id="userAuthZone">
-      <button type="button" class="btn-user-login" id="btnOpenAuthModal" onclick="openUserAuthModal('login')">
-        👤 Đăng Nhập / Đăng Ký
-      </button>
-      <div class="user-profile-badge" id="userProfileBadge" style="display:none;">
-        <span class="user-avatar" id="userAvatarChar">A</span>
-        <div class="user-profile-info">
-          <div class="user-name-line">
-            <strong id="userDisplayNameText">Tên thành viên</strong>
-            <span class="user-role-badge member" id="userRoleBadge">Thành viên</span>
-          </div>
-          <div class="user-quick-actions">
-            <button type="button" class="user-action-link owner-only" onclick="openAdminKanbanModal()" title="Bảng điều hành kéo thả phân quyền">🎛️ Bảng Kéo Thả</button>
-            <button type="button" class="user-action-link owner-only" id="btnAdminManageUsers" onclick="openUserManagementModal()" title="Quản lý thành viên gia đình (khóa/mở khóa)">👥 Thành viên</button>
-            <button type="button" class="user-action-link" onclick="openChangePasswordModal()" title="Đổi mật khẩu cá nhân">🔑 Đổi MK</button>
-            <button type="button" class="user-action-link logout" onclick="logoutUser()" title="Đăng xuất khỏi tài khoản">🚪 Thoát</button>
-          </div>
-        </div>
+  <!-- Thanh công cụ điều khiển (Có thể thu gọn / mở rộng) -->
+  <div class="toolbar" id="mainToolbar">
+    <!-- Hàng trên: Vùng miền + Nút Thu gọn/Mở rộng -->
+    <div class="toolbar-top-row">
+      <div class="region-tabs" id="regionTabs">
+        <button class="tab-btn active" onclick="setRegion('Tất cả')">Tất cả</button>
+        <button class="tab-btn btn-fav-tab" id="favTabBtn" onclick="setRegion('Yêu thích')">❤️ Yêu thích <span class="tab-count" id="favCountBadge">0</span></button>
+        <button class="tab-btn" onclick="setRegion('Miền Nam')">Miền Nam</button>
+        <button class="tab-btn" onclick="setRegion('Miền Trung')">Miền Trung</button>
+        <button class="tab-btn" onclick="setRegion('Miền Bắc')">Miền Bắc</button>
+        <button type="button" class="tab-btn-add owner-only" onclick="openManageRegionsModal()" title="Tạo hoặc quản lý thêm vùng miền mới">+ Thêm miền</button>
       </div>
+      <button type="button" class="btn-toggle-toolbar" id="btnToggleToolbarCollapse" onclick="toggleToolbarCollapse()" title="Thu gọn hoặc mở rộng bộ lọc">
+        <span id="toolbarToggleIcon">🔼</span> <span id="toolbarToggleText">Thu gọn</span>
+      </button>
     </div>
 
-    <div class="sync-actions">
-      <button type="button" class="btn btn-cloud" onclick="syncNowButton()">🔄 Đồng bộ ngay</button>
-      <button type="button" class="btn btn-share owner-only" onclick="exportGuestHTML()" title="Tải ra 1 file HTML đã nhúng sẵn link Google Sheets của bạn để gửi cho Khách mở xem ngay không cần cài đặt">📤 Xuất file cho Khách</button>
-      <button type="button" class="btn owner-only" onclick="openCloudConfigModal()">⚙️ Cấu hình Google Sheets</button>
-      <button type="button" class="btn owner-only" onclick="openGuideModal()">📖 Hướng dẫn &amp; Mã Apps Script</button>
-    </div>
-  </div>
-
-  <div class="toolbar">
-    <!-- Khu vực Vùng miền: Tự động hiển thị các miền mặc định + miền tự tạo + nút Thêm miền mới -->
-    <div class="region-tabs" id="regionTabs">
-      <button class="tab-btn active" onclick="setRegion('Tất cả')">Tất cả</button>
-      <button class="tab-btn btn-fav-tab" id="favTabBtn" onclick="setRegion('Yêu thích')">❤️ Yêu thích <span class="tab-count" id="favCountBadge">0</span></button>
-      <button class="tab-btn" onclick="setRegion('Miền Nam')">Miền Nam</button>
-      <button class="tab-btn" onclick="setRegion('Miền Trung')">Miền Trung</button>
-      <button class="tab-btn" onclick="setRegion('Miền Bắc')">Miền Bắc</button>
-      <button type="button" class="tab-btn-add owner-only" onclick="openManageRegionsModal()" title="Tạo hoặc quản lý thêm vùng miền mới">+ Thêm miền</button>
-    </div>
-    <div class="right-controls">
-      <input type="text" id="searchInput" class="search-input" placeholder="Tìm tên, tỉnh thành (có/không dấu)..." oninput="renderTable()" />
-      <div class="controls-middle-row">
-        <div class="view-toggle-wrap">
-          <button type="button" class="view-toggle-btn active" id="btnViewCard" onclick="setViewMode('card')">🎴 Dạng Thẻ</button>
-          <button type="button" class="view-toggle-btn" id="btnViewTable" onclick="setViewMode('table')">📋 Dạng Bảng</button>
+    <!-- Vùng bộ lọc có thể thu gọn -->
+    <div class="toolbar-collapsible-zone" id="toolbarCollapsibleZone">
+      <div class="right-controls">
+        <input type="text" id="searchInput" class="search-input" placeholder="Tìm tên, tỉnh thành (có/không dấu)..." oninput="renderTable()" />
+        <div class="controls-middle-row">
+          <div class="view-toggle-wrap">
+            <button type="button" class="view-toggle-btn active" id="btnViewCard" onclick="setViewMode('card')">🎴 Dạng Thẻ</button>
+            <button type="button" class="view-toggle-btn" id="btnViewTable" onclick="setViewMode('table')">📋 Dạng Bảng</button>
+          </div>
+          <select id="sortSelect" class="sort-select" onchange="renderTable()" title="Chọn cách sắp xếp danh sách lễ hội">
+            <option value="upcoming" selected>⏳ Sắp diễn ra gần nhất (Mặc định)</option>
+            <option value="date_asc">📅 Ngày Dương lịch (T1 → T12)</option>
+            <option value="region">🗺️ Theo Vùng miền</option>
+          </select>
         </div>
-        <select id="sortSelect" class="sort-select" onchange="renderTable()" title="Chọn cách sắp xếp danh sách lễ hội">
-          <option value="upcoming" selected>⏳ Sắp diễn ra gần nhất (Mặc định)</option>
-          <option value="date_asc">📅 Ngày Dương lịch (T1 → T12)</option>
-          <option value="region">🗺️ Theo Vùng miền</option>
-        </select>
-      </div>
-      <div class="filter-row-date">
-        <div class="filter-col">
-          <label class="filter-lbl" for="solarMonthSelect">Tháng:</label>
-          <select id="solarMonthSelect" class="month-select" onchange="renderTable()">
-        <option value="all">Tất cả tháng</option>
-        <option value="1">Tháng 01</option>
-        <option value="2">Tháng 02</option>
-        <option value="3">Tháng 03</option>
-        <option value="4">Tháng 04</option>
-        <option value="5">Tháng 05</option>
-        <option value="6">Tháng 06</option>
-        <option value="7">Tháng 07</option>
-        <option value="8">Tháng 08</option>
-        <option value="9">Tháng 09</option>
-        <option value="10">Tháng 10</option>
-        <option value="11">Tháng 11</option>
-        <option value="12">Tháng 12</option>
-      </select>
-        </div>
-        <div class="filter-col">
-          <label class="filter-lbl" for="yearSelect">Năm:</label>
-          <select id="yearSelect" class="year-select" onchange="renderTable()"></select>
+        <div class="filter-row-date">
+          <div class="filter-col">
+            <label class="filter-lbl" for="solarMonthSelect">Tháng:</label>
+            <select id="solarMonthSelect" class="month-select" onchange="renderTable()">
+              <option value="all">Tất cả tháng</option>
+              <option value="1">Tháng 01</option>
+              <option value="2">Tháng 02</option>
+              <option value="3">Tháng 03</option>
+              <option value="4">Tháng 04</option>
+              <option value="5">Tháng 05</option>
+              <option value="6">Tháng 06</option>
+              <option value="7">Tháng 07</option>
+              <option value="8">Tháng 08</option>
+              <option value="9">Tháng 09</option>
+              <option value="10">Tháng 10</option>
+              <option value="11">Tháng 11</option>
+              <option value="12">Tháng 12</option>
+            </select>
+          </div>
+          <div class="filter-col">
+            <label class="filter-lbl" for="yearSelect">Năm:</label>
+            <select id="yearSelect" class="year-select" onchange="renderTable()"></select>
+          </div>
         </div>
       </div>
     </div>
@@ -3504,6 +3613,7 @@
     closeGoogleSetupModal();
     showToast("✅ Đã lưu Google Client ID thành công! Đang khởi tạo nút Google...", "success");
     initGoogleIdentity();
+    initToolbarCollapseState();
   }
 
   function initGoogleIdentity() {
@@ -4892,6 +5002,7 @@
       saveCustomRegions();
     }
     renderRegionControls();
+    updateToolbarCollapseButtonText();
   }
 
   function renderRegionControls() {
@@ -8522,6 +8633,75 @@
     } catch (err) {
       showToast("Lỗi đồng bộ: " + err.message, "error");
     }
+  }
+
+  // ==========================================================================
+  // THU GỌN / MỞ RỘNG BỘ LỌC (COLLAPSIBLE TOOLBAR)
+  // ==========================================================================
+  function toggleToolbarCollapse() {
+    const toolbar = document.getElementById("mainToolbar") || document.querySelector(".toolbar");
+    if (!toolbar) return;
+    const isCurrentlyCollapsed = toolbar.classList.contains("is-collapsed");
+    const shouldCollapse = !isCurrentlyCollapsed;
+    setToolbarCollapsedState(shouldCollapse);
+    try {
+      localStorage.setItem("vn_festivals_toolbar_collapsed", shouldCollapse ? "1" : "0");
+    } catch (e) {}
+    if (!shouldCollapse) {
+      const sInput = document.getElementById("searchInput");
+      if (sInput && window.innerWidth > 640) {
+        setTimeout(() => sInput.focus(), 80);
+      }
+    }
+  }
+
+  function setToolbarCollapsedState(collapsed) {
+    const toolbar = document.getElementById("mainToolbar") || document.querySelector(".toolbar");
+    const toggleBtn = document.getElementById("btnToggleToolbarCollapse");
+    const toggleIcon = document.getElementById("toolbarToggleIcon");
+    const toggleText = document.getElementById("toolbarToggleText");
+    if (!toolbar) return;
+
+    if (collapsed) {
+      toolbar.classList.add("is-collapsed");
+      if (toggleIcon) toggleIcon.textContent = "🔽";
+      updateToolbarCollapseButtonText();
+    } else {
+      toolbar.classList.remove("is-collapsed");
+      if (toggleIcon) toggleIcon.textContent = "🔼";
+      if (toggleText) toggleText.textContent = "Thu gọn";
+      if (toggleBtn) toggleBtn.classList.remove("has-active-filters");
+    }
+  }
+
+  function updateToolbarCollapseButtonText() {
+    const toolbar = document.getElementById("mainToolbar") || document.querySelector(".toolbar");
+    if (!toolbar || !toolbar.classList.contains("is-collapsed")) return;
+    const toggleText = document.getElementById("toolbarToggleText");
+    const toggleBtn = document.getElementById("btnToggleToolbarCollapse");
+    if (!toggleText) return;
+
+    const sVal = document.getElementById("searchInput") ? document.getElementById("searchInput").value.trim() : "";
+    const mVal = document.getElementById("solarMonthSelect") ? document.getElementById("solarMonthSelect").value : "all";
+    const sortVal = document.getElementById("sortSelect") ? document.getElementById("sortSelect").value : "upcoming";
+    const hasActive = (sVal !== "" || mVal !== "all" || sortVal !== "upcoming");
+
+    if (hasActive) {
+      toggleText.textContent = "Bộ lọc (Đang lọc 🟢)";
+      if (toggleBtn) toggleBtn.classList.add("has-active-filters");
+    } else {
+      toggleText.textContent = "Bộ lọc";
+      if (toggleBtn) toggleBtn.classList.remove("has-active-filters");
+    }
+  }
+
+  function initToolbarCollapseState() {
+    try {
+      const saved = localStorage.getItem("vn_festivals_toolbar_collapsed");
+      if (saved === "1") {
+        setToolbarCollapsedState(true);
+      }
+    } catch (e) {}
   }
 
   // KHỞI CHẠY HỆ THỐNG BAN ĐẦU (Đặt ở cuối cùng sau khi nạp toàn bộ biến & hàm)

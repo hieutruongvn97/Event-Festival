@@ -177,6 +177,24 @@
 
 ---
 
+### [Phiên bản 3.7.0] Tối Ưu Bố Cục Web: Đưa Thanh Trạng Thái & Đăng Nhập Lên Góc Trên Phải + Toolbar Tinh Gọn Có Thể Thu Gọn
+- **Di chuyển Thanh Trạng thái & Tài khoản lên trên cùng (`.top-nav-bar`):**
+  - Đưa toàn bộ thanh `.sync-status-bar` từ vị trí bên dưới tiêu đề lên đỉnh trang (`.container`).
+  - Phân vùng rõ ràng: Cụm trạng thái đồng bộ + phân quyền bên trái; Cụm Tài khoản đăng nhập / Hồ sơ thành viên và nút Đồng bộ bên phải (`.top-nav-right`), tối ưu hóa không gian hiển thị và tuân thủ đúng chuẩn giao diện web hiện đại.
+- **Thiết kế lại Thanh Công Cụ (`.toolbar`) Siêu Gọn & Có Thể Thu Gọn (`Collapsible`):**
+  - Tinh giảm padding và chiều cao các nút điều khiển, sắp xếp bộ lọc khoa học thành 2 hàng gọn gàng thay vì 4 hàng cồng kềnh trước đây.
+  - Bổ sung nút **`[🔼 Thu gọn]` / `[🔽 Bộ lọc]`**: Cho phép người dùng thu gọn toàn bộ hàng bộ lọc chi tiết (chỉ giữ lại hàng Vùng miền và nút mở rộng), tiết kiệm hơn 70% diện tích màn hình.
+  - Tự động hiển thị trạng thái `🔽 Bộ lọc (Đang lọc 🟢)` khi có từ khóa tìm kiếm hoặc lọc theo tháng/sắp xếp đang hoạt động, giúp người dùng không bị nhầm lẫn.
+  - Ghi nhớ trạng thái đóng/mở qua `localStorage['vn_festivals_toolbar_collapsed']`.
+- **Tối ưu hiển thị Mobile & Tự động thích ứng:**
+  - Hàng vùng miền trượt ngang mượt mà (`overflow-x: auto`), nút thu gọn cố định bên phải.
+  - Giao diện trên thiết bị di động gọn gàng, giảm thiểu việc phải cuộn trang dài.
+- **Biên dịch & Đồng bộ toàn diện:**
+  - Đồng bộ bit-for-bit SHA-256 giữa `index.html`, `TraCuuLeHoi_v1.8.html` và `android/app/src/main/assets/www/index.html`.
+  - Biên dịch thành công file APK Android `TraCuuLeHoi.apk` mới nhất.
+
+---
+
 ## 📌 TRẠNG THÁI HIỆN TẠI & KẾ HOẠCH BƯỚC TIẾP THEO
 
 - [x] Đã hoàn thành Bước 1: Giao diện Đêm Hội Hoa Đăng, Thẻ bài di động, Lịch Vạn Niên & Yêu thích (v3.3.0).
