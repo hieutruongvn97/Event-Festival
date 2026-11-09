@@ -1123,11 +1123,11 @@
     .lantern {
       position: absolute;
       top: -6px;
-      width: 42px;
-      height: 64px;
+      width: 48px;
+      height: 72px;
       z-index: 5;
       pointer-events: none;
-      filter: drop-shadow(0 0 14px rgba(245, 158, 11, 0.65));
+      filter: drop-shadow(0 0 16px rgba(239, 68, 68, 0.85)) drop-shadow(0 0 28px rgba(245, 158, 11, 0.75));
       transform-origin: top center;
     }
     .lantern-left {
@@ -1147,20 +1147,68 @@
       100% { transform: rotate(-7deg); }
     }
 
-    /* Tiêu đề mạ vàng ánh kim lấp lánh */
+    /* Tiêu đề mạ vàng ánh kim lấp lánh kèm Lồng đèn nổi bật */
     .app-title {
       font-size: 2.1rem;
       font-weight: 800;
       letter-spacing: -0.02em;
+      margin-bottom: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-align: center;
+    }
+    .app-title-text {
       background: linear-gradient(135deg, #ffffff 0%, #fef08a 30%, #f59e0b 65%, #d97706 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 6px;
       text-shadow: 0 0 24px rgba(245, 158, 11, 0.2);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    /* Lồng đèn 2 bên chữ Tiêu đề: rõ nét, phát sáng rực rỡ, không bị lỗi tàng hình do text-gradient */
+    .title-lantern {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 50px;
+      flex-shrink: 0;
+      vertical-align: middle;
+      cursor: default;
+      user-select: none;
+      filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.95)) drop-shadow(0 0 20px rgba(245, 158, 11, 0.8));
+      animation: lantern-sway-title 3.4s ease-in-out infinite alternate;
+      transform-origin: top center;
+    }
+    .title-lantern.right {
+      filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.95)) drop-shadow(0 0 20px rgba(234, 88, 12, 0.85));
+      animation: lantern-sway-title-rev 3.6s ease-in-out infinite alternate-reverse;
+    }
+    .title-lantern-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    @keyframes lantern-sway-title {
+      0% { transform: rotate(-5deg); }
+      100% { transform: rotate(5deg); }
+    }
+    @keyframes lantern-sway-title-rev {
+      0% { transform: rotate(5deg); }
+      100% { transform: rotate(-5deg); }
     }
     @media (max-width: 640px) {
-      .app-title { font-size: 1.55rem; }
-      .lantern { width: 32px; height: 50px; }
+      .app-title {
+        font-size: clamp(1.2rem, 5.2vw, 1.55rem);
+        gap: 6px;
+      }
+      .title-lantern {
+        width: 26px;
+        height: 38px;
+      }
+      .lantern { width: 34px; height: 52px; }
     }
 
     /* Banner Lịch Vạn Niên Hôm Nay */
@@ -1876,7 +1924,14 @@
         font-size: clamp(1.2rem, 5.2vw, 1.55rem);
         line-height: 1.25;
         margin-bottom: 4px;
-        padding: 0 26px;
+        padding: 0 10px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .app-title-text {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -2714,51 +2769,101 @@
   <!-- Cặp lồng đèn lụa Hội An đung đưa 2 bên -->
   <div class="header-wrapper">
     <svg class="lantern lantern-left" viewBox="0 0 100 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Dây treo -->
-      <line x1="50" y1="0" x2="50" y2="25" stroke="#f59e0b" stroke-width="4"/>
-      <!-- Nắp vàng -->
-      <rect x="30" y="25" width="40" height="10" rx="3" fill="#d97706"/>
-      <!-- Thân đèn lụa đỏ hoa văn -->
+      <!-- Dây treo & khoen đồng -->
+      <line x1="50" y1="0" x2="50" y2="25" stroke="#fbbf24" stroke-width="4"/>
+      <circle cx="50" cy="25" r="4" fill="#f59e0b"/>
+      <!-- Nắp vàng viền sáng -->
+      <rect x="28" y="24" width="44" height="11" rx="3" fill="#d97706" stroke="#fde047" stroke-width="1.8"/>
+      <!-- Thân đèn lụa đỏ rực rỡ -->
       <ellipse cx="50" cy="75" rx="42" ry="45" fill="url(#lanternGrad1)"/>
-      <ellipse cx="50" cy="75" rx="28" ry="45" fill="none" stroke="#fef08a" stroke-width="2" stroke-opacity="0.4"/>
-      <line x1="50" y1="30" x2="50" y2="120" stroke="#fef08a" stroke-width="2" stroke-opacity="0.5"/>
-      <!-- Đáy vàng -->
-      <rect x="35" y="118" width="30" height="8" rx="2" fill="#d97706"/>
-      <!-- Tua rua vàng -->
-      <line x1="45" y1="126" x2="43" y2="150" stroke="#f59e0b" stroke-width="3"/>
-      <line x1="50" y1="126" x2="50" y2="152" stroke="#f59e0b" stroke-width="3"/>
-      <line x1="55" y1="126" x2="57" y2="150" stroke="#f59e0b" stroke-width="3"/>
+      <ellipse cx="50" cy="75" rx="28" ry="45" fill="none" stroke="#fef08a" stroke-width="2.4" stroke-opacity="0.85"/>
+      <line x1="50" y1="30" x2="50" y2="120" stroke="#fef08a" stroke-width="2.4" stroke-opacity="0.9"/>
+      <!-- Đáy vàng viền sáng -->
+      <rect x="33" y="117" width="34" height="9" rx="2" fill="#d97706" stroke="#fde047" stroke-width="1.8"/>
+      <!-- Tua rua vàng gấm -->
+      <line x1="43" y1="126" x2="39" y2="152" stroke="#fbbf24" stroke-width="3.5"/>
+      <line x1="50" y1="126" x2="50" y2="154" stroke="#f59e0b" stroke-width="4"/>
+      <line x1="57" y1="126" x2="61" y2="152" stroke="#fbbf24" stroke-width="3.5"/>
       <defs>
-        <radialGradient id="lanternGrad1" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#f43f5e"/>
+        <radialGradient id="lanternGrad1" cx="45%" cy="45%" r="55%">
+          <stop offset="0%" stop-color="#ff758f"/>
+          <stop offset="35%" stop-color="#f43f5e"/>
           <stop offset="70%" stop-color="#dc2626"/>
-          <stop offset="100%" stop-color="#991b1b"/>
+          <stop offset="100%" stop-color="#881337"/>
         </radialGradient>
       </defs>
     </svg>
 
     <svg class="lantern lantern-right" viewBox="0 0 100 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="50" y1="0" x2="50" y2="25" stroke="#f59e0b" stroke-width="4"/>
-      <rect x="30" y="25" width="40" height="10" rx="3" fill="#d97706"/>
+      <line x1="50" y1="0" x2="50" y2="25" stroke="#fbbf24" stroke-width="4"/>
+      <circle cx="50" cy="25" r="4" fill="#f59e0b"/>
+      <rect x="28" y="24" width="44" height="11" rx="3" fill="#d97706" stroke="#fde047" stroke-width="1.8"/>
       <ellipse cx="50" cy="75" rx="42" ry="45" fill="url(#lanternGrad2)"/>
-      <ellipse cx="50" cy="75" rx="28" ry="45" fill="none" stroke="#fef08a" stroke-width="2" stroke-opacity="0.4"/>
-      <line x1="50" y1="30" x2="50" y2="120" stroke="#fef08a" stroke-width="2" stroke-opacity="0.5"/>
-      <rect x="35" y="118" width="30" height="8" rx="2" fill="#d97706"/>
-      <line x1="45" y1="126" x2="43" y2="150" stroke="#f59e0b" stroke-width="3"/>
-      <line x1="50" y1="126" x2="50" y2="152" stroke="#f59e0b" stroke-width="3"/>
-      <line x1="55" y1="126" x2="57" y2="150" stroke="#f59e0b" stroke-width="3"/>
+      <ellipse cx="50" cy="75" rx="28" ry="45" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity="0.9"/>
+      <line x1="50" y1="30" x2="50" y2="120" stroke="#fff" stroke-width="2.4" stroke-opacity="0.95"/>
+      <rect x="33" y="117" width="34" height="9" rx="2" fill="#d97706" stroke="#fde047" stroke-width="1.8"/>
+      <line x1="43" y1="126" x2="39" y2="152" stroke="#fbbf24" stroke-width="3.5"/>
+      <line x1="50" y1="126" x2="50" y2="154" stroke="#f59e0b" stroke-width="4"/>
+      <line x1="57" y1="126" x2="61" y2="152" stroke="#fbbf24" stroke-width="3.5"/>
       <defs>
-        <radialGradient id="lanternGrad2" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#fbbf24"/>
-          <stop offset="60%" stop-color="#ea580c"/>
+        <radialGradient id="lanternGrad2" cx="45%" cy="45%" r="55%">
+          <stop offset="0%" stop-color="#fffbeb"/>
+          <stop offset="30%" stop-color="#fde047"/>
+          <stop offset="65%" stop-color="#f59e0b"/>
           <stop offset="100%" stop-color="#9a3412"/>
         </radialGradient>
       </defs>
     </svg>
 
     <h1 class="app-title">
-      <span class="title-chunk">🏮 Tra Cứu Lễ Hội</span>
-      <span class="title-chunk">Địa Phương Việt Nam 🏮</span>
+      <span class="title-lantern left" title="Lồng đèn đỏ Hội An">
+        <svg viewBox="0 0 100 140" class="title-lantern-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="50" y1="0" x2="50" y2="18" stroke="#fbbf24" stroke-width="5"/>
+          <circle cx="50" cy="18" r="4.5" fill="#f59e0b"/>
+          <rect x="30" y="18" width="40" height="10" rx="3" fill="#d97706" stroke="#fde047" stroke-width="2"/>
+          <ellipse cx="50" cy="68" rx="42" ry="42" fill="url(#titleRedLantern)"/>
+          <ellipse cx="50" cy="68" rx="26" ry="42" fill="none" stroke="#fef08a" stroke-width="2.8" stroke-opacity="0.9"/>
+          <line x1="50" y1="26" x2="50" y2="110" stroke="#fef08a" stroke-width="2.8" stroke-opacity="0.95"/>
+          <rect x="35" y="108" width="30" height="8" rx="2" fill="#d97706" stroke="#fde047" stroke-width="2"/>
+          <line x1="44" y1="116" x2="40" y2="138" stroke="#fbbf24" stroke-width="3.5"/>
+          <line x1="50" y1="116" x2="50" y2="140" stroke="#f59e0b" stroke-width="4"/>
+          <line x1="56" y1="116" x2="60" y2="138" stroke="#fbbf24" stroke-width="3.5"/>
+          <defs>
+            <radialGradient id="titleRedLantern" cx="45%" cy="45%" r="55%">
+              <stop offset="0%" stop-color="#ff758f"/>
+              <stop offset="35%" stop-color="#f43f5e"/>
+              <stop offset="70%" stop-color="#dc2626"/>
+              <stop offset="100%" stop-color="#881337"/>
+            </radialGradient>
+          </defs>
+        </svg>
+      </span>
+      <span class="app-title-text">
+        <span class="title-chunk">Tra Cứu Lễ Hội</span>
+        <span class="title-chunk">Địa Phương Việt Nam</span>
+      </span>
+      <span class="title-lantern right" title="Lồng đèn vàng lễ hội">
+        <svg viewBox="0 0 100 140" class="title-lantern-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="50" y1="0" x2="50" y2="18" stroke="#fbbf24" stroke-width="5"/>
+          <circle cx="50" cy="18" r="4.5" fill="#f59e0b"/>
+          <rect x="30" y="18" width="40" height="10" rx="3" fill="#d97706" stroke="#fde047" stroke-width="2"/>
+          <ellipse cx="50" cy="68" rx="42" ry="42" fill="url(#titleGoldLantern)"/>
+          <ellipse cx="50" cy="68" rx="26" ry="42" fill="none" stroke="#fff" stroke-width="2.8" stroke-opacity="0.95"/>
+          <line x1="50" y1="26" x2="50" y2="110" stroke="#fff" stroke-width="2.8" stroke-opacity="0.95"/>
+          <rect x="35" y="108" width="30" height="8" rx="2" fill="#d97706" stroke="#fde047" stroke-width="2"/>
+          <line x1="44" y1="116" x2="40" y2="138" stroke="#fbbf24" stroke-width="3.5"/>
+          <line x1="50" y1="116" x2="50" y2="140" stroke="#f59e0b" stroke-width="4"/>
+          <line x1="56" y1="116" x2="60" y2="138" stroke="#fbbf24" stroke-width="3.5"/>
+          <defs>
+            <radialGradient id="titleGoldLantern" cx="45%" cy="45%" r="55%">
+              <stop offset="0%" stop-color="#fffbeb"/>
+              <stop offset="30%" stop-color="#fde047"/>
+              <stop offset="65%" stop-color="#f59e0b"/>
+              <stop offset="100%" stop-color="#b45309"/>
+            </radialGradient>
+          </defs>
+        </svg>
+      </span>
     </h1>
     <!-- Khung Lịch Vạn Niên Hôm Nay tự động -->
     <div class="today-banner" id="todayCalendarBanner">
