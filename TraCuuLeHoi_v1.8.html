@@ -173,10 +173,10 @@
 
     /* TIỆN ÍCH TIÊU GIẢM GÓC TRÊN BÊN PHẢI (CORNER FLOATING HUB) */
     .top-right-floating-hub {
-      position: absolute;
-      top: 10px;
-      right: 12px;
-      z-index: 1000;
+      position: fixed;
+      top: 14px;
+      right: 18px;
+      z-index: 9999;
     }
 
     /* Viên thuốc nhỏ gọn mặc định */
@@ -1919,8 +1919,10 @@
 
       /* Tiện ích góc trên phải & Căn lề trái trên Mobile */
       .top-right-floating-hub {
-        top: 6px;
+        position: fixed;
+        top: 8px;
         right: 8px;
+        z-index: 9999;
       }
       .hub-trigger-pill {
         padding: 4px 8px;
@@ -2466,7 +2468,6 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body class="guest-mode">
-<div class="container">
   <!-- TIỆN ÍCH GÓC TRÊN BÊN PHẢI (CORNER FLOATING HUB - TIÊU GIẢM TỐI ĐA) -->
   <div class="top-right-floating-hub" id="topRightHubWidget">
     <!-- VIÊN THU GỌN MẶC ĐỊNH (HOVER HOẶC CHẠM TAY VÀO MỚI SHOW BẢNG) -->
@@ -2533,6 +2534,9 @@
       </div>
     </div>
   </div>
+
+<div class="container">
+
   <!-- Cặp lồng đèn lụa Hội An đung đưa 2 bên -->
   <div class="header-wrapper">
     <svg class="lantern lantern-left" viewBox="0 0 100 150" fill="none" xmlns="http://www.w3.org/2000/svg">
