@@ -195,6 +195,23 @@
 
 ---
 
+### [Phiên bản 3.7.1] Tiêu Giảm Trạng Thái & Đăng Nhập Thành Widget Góc Phải + Căn Lề Trái Đoạn Giới Thiệu
+- **Tiêu giảm tối đa Thanh Trạng thái & Đăng nhập thành Corner Floating Hub:**
+  - Xóa bỏ hoàn toàn thanh ngang lớn trên đỉnh trang; trả lại vị trí trên cùng thoáng đãng, uy nghiêm cho Tiêu đề và Cặp lồng đèn Hội An.
+  - Tích hợp thành một viên capsule (pill) nhỏ gọn tại góc trên cùng bên phải (`.top-right-floating-hub`).
+  - **Cơ chế Tiêu giảm Thông minh (Hover trên PC / Chạm tay trên Mobile):**
+    - Mặc định chỉ hiển thị viên thuốc nhỏ xíu: `[(H) Hiếu Trương 👑 • 🟢 ▾]` hoặc `[👤 Đăng Nhập • ☁️ ▾]`.
+    - Khi di chuyển chuột vào (PC) hoặc chạm tay vào (Mobile): Bảng điều khiển trượt xuống hiển thị đầy đủ tài khoản, trạng thái đồng bộ và các nút hành động (`🔄 Đồng bộ ngay`, `📤 Xuất file`, `⚙️ Cấu hình`, `🎛️ Bảng kéo thả`, `📖 Hướng dẫn`, `🔑 Đổi MK`, `🚪 Thoát`).
+    - Khi di chuyển chuột ra ngoài hoặc chạm ra ngoài màn hình: Bảng tự động thu gọn lại tức thì.
+- **Căn lề bên trái cho 3 dòng Giới thiệu & Tác giả:**
+  - Gom 3 dòng: *Đối chiếu Âm - Dương lịch...*, *Ngày dương lịch là kết quả quy đổi...*, và *✨ Phát triển & Biên soạn: MH-SAMA* vào khối `.header-intro-left`.
+  - Căn lề trái toàn bộ (`text-align: left; align-items: flex-start;`) theo đúng yêu cầu người dùng, tạo bố cục cân đối và dễ đọc.
+- **Đồng bộ mã nguồn & Biên dịch:**
+  - Đồng bộ chuẩn 100% SHA-256 giữa `index.html`, `TraCuuLeHoi_v1.8.html`, `android/app/src/main/assets/www/index.html`.
+  - Biên dịch thành công APK mới `TraCuuLeHoi.apk`.
+
+---
+
 ## 📌 TRẠNG THÁI HIỆN TẠI & KẾ HOẠCH BƯỚC TIẾP THEO
 
 - [x] Đã hoàn thành Bước 1: Giao diện Đêm Hội Hoa Đăng, Thẻ bài di động, Lịch Vạn Niên & Yêu thích (v3.3.0).

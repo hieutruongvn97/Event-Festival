@@ -165,23 +165,164 @@
     }
     .app-footer strong { color: var(--accent-blue); }
 
-    /* Thanh trạng thái Đồng bộ Google Sheets & Phân quyền trên cùng (Top Nav Bar) */
-    .sync-status-bar {
-      background: linear-gradient(135deg, rgba(20, 27, 45, 0.88) 0%, rgba(12, 17, 30, 0.94) 100%);
-      border: 1px solid rgba(56, 189, 248, 0.22);
-      border-radius: 12px;
-      padding: 6px 14px;
+    .container {
+      max-width: 1050px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* TIỆN ÍCH TIÊU GIẢM GÓC TRÊN BÊN PHẢI (CORNER FLOATING HUB) */
+    .top-right-floating-hub {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      z-index: 1000;
+    }
+
+    /* Viên thuốc nhỏ gọn mặc định */
+    .hub-trigger-pill {
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      padding: 5px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+    .hub-trigger-pill:hover,
+    .top-right-floating-hub.is-active .hub-trigger-pill {
+      border-color: #f59e0b;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.45);
+      background: rgba(30, 41, 59, 0.95);
+      transform: translateY(-1px);
+    }
+
+    .hub-user-trigger,
+    .hub-guest-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hub-avatar-tiny {
+      width: 22px;
+      height: 22px;
+      border-radius: 9999px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0b0f19;
+      font-weight: 800;
+      font-size: 11px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+      align-items: center;
+      justify-content: center;
+    }
+    .hub-trigger-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #f8fafc;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .hub-trigger-role {
+      font-size: 0.72rem;
+    }
+    .hub-guest-icon {
+      font-size: 0.82rem;
+    }
+    .hub-chevron {
+      font-size: 0.7rem;
+      color: #fbbf24;
+      opacity: 0.75;
+    }
+
+    .hub-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 9999px;
+      background: #64748b;
+      transition: 0.2s;
+    }
+    .hub-status-dot.connected {
+      background: #34d399;
+      box-shadow: 0 0 8px #34d399;
+    }
+    .hub-status-dot.syncing {
+      background: #60a5fa;
+      box-shadow: 0 0 8px #60a5fa;
+    }
+    .hub-status-dot.error {
+      background: #f87171;
+      box-shadow: 0 0 8px #f87171;
+    }
+    .hub-status-dot.local {
+      background: #f59e0b;
+    }
+
+    /* Bảng mở rộng khi hover hoặc chạm tay vào */
+    .hub-dropdown-panel {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 320px;
+      background: linear-gradient(145deg, rgba(20, 28, 48, 0.96) 0%, rgba(10, 15, 26, 0.98) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 20px rgba(56, 189, 248, 0.15);
+      backdrop-filter: blur(20px);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px) scale(0.97);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .top-right-floating-hub:hover .hub-dropdown-panel,
+    .top-right-floating-hub.is-active .hub-dropdown-panel {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .hub-sync-box {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .hub-sync-header {
+      display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 4px;
-      margin-bottom: 12px;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      transition: all 0.25s ease;
+      gap: 6px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
     }
+    .hub-auth-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .hub-actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .hub-actions-grid .btn-sync-main {
+      grid-column: span 2;
+    }
+
     .sync-info {
       display: flex;
       flex-wrap: wrap;
@@ -244,18 +385,43 @@
       background: rgba(56, 189, 248, 0.14);
       color: #38bdf8;
     }
-    .top-nav-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-left: auto;
-    }
     .sync-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
       align-items: center;
+    }
+
+    /* CĂN LỀ TRÁI CHO 3 DÒNG GIỚI THIỆU & TÁC GIẢ THEO YÊU CẦU */
+    .header-intro-left {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-top: 4px;
+      margin-bottom: 12px;
+      width: 100%;
+    }
+    .header-intro-left .subtitle {
+      text-align: left;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+      width: 100%;
+      line-height: 1.45;
+    }
+    .header-intro-left .subtitle-disclaimer {
+      text-align: left;
+      color: #fbbf24;
+      font-size: 0.88rem;
+      margin-top: 0;
+      margin-bottom: 10px;
+      width: 100%;
+      line-height: 1.45;
+    }
+    .header-intro-left .author-badge-gold {
+      margin-bottom: 0;
+      text-align: left;
     }
 
     /* Thanh công cụ điều khiển - Tinh gọn & Có thể thu gọn */
@@ -1751,59 +1917,49 @@
         font-size: 0.74rem;
       }
 
-      /* Thu gọn thanh trạng thái & Đăng nhập trên cùng */
-      .sync-status-bar {
-        padding: 6px 8px;
-        margin-top: 2px;
-        margin-bottom: 8px;
-        border-radius: 10px;
+      /* Tiện ích góc trên phải & Căn lề trái trên Mobile */
+      .top-right-floating-hub {
+        top: 6px;
+        right: 8px;
+      }
+      .hub-trigger-pill {
+        padding: 4px 8px;
         gap: 5px;
       }
-      .sync-info {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 4px;
-      }
-      .status-pill, .auth-pill {
-        font-size: 0.7rem;
-        padding: 2px 7px;
-        white-space: nowrap;
-      }
-      #lastSyncTimeText {
-        font-size: 0.65rem !important;
-        margin: 0;
-      }
-      .top-nav-right {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 6px;
-        margin-left: 0;
-      }
-      .user-auth-zone {
-        flex: 1;
-        margin: 0;
-      }
-      .btn-user-login {
-        width: 100%;
-        padding: 5px 8px;
-        font-size: 0.76rem;
-        justify-content: center;
-      }
-      .sync-actions {
-        display: flex;
-        gap: 4px;
-      }
-      .sync-actions .btn-cloud {
-        padding: 5px 8px;
-        font-size: 0.76rem;
-      }
-      .sync-actions .btn:not(.btn-cloud) {
+      .hub-trigger-name {
+        max-width: 80px;
         font-size: 0.72rem;
-        padding: 4px 6px;
+      }
+      .hub-dropdown-panel {
+        width: min(300px, calc(100vw - 20px));
+        right: 0;
+        padding: 12px;
+      }
+
+      .header-intro-left {
+        text-align: left;
+        align-items: flex-start;
+        margin-bottom: 8px;
+      }
+      .header-intro-left .subtitle {
+        text-align: left;
+        font-size: 0.76rem;
+        margin-bottom: 4px !important;
+        line-height: 1.35;
+        padding: 0;
+      }
+      .header-intro-left .subtitle-disclaimer {
+        text-align: left;
+        font-size: 0.72rem;
+        margin-top: 0 !important;
+        margin-bottom: 6px !important;
+        line-height: 1.35;
+      }
+      .header-intro-left .author-badge-gold {
+        text-align: left;
+        margin-bottom: 6px;
+        padding: 2px 10px;
+        font-size: 0.74rem;
       }
 
       /* Thanh Vùng Miền & Nút Thu gọn */
@@ -2311,21 +2467,26 @@
 </head>
 <body class="guest-mode">
 <div class="container">
-  <!-- Thanh trạng thái Đồng bộ Google Sheets & Tài khoản trên cùng (Top Nav Bar) -->
-  <div class="sync-status-bar top-nav-bar" id="topNavBar">
-    <div class="sync-info">
-      <span id="cloudStatusPill" class="status-pill">☁️ Chưa kết nối Google Sheets (Lưu cục bộ)</span>
-      <button type="button" id="authStatusBtn" class="auth-pill" onclick="handleAuthPillClick()" title="Bấm để mở khóa hoặc khóa quyền chỉnh sửa của Chủ sở hữu">
-        🔒 Chế độ: Khách (Chỉ xem)
-      </button>
-      <button type="button" id="pendingNotifyPill" class="auth-pill" style="display:none;border-color:rgba(56,189,248,0.45);background:rgba(56,189,248,0.14);color:#38bdf8;" onclick="openPendingQueueModal()" title="Bấm để mở Hàng chờ xét duyệt các lễ hội do Khách đề xuất">
-        ⏳ 0 chờ duyệt
-      </button>
-      <span id="lastSyncTimeText" class="sync-time-text"></span>
+  <!-- TIỆN ÍCH GÓC TRÊN BÊN PHẢI (CORNER FLOATING HUB - TIÊU GIẢM TỐI ĐA) -->
+  <div class="top-right-floating-hub" id="topRightHubWidget">
+    <!-- VIÊN THU GỌN MẶC ĐỊNH (HOVER HOẶC CHẠM TAY VÀO MỚI SHOW BẢNG) -->
+    <div class="hub-trigger-pill" onclick="toggleHubManual(event)" title="Di chuột hoặc chạm để mở bảng điều khiển">
+      <div id="hubUserTrigger" class="hub-user-trigger" style="display:none;">
+        <div class="hub-avatar-tiny" id="hubTriggerAvatar">H</div>
+        <span class="hub-trigger-name" id="hubTriggerName">Hiếu Trương</span>
+        <span class="hub-trigger-role" id="hubTriggerRole">👑</span>
+      </div>
+      <div id="hubGuestTrigger" class="hub-guest-trigger">
+        <span class="hub-guest-icon">👤</span>
+        <span class="hub-trigger-name">Đăng Nhập</span>
+      </div>
+      <span class="hub-status-dot local" id="hubTriggerDot" title="Trạng thái Google Sheets"></span>
+      <span class="hub-chevron">▾</span>
     </div>
 
-    <!-- KHU VỰC TÀI KHOẢN & ĐỒNG BỘ Ở GÓC TRÊN BÊN PHẢI -->
-    <div class="top-nav-right">
+    <!-- BẢNG MỞ RỘNG KHI RÊ CHUỘT / CHẠM TAY VÀO -->
+    <div class="hub-dropdown-panel" id="hubDropdownPanel">
+      <!-- 1. KHU VỰC TÀI KHOẢN NGƯỜI DÙNG -->
       <div class="user-auth-zone" id="userAuthZone">
         <button type="button" class="btn-user-login" id="btnOpenAuthModal" onclick="openUserAuthModal('login')">
           👤 Đăng Nhập / Đăng Ký
@@ -2347,8 +2508,25 @@
         </div>
       </div>
 
-      <div class="sync-actions">
-        <button type="button" class="btn btn-cloud" onclick="syncNowButton()">🔄 Đồng bộ ngay</button>
+      <!-- 2. TRẠNG THÁI GOOGLE SHEETS & PHÂN QUYỀN -->
+      <div class="hub-sync-box">
+        <div class="hub-sync-header">
+          <span id="cloudStatusPill" class="status-pill">☁️ Chưa kết nối Google Sheets (Lưu cục bộ)</span>
+          <span id="lastSyncTimeText" class="sync-time-text"></span>
+        </div>
+        <div class="hub-auth-row">
+          <button type="button" id="authStatusBtn" class="auth-pill" onclick="handleAuthPillClick()" title="Bấm để mở khóa hoặc khóa quyền chỉnh sửa của Chủ sở hữu">
+            🔒 Chế độ: Khách (Chỉ xem)
+          </button>
+          <button type="button" id="pendingNotifyPill" class="auth-pill" style="display:none;border-color:rgba(56,189,248,0.45);background:rgba(56,189,248,0.14);color:#38bdf8;" onclick="openPendingQueueModal()" title="Bấm để mở Hàng chờ xét duyệt các lễ hội do Khách đề xuất">
+            ⏳ 0 chờ duyệt
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. CÁC NÚT THAO TÁC TIỆN ÍCH -->
+      <div class="sync-actions hub-actions-grid">
+        <button type="button" class="btn btn-cloud btn-sync-main" onclick="syncNowButton()">🔄 Đồng bộ ngay</button>
         <button type="button" class="btn btn-share owner-only" onclick="exportGuestHTML()" title="Tải ra 1 file HTML đã nhúng sẵn link Google Sheets của bạn để gửi cho Khách mở xem ngay không cần cài đặt">📤 Xuất file</button>
         <button type="button" class="btn owner-only" onclick="openCloudConfigModal()">⚙️ Cấu hình</button>
         <button type="button" class="btn owner-only" onclick="openGuideModal()">📖 Hướng dẫn</button>
@@ -2409,10 +2587,13 @@
       <span>Đang tải thông tin lịch hôm nay...</span>
     </div>
   </div>
-  <p class="subtitle">Đối chiếu Âm - Dương lịch &amp; thời gian diễn ra lễ hội tiêu biểu (2026–2099) • Hỗ trợ đồng bộ Google Sheets an toàn</p>
-  <p class="subtitle subtitle-disclaimer" style="margin-top:-12px;color:#fbbf24;">Ngày dương lịch là kết quả quy đổi ngày âm truyền thống; không thay thế lịch tổ chức chính thức của địa phương. Tháng nhuận chưa được chọn riêng cho từng lễ hội.</p>
-  <!-- ★ VỊ TRÍ 1 (ĐẦU TRANG): Sửa tên tác giả ở dòng dưới đây ★ -->
-  <div class="author-badge-gold">✨ Phát triển &amp; Biên soạn: <strong>MH-SAMA</strong></div>
+  <!-- KHU VỰC GIỚI THIỆU & TÁC GIẢ (CĂN LỀ BÊN TRÁI THEO YÊU CẦU) -->
+  <div class="header-intro-left">
+    <p class="subtitle">Đối chiếu Âm - Dương lịch &amp; thời gian diễn ra lễ hội tiêu biểu (2026–2099) • Hỗ trợ đồng bộ Google Sheets an toàn</p>
+    <p class="subtitle subtitle-disclaimer">Ngày dương lịch là kết quả quy đổi ngày âm truyền thống; không thay thế lịch tổ chức chính thức của địa phương. Tháng nhuận chưa được chọn riêng cho từng lễ hội.</p>
+    <!-- ★ VỊ TRÍ 1 (ĐẦU TRANG): Sửa tên tác giả ở dòng dưới đây ★ -->
+    <div class="author-badge-gold">✨ Phát triển &amp; Biên soạn: <strong>MH-SAMA</strong></div>
+  </div>
 
   <!-- Thanh công cụ điều khiển (Có thể thu gọn / mở rộng) -->
   <div class="toolbar" id="mainToolbar">
@@ -3518,6 +3699,29 @@
       if (displayNameEl) displayNameEl.textContent = name;
       if (avatarChar) avatarChar.textContent = name.trim().charAt(0).toUpperCase();
 
+      // Cập nhật tiện ích thu gọn góc trên bên phải (Hub Trigger Pill)
+      const hubName = document.getElementById("hubTriggerName");
+      const hubRole = document.getElementById("hubTriggerRole");
+      const hubAvatar = document.getElementById("hubTriggerAvatar");
+      const hubGuestPill = document.getElementById("hubGuestTrigger");
+      const hubUserPill = document.getElementById("hubUserTrigger");
+      if (hubGuestPill) hubGuestPill.style.display = "none";
+      if (hubUserPill) hubUserPill.style.display = "inline-flex";
+      if (hubName) hubName.textContent = currentUser.displayName || currentUser.username || "Thành viên";
+      if (hubAvatar) hubAvatar.textContent = (currentUser.displayName || currentUser.username || "T").trim().charAt(0).toUpperCase();
+      if (hubRole) {
+        if (currentUser.role === "superadmin" || currentUser.username === "admin") {
+          hubRole.textContent = "👑";
+          hubRole.title = "Chủ sở hữu";
+        } else if (currentUser.role === "moderator" || currentUser.role === "admin") {
+          hubRole.textContent = "🛡️";
+          hubRole.title = "Kiểm duyệt";
+        } else {
+          hubRole.textContent = "🌱";
+          hubRole.title = "Thành viên";
+        }
+      }
+
       const isSuperAdmin = (currentUser.role === "superadmin" || currentUser.username === "admin");
       const isModerator = (currentUser.role === "moderator" || currentUser.role === "admin");
       const isPrivileged = isSuperAdmin || isModerator;
@@ -3555,6 +3759,10 @@
     } else {
       if (btnOpenAuth) btnOpenAuth.style.display = "inline-flex";
       if (profileBadge) profileBadge.style.display = "none";
+      const hubGuestPill = document.getElementById("hubGuestTrigger");
+      const hubUserPill = document.getElementById("hubUserTrigger");
+      if (hubGuestPill) hubGuestPill.style.display = "inline-flex";
+      if (hubUserPill) hubUserPill.style.display = "none";
       if (btnAddFamily) btnAddFamily.style.display = "none";
       myPrivateEvents = [];
       if (!isOwnerUnlocked) {
@@ -6255,6 +6463,19 @@
       lastSyncEl.textContent = cloudConfig.lastSync ? `Đồng bộ lúc: ${cloudConfig.lastSync}` : "";
     }
 
+    const hubDot = document.getElementById("hubTriggerDot");
+    if (hubDot) {
+      if (state === "syncing") {
+        hubDot.className = "hub-status-dot syncing";
+      } else if (state === "error") {
+        hubDot.className = "hub-status-dot error";
+      } else if (cloudConfig.scriptUrl) {
+        hubDot.className = "hub-status-dot connected";
+      } else {
+        hubDot.className = "hub-status-dot local";
+      }
+    }
+
     if (!pill) return;
     if (state === "syncing") {
       pill.className = "status-pill syncing";
@@ -8636,6 +8857,24 @@
   }
 
   // ==========================================================================
+  // ==========================================================================
+  // XỬ LÝ TIỆN ÍCH THU GỌN GÓC TRÊN BÊN PHẢI (CORNER FLOATING HUB)
+  // ==========================================================================
+  function toggleHubManual(event) {
+    if (event) event.stopPropagation();
+    const hub = document.getElementById("topRightHubWidget");
+    if (hub) {
+      hub.classList.toggle("is-active");
+    }
+  }
+
+  document.addEventListener("click", function(e) {
+    const hub = document.getElementById("topRightHubWidget");
+    if (hub && !hub.contains(e.target)) {
+      hub.classList.remove("is-active");
+    }
+  });
+
   // THU GỌN / MỞ RỘNG BỘ LỌC (COLLAPSIBLE TOOLBAR)
   // ==========================================================================
   function toggleToolbarCollapse() {
