@@ -478,7 +478,8 @@ function doGet(e) {
   try {
     const { mainSheet } = ensureSheetsExist();
     const allRecords = readAllRecords(mainSheet);
-    const paramUser = (e && e.parameter && (e.parameter.user || e.parameter.username || e.parameter.email) || "").trim().toLowerCase();
+    const paramUser = (e && e.parameter && (e.parameter.user || e.parameter.username) || "").trim().toLowerCase();
+    const paramEmail = (e && e.parameter && e.parameter.email || "").trim().toLowerCase();
     const paramKey = (e && e.parameter && (e.parameter.key || e.parameter.adminKey) || "").trim();
     const isOwner = verifyKey(paramKey);
 
@@ -487,11 +488,11 @@ function doGet(e) {
       const vis = r.visibility || "public";
       if (vis === "public") return true;
       if (isOwner) return true;
-      if (!paramUser) return false;
+      if (!paramUser && !paramEmail) return false;
       if (vis === "members") return true;
       if (vis === "selected") {
         const allowed = Array.isArray(r.allowedUsers) ? r.allowedUsers : [];
-        return allowed.includes(paramUser);
+        return allowed.includes(paramUser) || allowed.includes(paramEmail);
       }
       return false;
     });
@@ -1221,7 +1222,13 @@ function doPost(e) {
             duration: incoming.duration || "1 – 3 ngày",
             highlights: incoming.highlights || "",
             updatedAt: nowIso,
-            deleted: false
+            deleted: false,
+            visibility: incoming.visibility || currentRecords[i].visibility || "public",
+            allowedUsers: Array.isArray(incoming.allowedUsers)
+              ? incoming.allowedUsers
+              : (typeof incoming.allowedUsers === "string" && incoming.allowedUsers
+                  ? incoming.allowedUsers.split(",").map(s => s.trim().toLowerCase()).filter(Boolean)
+                  : (currentRecords[i].allowedUsers || []))
           };
           found = true;
           break;
@@ -1240,9 +1247,35 @@ function doPost(e) {
           duration: incoming.duration || "1 – 3 ngày",
           highlights: incoming.highlights || "",
           updatedAt: nowIso,
-          deleted: false
+          deleted: false,
+          visibility: incoming.visibility || "public",
+          allowedUsers: Array.isArray(incoming.allowedUsers)
+            ? incoming.allowedUsers
+            : (typeof incoming.allowedUsers === "string" && incoming.allowedUsers
+                ? incoming.allowedUsers.split(",").map(s => s.trim().toLowerCase()).filter(Boolean)
+                : [])
         });
       }
+
+      // Nếu sự kiện cũng tồn tại trong sheet SuKien_CaNhan thì đồng bộ cập nhật luôn
+      try {
+        const { privateSheet } = ensureSheetsExist();
+        const allPrivate = readAllPrivateRecords(privateSheet);
+        const privIdx = allPrivate.findIndex(r => String(r.id) === targetId);
+        if (privIdx >= 0) {
+          allPrivate[privIdx].name = String(incoming.name).trim();
+          allPrivate[privIdx].location = String(incoming.location || "Gia đình").trim();
+          allPrivate[privIdx].region = String(incoming.region || "Gia đình").trim();
+          allPrivate[privIdx].visibility = incoming.visibility || allPrivate[privIdx].visibility || "only_me";
+          allPrivate[privIdx].allowedUsers = Array.isArray(incoming.allowedUsers)
+            ? incoming.allowedUsers
+            : (typeof incoming.allowedUsers === "string" && incoming.allowedUsers
+                ? incoming.allowedUsers.split(",").map(s => s.trim().toLowerCase()).filter(Boolean)
+                : (allPrivate[privIdx].allowedUsers || []));
+          allPrivate[privIdx].updatedAt = nowIso;
+          writeAllPrivateRecords(privateSheet, allPrivate);
+        }
+      } catch (errPriv) {}
 
       writeAllRecords(mainSheet, currentRecords);
       return jsonResponse({
@@ -1309,7 +1342,13 @@ function doPost(e) {
             duration: inc.duration || "1 – 3 ngày",
             highlights: inc.highlights || "",
             updatedAt: inc.updatedAt || new Date().toISOString(),
-            deleted: false
+            deleted: false,
+            visibility: inc.visibility || "public",
+            allowedUsers: Array.isArray(inc.allowedUsers)
+              ? inc.allowedUsers
+              : (typeof inc.allowedUsers === "string" && inc.allowedUsers
+                  ? inc.allowedUsers.split(",").map(s => s.trim().toLowerCase()).filter(Boolean)
+                  : [])
           };
           currentRecords.push(newRec);
           byId[String(newRec.id)] = newRec;
@@ -1331,7 +1370,27 @@ function doPost(e) {
             existing.highlights = inc.highlights !== undefined ? inc.highlights : existing.highlights;
             existing.updatedAt = inc.updatedAt || new Date().toISOString();
             existing.deleted = false;
+            existing.visibility = inc.visibility || existing.visibility || "public";
+            if (inc.allowedUsers !== undefined) {
+              existing.allowedUsers = Array.isArray(inc.allowedUsers)
+                ? inc.allowedUsers
+                : (typeof inc.allowedUsers === "string" && inc.allowedUsers
+                    ? inc.allowedUsers.split(",").map(s => s.trim().toLowerCase()).filter(Boolean)
+                    : []);
+            }
             updatedCount++;
+          } else {
+            // Nếu sheetTime >= incTime nhưng trên sheet đang là 'public' mà inc mang phân quyền từ client, cập nhật phân quyền
+            if ((!existing.visibility || existing.visibility === "public") && (inc.visibility && inc.visibility !== "public")) {
+              existing.visibility = inc.visibility;
+              existing.allowedUsers = Array.isArray(inc.allowedUsers)
+                ? inc.allowedUsers
+                : (typeof inc.allowedUsers === "string" && inc.allowedUsers
+                    ? inc.allowedUsers.split(",").map(s => s.trim().toLowerCase()).filter(Boolean)
+                    : []);
+              existing.updatedAt = new Date().toISOString();
+              updatedCount++;
+            }
           }
         }
       });
