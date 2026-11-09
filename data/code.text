@@ -40,6 +40,7 @@ function generateRandomSalt() {
 const SHEET_MAIN = "LeHoi";
 const SHEET_BACKUP = "Backup_LichSu";
 const SHEET_USERS = "NguoiDung";
+const SHEET_PRIVATE = "SuKien_CaNhan";
 const MAX_BACKUPS = 100;
 
 // 12 lễ hội mặc định khởi tạo lần đầu nếu bảng tính hoàn toàn trống
@@ -152,6 +153,14 @@ function ensureSheetsExist() {
       item.duration, item.highlights, initIso, false
     ]);
     mainSheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
+  } else {
+    if (mainSheet.getLastColumn() < 13) {
+      mainSheet.getRange(1, 12, 1, 2).setValues([["visibility", "allowedUsers"]]);
+      mainSheet.getRange(1, 12, 1, 2)
+        .setFontWeight("bold")
+        .setBackground("#1e3a8a")
+        .setFontColor("#ffffff");
+    }
   }
 
   let backupSheet = ss.getSheetByName(SHEET_BACKUP);
@@ -208,7 +217,32 @@ function ensureSheetsExist() {
     }
   }
 
-  return { ss, mainSheet, backupSheet, usersSheet };
+  let privateSheet = ss.getSheetByName(SHEET_PRIVATE);
+  if (!privateSheet) {
+    privateSheet = ss.insertSheet(SHEET_PRIVATE);
+    const pHeaders = [
+      "id", "ownerId", "ownerUsername", "ownerEmail",
+      "name", "location", "region",
+      "lunarDay", "lunarMonth", "lunarLabel", "calendarType",
+      "duration", "highlights", "updatedAt", "deleted"
+    ];
+    privateSheet.getRange(1, 1, 1, pHeaders.length).setValues([pHeaders]);
+    privateSheet.getRange(1, 1, 1, pHeaders.length)
+      .setFontWeight("bold")
+      .setBackground("#831843")
+      .setFontColor("#ffffff");
+    privateSheet.setFrozenRows(1);
+  } else {
+    if (privateSheet.getLastColumn() < 17) {
+      privateSheet.getRange(1, 16, 1, 2).setValues([["visibility", "allowedUsers"]]);
+      privateSheet.getRange(1, 16, 1, 2)
+        .setFontWeight("bold")
+        .setBackground("#831843")
+        .setFontColor("#ffffff");
+    }
+  }
+
+  return { ss, mainSheet, backupSheet, usersSheet, privateSheet };
 }
 
 function setupInitialSheet() {
@@ -216,10 +250,75 @@ function setupInitialSheet() {
   return "Đã khởi tạo bảng LeHoi và Backup_LichSu thành công!";
 }
 
+function readAllPrivateRecords(privateSheet) {
+  const lastRow = privateSheet.getLastRow();
+  if (lastRow <= 1) return [];
+  const lastCol = Math.max(privateSheet.getLastColumn(), 17);
+  const values = privateSheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+  const records = [];
+  for (let i = 0; i < values.length; i++) {
+    const r = values[i];
+    const name = String(r[4] || "").trim();
+    if (!name) continue;
+    const rawAllowed = String(r[16] || "").trim();
+    records.push({
+      id: String(r[0] || ""),
+      ownerId: String(r[1] || ""),
+      ownerUsername: String(r[2] || "").toLowerCase(),
+      ownerEmail: String(r[3] || "").toLowerCase(),
+      name: name,
+      location: String(r[5] || "Gia đình"),
+      region: String(r[6] || "Gia đình"),
+      lunarDay: Number(r[7]) || 15,
+      lunarMonth: Number(r[8]) || 1,
+      lunarLabel: String(r[9] || ""),
+      calendarType: String(r[10] || "lunar"),
+      duration: String(r[11] || "1 ngày"),
+      highlights: String(r[12] || ""),
+      updatedAt: String(r[13] || new Date().toISOString()),
+      deleted: Boolean(r[14]),
+      isPrivate: true,
+      visibility: String(r[15] || "only_me").trim() || "only_me",
+      allowedUsers: rawAllowed ? rawAllowed.split(",").map(s => s.trim().toLowerCase()).filter(Boolean) : []
+    });
+  }
+  return records;
+}
+
+function writeAllPrivateRecords(privateSheet, records) {
+  const lastRow = privateSheet.getLastRow();
+  const lastCol = Math.max(privateSheet.getLastColumn(), 17);
+  if (lastRow > 1) {
+    privateSheet.getRange(2, 1, lastRow - 1, lastCol).clearContent();
+  }
+  if (!records || records.length === 0) return;
+  const rows = records.map(item => [
+    item.id,
+    item.ownerId || "",
+    (item.ownerUsername || "").toLowerCase(),
+    (item.ownerEmail || "").toLowerCase(),
+    item.name || "",
+    item.location || "Gia đình",
+    item.region || "Gia đình",
+    Number(item.lunarDay) || 15,
+    Number(item.lunarMonth) || 1,
+    item.lunarLabel || "",
+    item.calendarType || "lunar",
+    item.duration || "1 ngày",
+    item.highlights || "",
+    item.updatedAt || new Date().toISOString(),
+    Boolean(item.deleted),
+    item.visibility || (item.isPrivate ? "only_me" : "public"),
+    Array.isArray(item.allowedUsers) ? item.allowedUsers.join(",") : (item.allowedUsers || "")
+  ]);
+  privateSheet.getRange(2, 1, rows.length, 17).setValues(rows);
+}
+
 function readAllRecords(mainSheet) {
   const lastRow = mainSheet.getLastRow();
   if (lastRow <= 1) return [];
-  const values = mainSheet.getRange(2, 1, lastRow - 1, 11).getValues();
+  const lastCol = Math.max(mainSheet.getLastColumn(), 13);
+  const values = mainSheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
   const records = [];
   for (let i = 0; i < values.length; i++) {
     const r = values[i];
@@ -232,6 +331,9 @@ function readAllRecords(mainSheet) {
     const lunarLabel = String(r[6] || "").trim() || (String(lunarDay).padStart(2, "0") + "/" + String(lunarMonth).padStart(2, "0") + " ÂL");
     const updatedAt = r[9] ? String(r[9]) : "2026-01-01T00:00:00.000Z";
     const deleted = r[10] === true || String(r[10]).toUpperCase() === "TRUE";
+    const visibility = String(r[11] || "public").trim() || "public";
+    const rawAllowed = String(r[12] || "").trim();
+    const allowedUsers = rawAllowed ? rawAllowed.split(",").map(s => s.trim().toLowerCase()).filter(Boolean) : [];
     records.push({
       id: Number.isFinite(Number(id)) ? Number(id) : String(id),
       name: name,
@@ -243,12 +345,13 @@ function readAllRecords(mainSheet) {
       duration: String(r[7] || "1 – 3 ngày").trim(),
       highlights: String(r[8] || "").trim(),
       updatedAt: updatedAt,
-      deleted: deleted
+      deleted: deleted,
+      visibility: visibility,
+      allowedUsers: allowedUsers
     });
   }
   return records;
 }
-
 
 function readAllUsers(usersSheet) {
   const lastRow = usersSheet.getLastRow();
@@ -313,10 +416,11 @@ function writeAllUsers(usersSheet, users) {
 
 function writeAllRecords(mainSheet, records) {
   const lastRow = mainSheet.getLastRow();
+  const lastCol = Math.max(mainSheet.getLastColumn(), 13);
   if (lastRow > 1) {
-    mainSheet.getRange(2, 1, lastRow - 1, 11).clearContent();
+    mainSheet.getRange(2, 1, lastRow - 1, lastCol).clearContent();
   }
-  if (records.length === 0) return;
+  if (!records || records.length === 0) return;
   const rows = records.map(item => [
     item.id,
     item.name,
@@ -328,9 +432,11 @@ function writeAllRecords(mainSheet, records) {
     item.duration || "1 – 3 ngày",
     item.highlights || "",
     item.updatedAt || new Date().toISOString(),
-    Boolean(item.deleted)
+    Boolean(item.deleted),
+    item.visibility || "public",
+    Array.isArray(item.allowedUsers) ? item.allowedUsers.join(",") : (item.allowedUsers || "")
   ]);
-  mainSheet.getRange(2, 1, rows.length, 11).setValues(rows);
+  mainSheet.getRange(2, 1, rows.length, 13).setValues(rows);
 }
 
 function saveBackupSnapshot(backupSheet, actionName, currentRecords) {
@@ -372,7 +478,24 @@ function doGet(e) {
   try {
     const { mainSheet } = ensureSheetsExist();
     const allRecords = readAllRecords(mainSheet);
-    const activeItems = allRecords.filter(r => !r.deleted);
+    const paramUser = (e && e.parameter && (e.parameter.user || e.parameter.username || e.parameter.email) || "").trim().toLowerCase();
+    const paramKey = (e && e.parameter && (e.parameter.key || e.parameter.adminKey) || "").trim();
+    const isOwner = verifyKey(paramKey);
+
+    const activeItems = allRecords.filter(r => {
+      if (r.deleted) return false;
+      const vis = r.visibility || "public";
+      if (vis === "public") return true;
+      if (isOwner) return true;
+      if (!paramUser) return false;
+      if (vis === "members") return true;
+      if (vis === "selected") {
+        const allowed = Array.isArray(r.allowedUsers) ? r.allowedUsers : [];
+        return allowed.includes(paramUser);
+      }
+      return false;
+    });
+
     const deletedIds = allRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }));
     return jsonResponse({
       ok: true,
@@ -385,7 +508,6 @@ function doGet(e) {
   }
 }
 
-// API GHI & ĐỒNG BỘ DỮ LIỆU (Chỉ Chủ sở hữu có Mã khóa mới thực hiện được)
 function doPost(e) {
   const lock = LockService.getScriptLock();
   try {
@@ -570,6 +692,24 @@ function doPost(e) {
         },
         adminKey: isPrivileged ? getAdminKey() : "",
         token: "tk_" + target.id + "_" + Utilities.getUuid()
+      });
+    }
+
+    // Lấy danh sách thành viên cho bộ chọn chỉ định người xem
+    if (action === "getMembersForPicker") {
+      const { usersSheet } = ensureSheetsExist();
+      const users = readAllUsers(usersSheet);
+      const safeMembers = users.filter(u => u.status !== "locked").map(u => ({
+        id: u.id,
+        username: u.username,
+        displayName: u.displayName,
+        role: u.role,
+        avatar: u.avatar || "",
+        email: u.email || u.username
+      }));
+      return jsonResponse({
+        ok: true,
+        members: safeMembers
       });
     }
 
@@ -825,6 +965,214 @@ function doPost(e) {
         serverTime: nowIso,
         items: currentRecords.filter(r => !r.deleted),
         deletedIds: currentRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }))
+      });
+    }
+
+    // 7. Lấy danh sách sự kiện riêng tư của tài khoản đang đăng nhập
+    if (action === "getMyPrivateEvents") {
+      const { privateSheet } = ensureSheetsExist();
+      const allPrivate = readAllPrivateRecords(privateSheet);
+      const userId = String(payload.userId || "").trim();
+      const username = String(payload.username || "").trim().toLowerCase();
+      const email = String(payload.email || "").trim().toLowerCase();
+
+      if (!userId && !username && !email) {
+        return jsonResponse({ ok: false, error: "Thiếu thông tin nhận diện tài khoản." });
+      }
+
+      const userEvents = allPrivate.filter(r => {
+        if (r.deleted) return false;
+        const isOwner = (userId && r.ownerId === userId) ||
+                        (username && r.ownerUsername === username) ||
+                        (email && r.ownerEmail === email);
+        if (isOwner) return true;
+        if (r.visibility === "members" && (userId || username || email)) return true;
+        if (r.visibility === "selected") {
+          const allowed = Array.isArray(r.allowedUsers) ? r.allowedUsers : [];
+          if (allowed.some(a => a === username || a === email || a === userId)) return true;
+        }
+        return false;
+      });
+
+      return jsonResponse({
+        ok: true,
+        items: userEvents,
+        serverTime: new Date().toISOString()
+      });
+    }
+
+    // 8. Lưu / Cập nhật sự kiện riêng tư (Đám giỗ, kỷ niệm gia đình)
+    if (action === "savePrivateEvent") {
+      const { privateSheet } = ensureSheetsExist();
+      const allPrivate = readAllPrivateRecords(privateSheet);
+      const userId = String(payload.userId || "").trim();
+      const username = String(payload.username || "").trim().toLowerCase();
+      const email = String(payload.email || "").trim().toLowerCase();
+      const item = payload.item;
+
+      if (!item || !item.name) {
+        return jsonResponse({ ok: false, error: "Dữ liệu sự kiện riêng không hợp lệ." });
+      }
+      if (!userId && !username && !email) {
+        return jsonResponse({ ok: false, error: "Vui lòng đăng nhập để lưu sự kiện riêng tư!" });
+      }
+
+      const nowIso = new Date().toISOString();
+      const targetId = String(item.id || ("priv_" + Date.now()));
+      const existingIdx = allPrivate.findIndex(r => String(r.id) === targetId);
+
+      const normalizedItem = {
+        id: targetId,
+        ownerId: userId || (existingIdx >= 0 ? allPrivate[existingIdx].ownerId : ""),
+        ownerUsername: username || (existingIdx >= 0 ? allPrivate[existingIdx].ownerUsername : ""),
+        ownerEmail: email || (existingIdx >= 0 ? allPrivate[existingIdx].ownerEmail : ""),
+        name: String(item.name).trim(),
+        location: String(item.location || "Gia đình").trim(),
+        region: String(item.region || "Gia đình").trim(),
+        lunarDay: Number(item.lunarDay) || 15,
+        lunarMonth: Number(item.lunarMonth) || 1,
+        lunarLabel: String(item.lunarLabel || "").trim(),
+        calendarType: String(item.calendarType || "lunar"),
+        duration: String(item.duration || "1 ngày").trim(),
+        highlights: String(item.highlights || "").trim(),
+        updatedAt: nowIso,
+        deleted: false,
+        isPrivate: true,
+        visibility: String(item.visibility || "only_me").trim(),
+        allowedUsers: Array.isArray(item.allowedUsers) ? item.allowedUsers : (item.allowedUsers ? String(item.allowedUsers).split(",").map(s => s.trim().toLowerCase()).filter(Boolean) : [])
+      };
+
+      if (existingIdx >= 0) {
+        const existing = allPrivate[existingIdx];
+        const isOwner = (userId && existing.ownerId === userId) ||
+                        (username && existing.ownerUsername === username) ||
+                        (email && existing.ownerEmail === email);
+        if (!isOwner) {
+          return jsonResponse({ ok: false, error: "Bạn không có quyền chỉnh sửa sự kiện riêng tư của người khác!" });
+        }
+        allPrivate[existingIdx] = normalizedItem;
+      } else {
+        allPrivate.push(normalizedItem);
+      }
+
+      writeAllPrivateRecords(privateSheet, allPrivate);
+      return jsonResponse({
+        ok: true,
+        item: normalizedItem,
+        serverTime: nowIso
+      });
+    }
+
+    // 9. Xóa sự kiện riêng tư của người dùng
+    if (action === "deletePrivateEvent") {
+      const { privateSheet } = ensureSheetsExist();
+      const allPrivate = readAllPrivateRecords(privateSheet);
+      const userId = String(payload.userId || "").trim();
+      const username = String(payload.username || "").trim().toLowerCase();
+      const email = String(payload.email || "").trim().toLowerCase();
+      const targetId = String(payload.id || "").trim();
+
+      const existingIdx = allPrivate.findIndex(r => String(r.id) === targetId);
+      if (existingIdx < 0) {
+        return jsonResponse({ ok: true, message: "Không tìm thấy hoặc đã xóa." });
+      }
+
+      const existing = allPrivate[existingIdx];
+      const isOwner = (userId && existing.ownerId === userId) ||
+                      (username && existing.ownerUsername === username) ||
+                      (email && existing.ownerEmail === email);
+      if (!isOwner) {
+        return jsonResponse({ ok: false, error: "Bạn không có quyền xóa sự kiện riêng tư của người khác!" });
+      }
+
+      existing.deleted = true;
+      existing.updatedAt = new Date().toISOString();
+      writeAllPrivateRecords(privateSheet, allPrivate);
+      return jsonResponse({
+        ok: true,
+        id: targetId,
+        serverTime: new Date().toISOString()
+      });
+    }
+
+    // 10. Đồng bộ gộp 2 chiều sự kiện riêng tư của người dùng
+    if (action === "syncPrivateEvents") {
+      const { privateSheet } = ensureSheetsExist();
+      const allPrivate = readAllPrivateRecords(privateSheet);
+      const userId = String(payload.userId || "").trim();
+      const username = String(payload.username || "").trim().toLowerCase();
+      const email = String(payload.email || "").trim().toLowerCase();
+      const incomingList = Array.isArray(payload.items) ? payload.items : [];
+
+      if (!userId && !username && !email) {
+        return jsonResponse({ ok: false, error: "Vui lòng đăng nhập để đồng bộ sự kiện riêng tư!" });
+      }
+
+      incomingList.forEach(inc => {
+        if (!inc || !inc.name) return;
+        const incId = String(inc.id || ("priv_" + Date.now()));
+        const existingIdx = allPrivate.findIndex(r => String(r.id) === incId);
+        if (existingIdx >= 0) {
+          const existing = allPrivate[existingIdx];
+          const isOwner = (userId && existing.ownerId === userId) ||
+                          (username && existing.ownerUsername === username) ||
+                          (email && existing.ownerEmail === email);
+          if (isOwner) {
+            const incTime = new Date(inc.updatedAt || 0).getTime();
+            const exTime = new Date(existing.updatedAt || 0).getTime();
+            if (incTime > exTime) {
+              allPrivate[existingIdx] = {
+                ...existing,
+                ...inc,
+                ownerId: userId || existing.ownerId,
+                ownerUsername: username || existing.ownerUsername,
+                ownerEmail: email || existing.ownerEmail,
+                deleted: Boolean(inc.deleted)
+              };
+            }
+          }
+        } else {
+          allPrivate.push({
+            id: incId,
+            ownerId: userId,
+            ownerUsername: username,
+            ownerEmail: email,
+            name: String(inc.name).trim(),
+            location: String(inc.location || "Gia đình").trim(),
+            region: String(inc.region || "Gia đình").trim(),
+            lunarDay: Number(inc.lunarDay) || 15,
+            lunarMonth: Number(inc.lunarMonth) || 1,
+            lunarLabel: String(inc.lunarLabel || "").trim(),
+            calendarType: String(inc.calendarType || "lunar"),
+            duration: String(inc.duration || "1 ngày").trim(),
+            highlights: String(inc.highlights || "").trim(),
+            updatedAt: inc.updatedAt || new Date().toISOString(),
+            deleted: Boolean(inc.deleted),
+            isPrivate: true
+          });
+        }
+      });
+
+      writeAllPrivateRecords(privateSheet, allPrivate);
+
+      const userEvents = allPrivate.filter(r => {
+        if (r.deleted) return false;
+        const isOwner = (userId && r.ownerId === userId) ||
+                        (username && r.ownerUsername === username) ||
+                        (email && r.ownerEmail === email);
+        if (isOwner) return true;
+        if (r.visibility === "members" && (userId || username || email)) return true;
+        if (r.visibility === "selected") {
+          const allowed = Array.isArray(r.allowedUsers) ? r.allowedUsers : [];
+          if (allowed.some(a => a === username || a === email || a === userId)) return true;
+        }
+        return false;
+      });
+
+      return jsonResponse({
+        ok: true,
+        items: userEvents,
+        serverTime: new Date().toISOString()
       });
     }
 
