@@ -41,6 +41,7 @@ const SHEET_MAIN = "LeHoi";
 const SHEET_BACKUP = "Backup_LichSu";
 const SHEET_USERS = "NguoiDung";
 const SHEET_PRIVATE = "SuKien_CaNhan";
+const SHEET_HOUSEHOLDS = "HoGiaDinh";
 const MAX_BACKUPS = 100;
 
 // 12 lễ hội mặc định khởi tạo lần đầu nếu bảng tính hoàn toàn trống
@@ -242,12 +243,63 @@ function ensureSheetsExist() {
     }
   }
 
-  return { ss, mainSheet, backupSheet, usersSheet, privateSheet };
+  let householdsSheet = ss.getSheetByName(SHEET_HOUSEHOLDS);
+  if (!householdsSheet) {
+    householdsSheet = ss.insertSheet(SHEET_HOUSEHOLDS);
+    const hHeaders = ["id", "name", "members", "description", "updatedAt"];
+    householdsSheet.getRange(1, 1, 1, hHeaders.length).setValues([hHeaders]);
+    householdsSheet.getRange(1, 1, 1, hHeaders.length)
+      .setFontWeight("bold")
+      .setBackground("#7c2d12")
+      .setFontColor("#ffffff");
+    householdsSheet.setFrozenRows(1);
+  }
+
+  return { ss, mainSheet, backupSheet, usersSheet, privateSheet, householdsSheet };
 }
 
 function setupInitialSheet() {
   ensureSheetsExist();
   return "Đã khởi tạo bảng LeHoi và Backup_LichSu thành công!";
+}
+
+function readAllHouseholds(householdsSheet) {
+  const lastRow = householdsSheet.getLastRow();
+  if (lastRow <= 1) return [];
+  const lastCol = Math.max(householdsSheet.getLastColumn(), 5);
+  const values = householdsSheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+  const list = [];
+  for (let i = 0; i < values.length; i++) {
+    const r = values[i];
+    const name = String(r[1] || "").trim();
+    if (!name) continue;
+    const rawMembers = String(r[2] || "").trim();
+    list.push({
+      id: String(r[0] || ("hh_" + (i + 1))),
+      name: name,
+      members: rawMembers ? rawMembers.split(",").map(s => s.trim().toLowerCase()).filter(Boolean) : [],
+      description: String(r[3] || "").trim(),
+      updatedAt: String(r[4] || new Date().toISOString())
+    });
+  }
+  return list;
+}
+
+function writeAllHouseholds(householdsSheet, list) {
+  const lastRow = householdsSheet.getLastRow();
+  const lastCol = Math.max(householdsSheet.getLastColumn(), 5);
+  if (lastRow > 1) {
+    householdsSheet.getRange(2, 1, lastRow - 1, lastCol).clearContent();
+  }
+  if (!list || list.length === 0) return;
+  const rows = list.map(h => [
+    h.id,
+    h.name,
+    Array.isArray(h.members) ? h.members.join(",") : (h.members || ""),
+    h.description || "",
+    h.updatedAt || new Date().toISOString()
+  ]);
+  householdsSheet.getRange(2, 1, rows.length, 5).setValues(rows);
 }
 
 function readAllPrivateRecords(privateSheet) {
@@ -498,11 +550,14 @@ function doGet(e) {
     });
 
     const deletedIds = allRecords.filter(r => r.deleted).map(r => ({ id: r.id, updatedAt: r.updatedAt }));
+    const { householdsSheet } = ensureSheetsExist();
+    const householdsList = readAllHouseholds(householdsSheet);
     return jsonResponse({
       ok: true,
       serverTime: new Date().toISOString(),
       items: activeItems,
-      deletedIds: deletedIds
+      deletedIds: deletedIds,
+      households: householdsList
     });
   } catch (err) {
     return jsonResponse({ ok: false, error: String(err.message || err) });
@@ -708,9 +763,12 @@ function doPost(e) {
         avatar: u.avatar || "",
         email: u.email || u.username
       }));
+      const { householdsSheet } = ensureSheetsExist();
+      const householdsList = readAllHouseholds(householdsSheet);
       return jsonResponse({
         ok: true,
-        members: safeMembers
+        members: safeMembers,
+        households: householdsList
       });
     }
 
