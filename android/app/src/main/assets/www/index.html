@@ -1131,11 +1131,11 @@
       transform-origin: top center;
     }
     .lantern-left {
-      left: max(8px, calc(50% - 320px));
+      left: 6px;
       animation: lantern-sway-left 3.4s ease-in-out infinite alternate;
     }
     .lantern-right {
-      right: max(8px, calc(50% - 320px));
+      right: 6px;
       animation: lantern-sway-right 3.8s ease-in-out infinite alternate-reverse;
     }
     @keyframes lantern-sway-left {
@@ -1785,10 +1785,17 @@
       font-weight: 700;
     }
     .controls-middle-row {
-      display: flex;
+      display: inline-flex;
       gap: 8px;
       align-items: center;
-      width: 100%;
+      width: auto;
+      flex-wrap: wrap;
+    }
+    .filter-row-date {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      width: auto;
     }
     .filter-row-date {
       display: inline-flex;
@@ -1862,8 +1869,8 @@
         height: 42px;
         top: -6px;
       }
-      .lantern-left { left: 2px; top: 2px; }
-      .lantern-right { right: 2px; top: 38px; }
+      .lantern-left { left: 0px; top: -6px; }
+      .lantern-right { right: 0px; top: -6px; }
 
       .app-title {
         font-size: clamp(1.2rem, 5.2vw, 1.55rem);
@@ -2464,6 +2471,173 @@
       background: rgba(245, 158, 11, 0.12);
     }
 
+
+    /* Khung tìm kiếm tích hợp icon kính lúp và nút xóa nhanh ✕ */
+    .search-box-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      flex: 1 1 240px;
+      max-width: 320px;
+      min-width: 180px;
+    }
+    .search-box-wrapper .search-icon-inside {
+      position: absolute;
+      left: 12px;
+      font-size: 0.85rem;
+      color: #818cf8;
+      pointer-events: none;
+    }
+    .search-box-wrapper .search-input {
+      width: 100%;
+      padding-left: 32px;
+      padding-right: 28px;
+      height: 34px;
+      background: rgba(28, 38, 64, 0.8);
+      color: #f8fafc;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .search-box-wrapper .search-input:focus {
+      border-color: #f59e0b;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
+      background: rgba(35, 48, 80, 0.95);
+    }
+    .search-clear-btn {
+      position: absolute;
+      right: 8px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.15s;
+    }
+    .search-clear-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* KÉO THẢ TAB VÙNG MIỀN (DÀNH CHO ADMIN) */
+    .tab-btn.is-draggable-tab {
+      cursor: grab;
+      user-select: none;
+    }
+    .tab-btn.is-draggable-tab:active {
+      cursor: grabbing;
+    }
+    .tab-btn.is-dragging {
+      opacity: 0.45;
+      transform: scale(0.94);
+      border: 1.5px dashed #f59e0b !important;
+    }
+    .tab-btn.is-drag-over {
+      border: 2px solid #38bdf8 !important;
+      background: rgba(56, 189, 248, 0.25) !important;
+      transform: scale(1.05);
+    }
+    .tab-drag-handle {
+      font-size: 0.72rem;
+      opacity: 0.65;
+      margin-right: 4px;
+      cursor: grab;
+      color: #fbbf24;
+    }
+
+    /* KÉO THẢ & CHỈNH SỬA CỘT BẢNG (DÀNH CHO SUPER ADMIN) */
+    .table-wrap th.is-draggable-col {
+      cursor: grab;
+      user-select: none;
+      position: relative;
+    }
+    .table-wrap th.is-draggable-col:active {
+      cursor: grabbing;
+    }
+    .table-wrap th.is-col-dragging {
+      opacity: 0.4;
+      background: rgba(245, 158, 11, 0.15) !important;
+    }
+    .table-wrap th.is-col-drag-over {
+      border-left: 3px solid #f59e0b !important;
+      background: rgba(245, 158, 11, 0.25) !important;
+    }
+    .col-drag-handle {
+      font-size: 0.78rem;
+      opacity: 0.65;
+      margin-right: 4px;
+      cursor: grab;
+      color: #fbbf24;
+    }
+    .btn-customize-cols {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: 0.2s;
+      height: 34px;
+    }
+    .btn-customize-cols:hover {
+      background: rgba(245, 158, 11, 0.25);
+      border-color: #f59e0b;
+      color: #fff;
+    }
+
+    /* Modal Chỉnh sửa Cột */
+    .col-config-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 12px 0;
+      max-height: 52vh;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .col-config-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      cursor: grab;
+      transition: 0.2s;
+    }
+    .col-config-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+    .col-config-item.dragging {
+      opacity: 0.4;
+      border: 1.5px dashed #f59e0b;
+    }
+    .col-config-item.drag-over {
+      border: 2px solid #38bdf8;
+      background: rgba(56, 189, 248, 0.15);
+    }
+    .col-config-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
 </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -2619,12 +2793,17 @@
     <!-- Vùng bộ lọc có thể thu gọn -->
     <div class="toolbar-collapsible-zone" id="toolbarCollapsibleZone">
       <div class="right-controls">
-        <input type="text" id="searchInput" class="search-input" placeholder="Tìm tên, tỉnh thành (có/không dấu)..." oninput="renderTable()" />
+        <div class="search-box-wrapper">
+          <span class="search-icon-inside">🔍</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Tìm tên, tỉnh thành (có/không dấu)..." oninput="handleSearchInputChange(this)" />
+          <button type="button" id="searchClearBtn" class="search-clear-btn" onclick="clearSearchInput()" title="Xóa tìm kiếm" style="display:none;">✕</button>
+        </div>
         <div class="controls-middle-row">
           <div class="view-toggle-wrap">
             <button type="button" class="view-toggle-btn active" id="btnViewCard" onclick="setViewMode('card')">🎴 Dạng Thẻ</button>
             <button type="button" class="view-toggle-btn" id="btnViewTable" onclick="setViewMode('table')">📋 Dạng Bảng</button>
           </div>
+          <button type="button" class="btn-customize-cols owner-only" id="btnCustomizeTableCols" onclick="openTableColumnsModal()" title="Kéo thả & chỉnh sửa cột trong Dạng Bảng (Lưu lại)">⚙️ Cột</button>
           <select id="sortSelect" class="sort-select" onchange="renderTable()" title="Chọn cách sắp xếp danh sách lễ hội">
             <option value="upcoming" selected>⏳ Sắp diễn ra gần nhất (Mặc định)</option>
             <option value="date_asc">📅 Ngày Dương lịch (T1 → T12)</option>
@@ -2682,7 +2861,7 @@
   <div class="table-wrap" id="tableWrap" style="display:none;">
     <table>
       <thead>
-        <tr>
+        <tr id="tableHeadRow">
           <th>Tên Lễ Hội &amp; Tỉnh Thành</th>
           <th>Vùng Miền</th>
           <th>Mốc Lịch</th>
@@ -2975,8 +3154,30 @@
       <label>Danh sách vùng miền hiện có:</label>
       <div class="custom-region-list" id="customRegionListContainer"></div>
     </div>
-    <div class="modal-actions">
+    <div class="modal-actions" style="display:flex;justify-content:space-between;align-items:center;">
+      <button type="button" class="btn" style="background:rgba(239,68,68,0.15);color:#fca5a5;border-color:rgba(239,68,68,0.3);" onclick="resetRegionTabsOrder()" title="Khôi phục thứ tự các tab lọc vùng miền về mặc định ban đầu">🔄 Đặt lại thứ tự gốc</button>
       <button class="btn btn-primary" onclick="closeManageRegionsModal()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal Quản Lý & Chỉnh Sửa Cột Bảng (Admin Tối Cao) -->
+<div class="modal-overlay" id="tableColumnsModal">
+  <div class="modal" style="max-width: 560px;">
+    <h2>⚙️ Chỉnh Sửa &amp; Kéo Thả Cột Bảng</h2>
+    <div class="info-callout" style="line-height:1.5;font-size:0.85rem;margin-bottom:12px;">
+      Tùy chỉnh bật/tắt hiển thị, đổi tên nhãn và kéo thả thứ tự các cột trong <strong>📋 Dạng Bảng</strong>. Thay đổi sẽ được lưu vĩnh viễn trên trình duyệt của bạn.
+    </div>
+    <div class="col-config-list" id="colConfigList">
+      <!-- Được khởi tạo tự động bởi renderTableColumnsModal() -->
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;flex-wrap:wrap;gap:8px;">
+      <button type="button" class="btn" style="background:rgba(239,68,68,0.15);color:#fca5a5;border-color:rgba(239,68,68,0.3);" onclick="resetTableColumnsToDefault()">🔄 Mặc định</button>
+      <div style="display:flex;gap:8px;">
+        <button type="button" class="btn btn-cloud" onclick="saveTableColumnsModalChanges()">💾 Lưu Cấu Hình</button>
+        <button type="button" class="btn btn-primary" onclick="closeTableColumnsModal()">✕ Đóng</button>
+      </div>
     </div>
   </div>
 </div>
@@ -5217,31 +5418,436 @@
     updateToolbarCollapseButtonText();
   }
 
+
+  // ==========================================================================
+  // KHUNG TÌM KIẾM TÍCH HỢP & NÚT XÓA NHANH
+  // ==========================================================================
+  function handleSearchInputChange(inputEl) {
+    const clearBtn = document.getElementById("searchClearBtn");
+    if (clearBtn) {
+      clearBtn.style.display = (inputEl && inputEl.value.trim()) ? "inline-flex" : "none";
+    }
+    renderTable();
+  }
+
+  function clearSearchInput() {
+    const sInput = document.getElementById("searchInput");
+    const clearBtn = document.getElementById("searchClearBtn");
+    if (sInput) {
+      sInput.value = "";
+      sInput.focus();
+    }
+    if (clearBtn) clearBtn.style.display = "none";
+    renderTable();
+  }
+
+  // ==========================================================================
+  // QUYỀN HẠN ADMIN & SUPER ADMIN HỆ THỐNG
+  // ==========================================================================
+  function checkIsSuperAdminUser() {
+    const isSuper = (currentUser && (currentUser.role === "superadmin" || currentUser.username === "admin" || (currentUser.email && (currentUser.email === "truongminhhieu58@gmail.com" || currentUser.email.startsWith("truongminhhieu58@")))));
+    return Boolean(isSuper || isOwnerUnlocked);
+  }
+
+  function checkIsAdminUser() {
+    const isSuper = (currentUser && (currentUser.role === "superadmin" || currentUser.username === "admin" || (currentUser.email && (currentUser.email === "truongminhhieu58@gmail.com" || currentUser.email.startsWith("truongminhhieu58@")))));
+    const isMod = (currentUser && (currentUser.role === "moderator" || currentUser.role === "admin"));
+    return Boolean(isSuper || isMod || isOwnerUnlocked);
+  }
+
+  // ==========================================================================
+  // KÉO THẢ VÙNG MIỀN (DÀNH CHO ADMIN - LƯU TRẠNG THÁI VỀ SAU)
+  // ==========================================================================
+  let draggedRegionTabKey = null;
+
+  function handleRegionTabDragStart(e, key) {
+    draggedRegionTabKey = key;
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", key);
+    e.currentTarget.classList.add("is-dragging");
+  }
+
+  function handleRegionTabDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    const btn = e.currentTarget;
+    if (!btn.classList.contains("is-dragging")) {
+      btn.classList.add("is-drag-over");
+    }
+  }
+
+  function handleRegionTabDragLeave(e) {
+    e.currentTarget.classList.remove("is-drag-over");
+  }
+
+  function handleRegionTabDragEnd(e) {
+    e.currentTarget.classList.remove("is-dragging");
+    document.querySelectorAll(".tab-btn.is-drag-over").forEach(el => el.classList.remove("is-drag-over"));
+    draggedRegionTabKey = null;
+  }
+
+  function handleRegionTabDrop(e, targetKey) {
+    e.preventDefault();
+    e.currentTarget.classList.remove("is-drag-over");
+    if (!draggedRegionTabKey || draggedRegionTabKey === targetKey) return;
+
+    const tabBtns = document.querySelectorAll("#regionTabs .tab-btn");
+    const currentKeys = [];
+    tabBtns.forEach(btn => {
+      const k = btn.getAttribute("data-region-key");
+      if (k && !currentKeys.includes(k)) currentKeys.push(k);
+    });
+
+    const fromIdx = currentKeys.indexOf(draggedRegionTabKey);
+    const toIdx = currentKeys.indexOf(targetKey);
+    if (fromIdx === -1 || toIdx === -1) return;
+
+    currentKeys.splice(fromIdx, 1);
+    currentKeys.splice(toIdx, 0, draggedRegionTabKey);
+
+    try {
+      localStorage.setItem("vn_festivals_regions_order", JSON.stringify(currentKeys));
+    } catch(err) {}
+
+    renderRegionControls();
+    showToast(`Đã lưu vị trí bộ lọc mới cho "${draggedRegionTabKey}"!`, "success");
+  }
+
+  function resetRegionTabsOrder() {
+    try {
+      localStorage.removeItem("vn_festivals_regions_order");
+    } catch(e) {}
+    renderRegionControls();
+    showToast("Đã khôi phục thứ tự vùng miền mặc định!", "info");
+  }
+
+  // ==========================================================================
+  // CẤU HÌNH, KÉO THẢ & CHỈNH SỬA CỘT BẢNG (SUPER ADMIN - LƯU VĨNH VIỄN)
+  // ==========================================================================
+  const DEFAULT_TABLE_COLUMNS = [
+    { id: "name", label: "Tên Lễ Hội & Tỉnh Thành", visible: true, required: true },
+    { id: "region", label: "Vùng Miền", visible: true, required: false },
+    { id: "lunar", label: "Mốc Lịch", visible: true, required: false },
+    { id: "duration", label: "Thời Gian", visible: true, required: false },
+    { id: "solar", label: "Chính Hội Dương Lịch", visible: true, required: false }
+  ];
+
+  function getTableColumnsConfig() {
+    try {
+      const raw = localStorage.getItem("vn_festivals_table_cols_config");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const defMap = new Map(DEFAULT_TABLE_COLUMNS.map(c => [c.id, c]));
+          const validList = [];
+          const seen = new Set();
+          parsed.forEach(c => {
+            if (c && c.id && defMap.has(c.id)) {
+              const def = defMap.get(c.id);
+              validList.push({
+                id: c.id,
+                label: (typeof c.label === "string" && c.label.trim()) ? c.label.trim() : def.label,
+                visible: def.required ? true : Boolean(c.visible !== false),
+                required: Boolean(def.required)
+              });
+              seen.add(c.id);
+            }
+          });
+          DEFAULT_TABLE_COLUMNS.forEach(def => {
+            if (!seen.has(def.id)) {
+              validList.push({ ...def });
+            }
+          });
+          return validList;
+        }
+      }
+    } catch(e) {}
+    return JSON.parse(JSON.stringify(DEFAULT_TABLE_COLUMNS));
+  }
+
+  function saveTableColumnsConfig(cfg) {
+    try {
+      localStorage.setItem("vn_festivals_table_cols_config", JSON.stringify(cfg));
+    } catch(e) {}
+  }
+
+  let draggedTableColId = null;
+
+  function handleColDragStart(e, colId) {
+    draggedTableColId = colId;
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", colId);
+    e.currentTarget.classList.add("is-col-dragging");
+  }
+
+  function handleColDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    e.currentTarget.classList.add("is-col-drag-over");
+  }
+
+  function handleColDragLeave(e) {
+    e.currentTarget.classList.remove("is-col-drag-over");
+  }
+
+  function handleColDragEnd(e) {
+    e.currentTarget.classList.remove("is-col-dragging");
+    document.querySelectorAll(".table-wrap th.is-col-drag-over").forEach(el => el.classList.remove("is-col-drag-over"));
+    draggedTableColId = null;
+  }
+
+  function handleColDrop(e, targetColId) {
+    e.preventDefault();
+    e.currentTarget.classList.remove("is-col-drag-over");
+    if (!draggedTableColId || draggedTableColId === targetColId) return;
+
+    const cfg = getTableColumnsConfig();
+    const fromIdx = cfg.findIndex(c => c.id === draggedTableColId);
+    const toIdx = cfg.findIndex(c => c.id === targetColId);
+    if (fromIdx === -1 || toIdx === -1) return;
+
+    const [moved] = cfg.splice(fromIdx, 1);
+    cfg.splice(toIdx, 0, moved);
+
+    saveTableColumnsConfig(cfg);
+    renderTable();
+    showToast(`Đã lưu thứ tự cột mới: "${moved.label}"!`, "success");
+  }
+
+  function getColCellHTML(colId, f, solarInfo, subnoteHTML, countdownHTML, favActive) {
+    switch(colId) {
+      case 'name':
+        return `<td>
+          <div class="fest-name">
+            <button type="button" class="btn-fav ${favActive}" onclick="toggleFavorite(event, '${escapeHTML(f.id)}')" title="Đánh dấu yêu thích">❤️</button>
+            ${escapeHTML(f.name)}
+            ${f.visibility === 'members' ? '<span class="badge-members">👥 Thành viên</span>' : (f.visibility === 'selected' ? '<span class="badge-selected">🎯 Chỉ định</span>' : (f.isPrivate || f.visibility === 'only_me' ? '<span class="badge-private">🔒 Chỉ mình tôi</span>' : ''))}
+            <span style="color:#64748b;font-size:0.8rem;">▼</span>
+          </div>
+          <div class="fest-loc">📍 ${escapeHTML(f.location)}</div>
+        </td>`;
+      case 'region':
+        return `<td><span class="${f.isPrivate ? 'badge-private' : badgeClass(f.region)}">${escapeHTML(f.region)}</span></td>`;
+      case 'lunar':
+        return `<td>${escapeHTML(f.lunarLabel)}</td>`;
+      case 'duration':
+        return `<td>${escapeHTML(f.duration)}</td>`;
+      case 'solar':
+        return `<td>
+          <div class="solar-date">${solarInfo.text}</div>
+          ${subnoteHTML}
+          ${countdownHTML}
+        </td>`;
+      default:
+        return `<td></td>`;
+    }
+  }
+
+  function openTableColumnsModal() {
+    const isSuper = checkIsSuperAdminUser();
+    if (!isSuper) {
+      showToast("Chỉ Admin tối cao mới có quyền tùy chỉnh và kéo thả cột bảng!", "warn");
+      return;
+    }
+    renderTableColumnsModal();
+    document.getElementById("tableColumnsModal").classList.add("open");
+  }
+
+  function closeTableColumnsModal() {
+    document.getElementById("tableColumnsModal").classList.remove("open");
+  }
+
+  function renderTableColumnsModal() {
+    const listEl = document.getElementById("colConfigList");
+    if (!listEl) return;
+    const cfg = getTableColumnsConfig();
+    let html = "";
+    cfg.forEach((col) => {
+      html += `
+        <div class="col-config-item" data-col-id="${col.id}" draggable="true" ondragstart="handleColModalDragStart(event)" ondragover="handleColModalDragOver(event)" ondragleave="handleColModalDragLeave(event)" ondrop="handleColModalDrop(event)" ondragend="handleColModalDragEnd(event)">
+          <div class="col-config-left">
+            <span class="col-drag-handle" style="font-size:1.1rem;cursor:grab;" title="Kéo thả đổi thứ tự">⠿</span>
+            <label style="margin:0;display:flex;align-items:center;gap:6px;cursor:${col.required ? 'default' : 'pointer'};">
+              <input type="checkbox" class="col-vis-chk" data-col-id="${col.id}" ${col.visible ? 'checked' : ''} ${col.required ? 'disabled checked' : ''} />
+              <span style="font-size:0.84rem;font-weight:600;color:${col.required ? '#f59e0b' : '#f8fafc'};">${col.required ? '(Bắt buộc)' : 'Hiển thị'}</span>
+            </label>
+            <input type="text" class="col-label-input" data-col-id="${col.id}" value="${escapeHTML(col.label)}" style="background:rgba(28,38,64,0.85);color:#fff;border:1px solid rgba(245,158,11,0.3);border-radius:6px;padding:5px 10px;font-size:0.84rem;flex:1;min-width:140px;" placeholder="Tên tiêu đề cột..." />
+          </div>
+          <div class="col-config-actions" style="display:flex;gap:4px;">
+            <button type="button" class="btn btn-sm" onclick="moveColInModal('${col.id}', -1)" title="Di chuyển lên" style="padding:3px 8px;font-size:0.75rem;">▲</button>
+            <button type="button" class="btn btn-sm" onclick="moveColInModal('${col.id}', 1)" title="Di chuyển xuống" style="padding:3px 8px;font-size:0.75rem;">▼</button>
+          </div>
+        </div>
+      `;
+    });
+    listEl.innerHTML = html;
+  }
+
+  function moveColInModal(colId, direction) {
+    const listEl = document.getElementById("colConfigList");
+    const items = Array.from(listEl.querySelectorAll(".col-config-item"));
+    const idx = items.findIndex(item => item.getAttribute("data-col-id") === colId);
+    if (idx === -1) return;
+    const targetIdx = idx + direction;
+    if (targetIdx < 0 || targetIdx >= items.length) return;
+    if (direction < 0) {
+      listEl.insertBefore(items[idx], items[targetIdx]);
+    } else {
+      listEl.insertBefore(items[idx], items[targetIdx].nextSibling);
+    }
+  }
+
+  let draggedModalColItem = null;
+
+  function handleColModalDragStart(e) {
+    draggedModalColItem = e.currentTarget;
+    e.dataTransfer.effectAllowed = "move";
+    e.currentTarget.classList.add("dragging");
+  }
+
+  function handleColModalDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    e.currentTarget.classList.add("drag-over");
+  }
+
+  function handleColModalDragLeave(e) {
+    e.currentTarget.classList.remove("drag-over");
+  }
+
+  function handleColModalDragEnd(e) {
+    e.currentTarget.classList.remove("dragging");
+    document.querySelectorAll(".col-config-item.drag-over").forEach(el => el.classList.remove("drag-over"));
+    draggedModalColItem = null;
+  }
+
+  function handleColModalDrop(e) {
+    e.preventDefault();
+    e.currentTarget.classList.remove("drag-over");
+    const targetItem = e.currentTarget;
+    if (!draggedModalColItem || draggedModalColItem === targetItem) return;
+    const listEl = document.getElementById("colConfigList");
+    const items = Array.from(listEl.querySelectorAll(".col-config-item"));
+    const fromIdx = items.indexOf(draggedModalColItem);
+    const toIdx = items.indexOf(targetItem);
+    if (fromIdx < toIdx) {
+      listEl.insertBefore(draggedModalColItem, targetItem.nextSibling);
+    } else {
+      listEl.insertBefore(draggedModalColItem, targetItem);
+    }
+  }
+
+  function saveTableColumnsModalChanges() {
+    const listEl = document.getElementById("colConfigList");
+    if (!listEl) return;
+    const items = Array.from(listEl.querySelectorAll(".col-config-item"));
+    const defMap = new Map(DEFAULT_TABLE_COLUMNS.map(c => [c.id, c]));
+    const newCfg = [];
+
+    items.forEach(item => {
+      const colId = item.getAttribute("data-col-id");
+      const chk = item.querySelector(".col-vis-chk");
+      const input = item.querySelector(".col-label-input");
+      const def = defMap.get(colId);
+      if (def) {
+        const isVis = def.required ? true : Boolean(chk && chk.checked);
+        const lbl = (input && input.value.trim()) ? input.value.trim() : def.label;
+        newCfg.push({
+          id: colId,
+          label: lbl,
+          visible: isVis,
+          required: Boolean(def.required)
+        });
+      }
+    });
+
+    saveTableColumnsConfig(newCfg);
+    closeTableColumnsModal();
+    renderTable();
+    showToast("Đã lưu cấu hình cột bảng thành công!", "success");
+  }
+
+  function resetTableColumnsToDefault() {
+    try {
+      localStorage.removeItem("vn_festivals_table_cols_config");
+    } catch(e) {}
+    closeTableColumnsModal();
+    renderTable();
+    showToast("Đã khôi phục các cột bảng về mặc định ban đầu!", "info");
+  }
+
   function renderRegionControls() {
     // 1. Cập nhật các nút tab vùng miền kèm bộ đếm số lượng lễ hội (chỉ đếm lễ hội đã duyệt)
     const tabsContainer = document.getElementById("regionTabs");
     if (tabsContainer && Array.isArray(festivals)) {
       const approvedList = getApprovedFestivals();
-      const allRegions = ["Tất cả", ...getAllRegions()];
-      let html = "";
-      allRegions.forEach(reg => {
-        const isActive = (currentRegion === reg) ? "active" : "";
-        const count = (reg === "Tất cả")
-          ? approvedList.length
-          : approvedList.filter(f => f.region === reg).length;
-        const safeArg = escapeHTML(reg).replace(/'/g, "\\'");
-        html += `<button type="button" class="tab-btn ${isActive}" onclick="setRegion('${safeArg}')">${escapeHTML(reg)} <span class="tab-count">${count}</span></button>`;
-        if (reg === "Tất cả") {
-          const isFavActive = (currentRegion === "Yêu thích") ? "active" : "";
-          const favCount = (typeof favorites !== "undefined" && Array.isArray(favorites)) ? favorites.length : 0;
-          html += `<button type="button" class="tab-btn btn-fav-tab ${isFavActive}" onclick="setRegion('Yêu thích')">❤️ Yêu thích <span class="tab-count" id="favCountBadge">${favCount}</span></button>`;
-          if (currentUser) {
-            const privCount = getMyPrivateEvents().length;
-            const isMyActive = (currentRegion === "Của tôi") ? "active" : "";
-            html += `<button type="button" class="tab-btn ${isMyActive}" style="border-color:rgba(236,72,153,0.4);background:${isMyActive ? 'rgba(236,72,153,0.25)' : 'transparent'};color:#f472b6;" onclick="setRegion('Của tôi')">🏡 Của tôi <span class="tab-count" style="background:#ec4899;color:#fff;">${privCount}</span></button>`;
-          }
+      const isAdmin = checkIsAdminUser();
+
+      // Danh sách tất cả các tab khả dụng
+      const baseTabKeys = ["Tất cả", "Yêu thích"];
+      if (currentUser) {
+        baseTabKeys.push("Của tôi");
+      }
+      const allRegs = getAllRegions();
+      allRegs.forEach(r => {
+        if (!baseTabKeys.includes(r)) {
+          baseTabKeys.push(r);
         }
       });
+
+      // Đọc thứ tự đã lưu trong localStorage
+      let savedOrder = [];
+      try {
+        const rawOrder = localStorage.getItem("vn_festivals_regions_order");
+        if (rawOrder) savedOrder = JSON.parse(rawOrder);
+      } catch (e) {}
+
+      let orderedTabKeys = [...baseTabKeys];
+      if (Array.isArray(savedOrder) && savedOrder.length > 0) {
+        orderedTabKeys.sort((a, b) => {
+          const idxA = savedOrder.indexOf(a);
+          const idxB = savedOrder.indexOf(b);
+          if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+          if (idxA !== -1) return -1;
+          if (idxB !== -1) return 1;
+          return baseTabKeys.indexOf(a) - baseTabKeys.indexOf(b);
+        });
+      }
+
+      let html = "";
+      orderedTabKeys.forEach(tabKey => {
+        const isActive = (currentRegion === tabKey) ? "active" : "";
+        let count = 0;
+        let displayLabel = escapeHTML(tabKey);
+        let btnClasses = `tab-btn ${isActive}`;
+        let extraStyles = "";
+
+        if (tabKey === "Tất cả") {
+          count = approvedList.length;
+        } else if (tabKey === "Yêu thích") {
+          count = (typeof favorites !== "undefined" && Array.isArray(favorites)) ? favorites.length : 0;
+          displayLabel = `❤️ Yêu thích`;
+          btnClasses = `tab-btn btn-fav-tab ${isActive}`;
+        } else if (tabKey === "Của tôi") {
+          count = getMyPrivateEvents().length;
+          displayLabel = `🏡 Của tôi`;
+          extraStyles = `border-color:rgba(236,72,153,0.4);background:${isActive ? 'rgba(236,72,153,0.25)' : 'transparent'};color:#f472b6;`;
+        } else {
+          count = approvedList.filter(f => f.region === tabKey).length;
+        }
+
+        const safeArg = escapeHTML(tabKey).replace(/'/g, "\\'");
+        const dragHandle = isAdmin ? `<span class="tab-drag-handle" title="Kéo thả để sắp xếp lại">⠿</span>` : "";
+        const draggableAttr = isAdmin ? `draggable="true" class="${btnClasses} is-draggable-tab" ondragstart="handleRegionTabDragStart(event, '${safeArg}')" ondragover="handleRegionTabDragOver(event)" ondragleave="handleRegionTabDragLeave(event)" ondrop="handleRegionTabDrop(event, '${safeArg}')" ondragend="handleRegionTabDragEnd(event)"` : `class="${btnClasses}"`;
+        const countBadge = (tabKey === "Yêu thích")
+          ? `<span class="tab-count" id="favCountBadge">${count}</span>`
+          : (tabKey === "Của tôi"
+            ? `<span class="tab-count" style="background:#ec4899;color:#fff;">${count}</span>`
+            : `<span class="tab-count">${count}</span>`);
+
+        html += `<button type="button" ${draggableAttr} style="${extraStyles}" onclick="setRegion('${safeArg}')" data-region-key="${safeArg}" title="${isAdmin ? 'Admin: Kéo thả để đổi vị trí bộ lọc (tự động lưu)' : ''}">${dragHandle}${displayLabel} ${countBadge}</button>`;
+      });
+
       html += `<button type="button" class="tab-btn-add owner-only" onclick="openManageRegionsModal()" title="Tạo hoặc quản lý thêm vùng miền mới">+ Thêm miền</button>`;
       tabsContainer.innerHTML = html;
     }
@@ -7093,10 +7699,29 @@
     const rawKeyword = document.getElementById("searchInput").value.trim();
     const normKeyword = removeVietnameseTones(rawKeyword);
 
-    if (selectedSolarMonth) {
-      document.getElementById("solarHeader").textContent = `Chính Hội Dương Lịch (Tháng ${String(selectedSolarMonth).padStart(2, "0")}/${year})`;
-    } else {
-      document.getElementById("solarHeader").textContent = `Chính Hội Dương Lịch (${year})`;
+    const isSuperAdmin = checkIsSuperAdminUser();
+    const colsCfg = getTableColumnsConfig();
+    const visibleCols = colsCfg.filter(c => c.visible);
+
+    const theadRow = document.getElementById("tableHeadRow");
+    if (theadRow) {
+      let headHtml = "";
+      visibleCols.forEach(col => {
+        const isDraggable = isSuperAdmin ? 'draggable="true" class="is-draggable-col"' : '';
+        const dragEvents = isSuperAdmin ? `ondragstart="handleColDragStart(event, '${col.id}')" ondragover="handleColDragOver(event)" ondragleave="handleColDragLeave(event)" ondrop="handleColDrop(event, '${col.id}')" ondragend="handleColDragEnd(event)"` : '';
+        const handle = isSuperAdmin ? `<span class="col-drag-handle" title="Kéo thả để sắp xếp thứ tự cột">⠿</span>` : '';
+        const colIdAttr = (col.id === 'solar') ? 'id="solarHeader"' : '';
+        let labelText = escapeHTML(col.label);
+        if (col.id === 'solar') {
+          if (selectedSolarMonth) {
+            labelText = `${escapeHTML(col.label)} (Tháng ${String(selectedSolarMonth).padStart(2, "0")}/${year})`;
+          } else {
+            labelText = `${escapeHTML(col.label)} (${year})`;
+          }
+        }
+        headHtml += `<th ${colIdAttr} ${isDraggable} ${dragEvents} data-col-id="${col.id}" title="${isSuperAdmin ? 'Admin Tối Cao: Kéo thả để đổi thứ tự cột (tự động lưu)' : ''}">${handle}${labelText}</th>`;
+      });
+      theadRow.innerHTML = headHtml;
     }
 
     renderRegionControls();
@@ -7153,7 +7778,7 @@
     if (filtered.length === 0) {
       const emptyTr = document.createElement("tr");
       emptyTr.innerHTML = `
-        <td colspan="5" style="text-align:center;color:var(--text-muted);padding:28px 16px;">
+        <td colspan="${visibleCols.length}" style="text-align:center;color:var(--text-muted);padding:28px 16px;">
           Không có lễ hội nào phù hợp với bộ lọc hiện tại.
         </td>
       `;
@@ -7181,32 +7806,18 @@
       const tr = document.createElement("tr");
       tr.className = "main-row";
       tr.onclick = () => toggleDetail(f.id);
-      tr.innerHTML = `
-        <td>
-          <div class="fest-name">
-            <button type="button" class="btn-fav ${favActive}" onclick="toggleFavorite(event, '${escapeHTML(f.id)}')" title="Đánh dấu yêu thích">❤️</button>
-            ${escapeHTML(f.name)}
-            ${f.visibility === 'members' ? '<span class="badge-members">👥 Thành viên</span>' : (f.visibility === 'selected' ? '<span class="badge-selected">🎯 Chỉ định</span>' : (f.isPrivate || f.visibility === 'only_me' ? '<span class="badge-private">🔒 Chỉ mình tôi</span>' : ''))}
-            <span style="color:#64748b;font-size:0.8rem;">▼</span>
-          </div>
-          <div class="fest-loc">📍 ${escapeHTML(f.location)}</div>
-        </td>
-        <td><span class="${f.isPrivate ? 'badge-private' : badgeClass(f.region)}">${escapeHTML(f.region)}</span></td>
-        <td>${escapeHTML(f.lunarLabel)}</td>
-        <td>${escapeHTML(f.duration)}</td>
-        <td>
-          <div class="solar-date">${solarInfo.text}</div>
-          ${subnoteHTML}
-          ${countdownHTML}
-        </td>
-      `;
+      let rowCellsHtml = "";
+      visibleCols.forEach(col => {
+        rowCellsHtml += getColCellHTML(col.id, f, solarInfo, subnoteHTML, countdownHTML, favActive);
+      });
+      tr.innerHTML = rowCellsHtml;
       tbody.appendChild(tr);
 
       const detailTr = document.createElement("tr");
       detailTr.className = "detail-row";
       detailTr.id = "detail-" + f.id;
       detailTr.innerHTML = `
-        <td colspan="5">
+        <td colspan="${visibleCols.length}">
           <div class="detail-box">
             <p class="detail-desc">📌 <strong>Đặc trưng:</strong> ${escapeHTML(f.highlights || "Sự kiện văn hóa truyền thống địa phương.")}</p>
             <p class="decade-Note">📅 <strong>Bảng đối chiếu Dương lịch từ ${START_YEAR} đến ${END_YEAR} (cuộn để xem):</strong></p>
