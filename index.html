@@ -174,9 +174,9 @@
     /* TIỆN ÍCH TIÊU GIẢM GÓC TRÊN BÊN PHẢI (CORNER FLOATING HUB) */
     .top-right-floating-hub {
       position: fixed;
-      top: 14px;
+      top: 10px;
       right: 18px;
-      z-index: 9999;
+      z-index: 99999;
     }
 
     /* Viên thuốc nhỏ gọn mặc định */
@@ -1131,11 +1131,11 @@
       transform-origin: top center;
     }
     .lantern-left {
-      left: 6px;
+      left: max(8px, calc(50% - 320px));
       animation: lantern-sway-left 3.4s ease-in-out infinite alternate;
     }
     .lantern-right {
-      right: 6px;
+      right: max(8px, calc(50% - 320px));
       animation: lantern-sway-right 3.8s ease-in-out infinite alternate-reverse;
     }
     @keyframes lantern-sway-left {
@@ -1862,8 +1862,8 @@
         height: 42px;
         top: -6px;
       }
-      .lantern-left { left: 0px; }
-      .lantern-right { right: 0px; }
+      .lantern-left { left: 2px; top: 2px; }
+      .lantern-right { right: 2px; top: 38px; }
 
       .app-title {
         font-size: clamp(1.2rem, 5.2vw, 1.55rem);
