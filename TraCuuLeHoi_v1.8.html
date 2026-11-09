@@ -2693,6 +2693,610 @@
       flex: 1;
     }
 
+
+    /* ========================================================================== */
+    /* CHẾ ĐỘ XEM: DẠNG LỊCH THÁNG (DƯƠNG LỊCH KÈM CHÂN ÂM LỊCH & LỄ HỘI)        */
+    /* ========================================================================== */
+    .calendar-view-wrap {
+      margin-top: 18px;
+      margin-bottom: 30px;
+    }
+
+    .cal-top-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .cal-header-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .cal-nav-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cal-nav-btn {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 14px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .cal-nav-btn:hover {
+      background: #252b36;
+      border-color: #f59e0b;
+      color: #fde68a;
+      transform: translateY(-1px);
+    }
+    .cal-nav-btn:active {
+      transform: translateY(1px);
+    }
+
+    .cal-nav-btn.cal-today-btn {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      font-weight: 700;
+    }
+    .cal-nav-btn.cal-today-btn:hover {
+      background: rgba(245, 158, 11, 0.25);
+      border-color: #f59e0b;
+    }
+
+    .cal-title-center {
+      text-align: center;
+      flex: 1;
+      min-width: 220px;
+    }
+    .cal-title-main {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #f8fafc;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .cal-title-sub {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #f59e0b;
+      margin: 3px 0 0 0;
+    }
+
+    .cal-quick-selectors {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cal-quick-select {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+    }
+    .cal-quick-select:focus {
+      border-color: #f59e0b;
+    }
+
+    /* Bố cục chính 2 cột: Lưới Lịch (Trái) + Panel Chi Tiết Ngày (Phải) */
+    .cal-main-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .cal-grid-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Hàng thứ trong tuần */
+    .cal-weekdays-row {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+      padding-bottom: 10px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .cal-weekday-lbl { color: #94a3b8; }
+    .cal-weekday-lbl.sat { color: #38bdf8; }
+    .cal-weekday-lbl.sun { color: #f87171; }
+
+    /* Lưới 42 ô ngày */
+    .cal-days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .cal-cell {
+      background: rgba(22, 32, 50, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      padding: 8px;
+      min-height: 84px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      user-select: none;
+    }
+    .cal-cell:hover:not(.other-month) {
+      transform: translateY(-2px);
+      border-color: rgba(245, 158, 11, 0.6);
+      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.18);
+    }
+    .cal-cell.today {
+      border: 2px solid #f59e0b !important;
+      background: linear-gradient(145deg, rgba(245, 158, 11, 0.15) 0%, rgba(22, 32, 50, 0.95) 100%);
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.28);
+    }
+    .cal-cell.selected {
+      border: 2px solid #38bdf8 !important;
+      background: linear-gradient(145deg, rgba(56, 189, 248, 0.2) 0%, rgba(22, 32, 50, 0.95) 100%);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+    }
+    .cal-cell.other-month {
+      opacity: 0.32;
+      background: rgba(15, 23, 42, 0.35);
+    }
+
+    /* Phần trên ô ngày: Số Dương Lịch to rõ */
+    .cal-cell-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      line-height: 1;
+    }
+    .cal-solar-num {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #f1f5f9;
+      letter-spacing: -0.02em;
+    }
+    .cal-cell.today .cal-solar-num {
+      color: #fde68a;
+    }
+    .cal-cell.selected .cal-solar-num {
+      color: #bae6fd;
+    }
+    .cal-today-tag {
+      font-size: 0.62rem;
+      font-weight: 800;
+      background: #f59e0b;
+      color: #0f172a;
+      padding: 1px 4px;
+      border-radius: 4px;
+      letter-spacing: 0.04em;
+    }
+
+    /* Phần dưới chân: Số Âm Lịch tinh tế */
+    .cal-cell-foot {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-top: 4px;
+    }
+    .cal-lunar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      font-size: 0.72rem;
+    }
+    .cal-lunar-prefix {
+      font-size: 0.65rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .cal-lunar-num {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #fbbf24;
+    }
+    .cal-lunar-num.first-day {
+      background: rgba(239, 68, 68, 0.18);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+    .cal-lunar-num.full-moon {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fde68a;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    /* Chip sự kiện / lễ hội trên ô ngày */
+    .cal-event-chips {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 2px;
+      width: 100%;
+    }
+    .cal-chip {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 0.64rem;
+      font-weight: 600;
+      padding: 1px 4px;
+      border-radius: 4px;
+      max-width: 100%;
+      line-height: 1.25;
+    }
+    .cal-chip.fest {
+      background: rgba(239, 68, 68, 0.18);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+    }
+    .cal-chip.family {
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #6ee7b7;
+    }
+    .cal-chip-more {
+      font-size: 0.62rem;
+      color: #94a3b8;
+      font-weight: 600;
+      padding-left: 2px;
+    }
+
+    /* Thanh chú thích phía dưới lịch */
+    .cal-legend-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+    .cal-legend-items {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+    }
+    .cal-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Panel Chi Tiết Ngày (Inspector Panel) */
+    .cal-inspector-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      position: sticky;
+      top: 18px;
+    }
+    .cal-insp-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .cal-insp-badge {
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+    }
+
+    /* Khung số Dương Lịch to & Âm Lịch dưới chân trong Inspector */
+    .cal-insp-hero {
+      background: linear-gradient(145deg, #182234 0%, #0f172a 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 14px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    .cal-insp-lbl {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #94a3b8;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .cal-insp-solar-num {
+      font-size: 3.2rem;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1;
+      margin: 4px 0;
+      letter-spacing: -0.03em;
+    }
+    .cal-insp-solar-my {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+
+    /* Thanh phân cách CHÂN ÂM LỊCH */
+    .cal-insp-divider {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .cal-insp-line {
+      flex: 1;
+      height: 1px;
+      background: rgba(245, 158, 11, 0.25);
+    }
+    .cal-insp-midtag {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #fbbf24;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 999px;
+      padding: 2px 8px;
+      letter-spacing: 0.05em;
+    }
+
+    .cal-insp-lunar-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .cal-insp-lunar-num {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #fbbf24;
+      line-height: 1;
+    }
+    .cal-insp-lunar-meta {
+      text-align: left;
+    }
+    .cal-insp-lunar-month {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fde68a;
+    }
+    .cal-insp-lunar-year {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    /* Danh sách sự kiện trong ngày */
+    .cal-insp-events-section {
+      margin-bottom: 14px;
+    }
+    .cal-insp-sec-title {
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .cal-insp-events-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 230px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .cal-insp-event-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      transition: all 0.2s ease;
+    }
+    .cal-insp-event-card:hover {
+      border-color: rgba(245, 158, 11, 0.5);
+    }
+    .cal-insp-ev-title {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .cal-insp-ev-loc {
+      font-size: 0.74rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    .cal-insp-ev-hl {
+      font-size: 0.72rem;
+      color: #cbd5e1;
+      margin-top: 4px;
+      line-height: 1.35;
+    }
+    .cal-insp-no-events {
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: #64748b;
+    }
+
+    /* Giờ hoàng đạo */
+    .cal-insp-hours-box {
+      background: rgba(30, 41, 59, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 14px;
+      font-size: 0.74rem;
+    }
+    .cal-insp-hours-title {
+      font-weight: 700;
+      color: #fbbf24;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .cal-insp-hours-text {
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    /* Các nút hành động */
+    .cal-insp-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .cal-act-btn {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .cal-act-btn.primary {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0b0f19;
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.3);
+    }
+    .cal-act-btn.primary:hover {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      transform: translateY(-1px);
+    }
+    .cal-act-btn.secondary {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+    }
+    .cal-act-btn.secondary:hover {
+      background: #252b36;
+      border-color: #38bdf8;
+      color: #bae6fd;
+    }
+    .cal-act-btn.admin-act {
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      color: #c4b5fd;
+    }
+    .cal-act-btn.admin-act:hover {
+      background: rgba(139, 92, 246, 0.25);
+      border-color: #a78bfa;
+    }
+
+    @media (max-width: 900px) {
+      .cal-main-layout {
+        grid-template-columns: 1fr;
+      }
+      .cal-inspector-card {
+        position: static;
+      }
+      .cal-cell {
+        min-height: 70px;
+        padding: 5px;
+      }
+      .cal-solar-num {
+        font-size: 1rem;
+      }
+      .cal-lunar-num {
+        font-size: 0.7rem;
+      }
+    }
+    @media (max-width: 600px) {
+      .cal-days-grid {
+        gap: 3px;
+      }
+      .cal-cell {
+        min-height: 60px;
+        padding: 4px 3px;
+        border-radius: 8px;
+      }
+      .cal-solar-num {
+        font-size: 0.88rem;
+      }
+      .cal-lunar-prefix {
+        display: none;
+      }
+      .cal-lunar-num {
+        font-size: 0.65rem;
+      }
+      .cal-chip {
+        font-size: 0.58rem;
+        padding: 0 2px;
+      }
+      .cal-header-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .cal-nav-group, .cal-quick-selectors {
+        justify-content: center;
+      }
+    }
+
 </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -2907,6 +3511,7 @@
           <div class="view-toggle-wrap">
             <button type="button" class="view-toggle-btn active" id="btnViewCard" onclick="setViewMode('card')">🎴 Dạng Thẻ</button>
             <button type="button" class="view-toggle-btn" id="btnViewTable" onclick="setViewMode('table')">📋 Dạng Bảng</button>
+            <button type="button" class="view-toggle-btn" id="btnViewCalendar" onclick="setViewMode('calendar')">📅 Dạng Lịch Tháng</button>
           </div>
           <button type="button" class="btn-customize-cols owner-only" id="btnCustomizeTableCols" onclick="openTableColumnsModal()" title="Kéo thả & chỉnh sửa cột trong Dạng Bảng (Lưu lại)">⚙️ Cột</button>
           <select id="sortSelect" class="sort-select" onchange="renderTable()" title="Chọn cách sắp xếp danh sách lễ hội">
@@ -2977,6 +3582,143 @@
       <tbody id="tableBody"></tbody>
     </table>
   </div>
+
+  <!-- Chế độ xem dạng Lịch Tháng (Calendar View) - Dương Lịch kèm Âm Lịch dưới chân -->
+  <div class="calendar-view-wrap" id="calendarWrap" style="display:none;">
+    
+    <!-- Thanh điều khiển tháng, năm & Can Chi -->
+    <div class="cal-top-card">
+      <div class="cal-header-bar">
+        <div class="cal-nav-group">
+          <button type="button" class="cal-nav-btn" onclick="calChangeMonth(-1)" title="Tháng trước">◀ Tháng trước</button>
+          <button type="button" class="cal-nav-btn cal-today-btn" onclick="calGoToday()" title="Nhảy về ngày hôm nay">📍 Hôm nay</button>
+          <button type="button" class="cal-nav-btn" onclick="calChangeMonth(1)" title="Tháng sau">Tháng sau ▶</button>
+        </div>
+
+        <div class="cal-title-center">
+          <h2 class="cal-title-main" id="calMonthTitle">Tháng 11, 2026</h2>
+          <p class="cal-title-sub" id="calCanChiSubtitle">Năm Bính Ngọ • Tháng Kỷ Hợi ÂL</p>
+        </div>
+
+        <div class="cal-quick-selectors">
+          <select id="calQuickMonthSelect" class="cal-quick-select" onchange="calJumpMonthYear()" title="Chọn nhanh tháng"></select>
+          <select id="calQuickYearSelect" class="cal-quick-select" onchange="calJumpMonthYear()" title="Chọn nhanh năm (2026–2099)"></select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bố cục chính 2 cột: Lưới Lịch Tháng & Inspector Chi Tiết Ngày -->
+    <div class="cal-main-layout">
+      
+      <!-- Cột trái: Lưới Lịch 42 ô ngày -->
+      <div class="cal-grid-card">
+        
+        <!-- Hàng 7 thứ (Thứ 2 đến Chủ Nhật) -->
+        <div class="cal-weekdays-row">
+          <div class="cal-weekday-lbl">Thứ 2</div>
+          <div class="cal-weekday-lbl">Thứ 3</div>
+          <div class="cal-weekday-lbl">Thứ 4</div>
+          <div class="cal-weekday-lbl">Thứ 5</div>
+          <div class="cal-weekday-lbl">Thứ 6</div>
+          <div class="cal-weekday-lbl sat">Thứ 7</div>
+          <div class="cal-weekday-lbl sun">Chủ Nhật</div>
+        </div>
+
+        <!-- Lưới các ô ngày được render bằng JavaScript -->
+        <div class="cal-days-grid" id="calendarDaysGrid"></div>
+
+        <!-- Thanh chú thích phía chân lịch -->
+        <div class="cal-legend-bar">
+          <div class="cal-legend-items">
+            <div class="cal-legend-item">
+              <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#fbbf24;"></span>
+              <span>Số vàng: Ngày ÂL thường</span>
+            </div>
+            <div class="cal-legend-item">
+              <span class="cal-lunar-num first-day">01/MM</span>
+              <span>Mùng 1 (Đầu tháng ÂL)</span>
+            </div>
+            <div class="cal-legend-item">
+              <span class="cal-lunar-num full-moon">🌕 15</span>
+              <span>Ngày Rằm (15 ÂL)</span>
+            </div>
+            <div class="cal-legend-item">
+              <span class="cal-chip fest">🏮 Lễ hội</span>
+            </div>
+            <div class="cal-legend-item">
+              <span class="cal-chip family">🏡 Đám giỗ gia đình</span>
+            </div>
+          </div>
+          <span style="font-size:0.72rem;color:#64748b;">Bấm vào ô ngày để xem đối chiếu &amp; đặt lịch</span>
+        </div>
+
+      </div>
+
+      <!-- Cột phải: Inspector Chi Tiết Ngày Được Chọn -->
+      <div class="cal-inspector-card" id="calDayInspector">
+        <div class="cal-insp-header">
+          <span class="cal-insp-badge" id="calInspWeekdayBadge">Hôm nay • Thứ Hai</span>
+          <span style="font-size:0.72rem;color:#94a3b8;" id="calInspZodiac">⭐ Giờ Hoàng Đạo</span>
+        </div>
+
+        <!-- Cặp số Dương Lịch to ở trên & Âm Lịch dưới chân -->
+        <div class="cal-insp-hero">
+          <div class="cal-insp-lbl">DƯƠNG LỊCH</div>
+          <div class="cal-insp-solar-num" id="calInspSolarDay">09</div>
+          <div class="cal-insp-solar-my" id="calInspSolarMonthYear">Tháng 11 Năm 2026</div>
+
+          <div class="cal-insp-divider">
+            <div class="cal-insp-line"></div>
+            <span class="cal-insp-midtag">CHÂN ÂM LỊCH</span>
+            <div class="cal-insp-line"></div>
+          </div>
+
+          <div class="cal-insp-lunar-box">
+            <div class="cal-insp-lunar-num" id="calInspLunarDay">30</div>
+            <div class="cal-insp-lunar-meta">
+              <div class="cal-insp-lunar-month" id="calInspLunarMonth">Tháng 09 (Đủ)</div>
+              <div class="cal-insp-lunar-year" id="calInspLunarYear">Năm Bính Ngọ (ÂL)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danh sách Lễ Hội & Đám Giỗ Trong Ngày -->
+        <div class="cal-insp-events-section">
+          <div class="cal-insp-sec-title">
+            <span>🏮</span> Sự Kiện &amp; Lễ Hội Trong Ngày:
+          </div>
+          <div class="cal-insp-events-list" id="calInspEventsList"></div>
+        </div>
+
+        <!-- Khung Giờ Hoàng Đạo tham khảo -->
+        <div class="cal-insp-hours-box">
+          <div class="cal-insp-hours-title">
+            <span>🕒</span> Khung Giờ Hoàng Đạo:
+          </div>
+          <div class="cal-insp-hours-text" id="calInspAuspiciousHours">
+            Tý (23-01), Sửu (01-03), Mão (05-07), Ngọ (11-13), Thân (15-17), Dậu (17-19).
+          </div>
+        </div>
+
+        <!-- Các Nút Hành Động -->
+        <div class="cal-insp-actions">
+          <button type="button" class="cal-act-btn primary" onclick="openAddFamilyEventForCalendarDate()" title="Thêm sự kiện hoặc ngày giỗ tổ tiên vào ngày này">
+            <span>🏡</span> + Đặt Lịch / Đám Giỗ Gia Đình
+          </button>
+          <button type="button" class="cal-act-btn secondary" onclick="addCalendarDayToGoogleCalendar()" title="Lưu ngày này vào Google Calendar">
+            <span>📅</span> Lưu vào Google Calendar
+          </button>
+          <button type="button" class="cal-act-btn admin-act owner-only" id="calBtnAddFestival" onclick="openFestivalForCalendarDate()" title="Admin: Thêm lễ hội mới vào ngày này">
+            <span>🏮</span> + Thêm Lễ Hội Mới (Admin)
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
 
   <!-- ★ VỊ TRÍ 2 (CUỐI TRANG - FOOTER): Sửa tên người làm phần mềm ở dòng dưới đây ★ -->
   <footer class="app-footer">
@@ -4822,20 +5564,477 @@
   function updateViewModeUI() {
     const btnCard = document.getElementById("btnViewCard");
     const btnTable = document.getElementById("btnViewTable");
+    const btnCal = document.getElementById("btnViewCalendar");
     const gridEl = document.getElementById("festGrid");
     const tableEl = document.getElementById("tableWrap");
+    const calEl = document.getElementById("calendarWrap");
+    const sortSel = document.getElementById("sortSelect");
+    const btnCols = document.getElementById("btnCustomizeTableCols");
+    const isSuperAdmin = (typeof checkIsSuperAdminUser === "function" && checkIsSuperAdminUser());
+
+    if (btnCard) btnCard.classList.toggle("active", currentViewMode === "card");
+    if (btnTable) btnTable.classList.toggle("active", currentViewMode === "table");
+    if (btnCal) btnCal.classList.toggle("active", currentViewMode === "calendar");
 
     if (currentViewMode === "card") {
-      if (btnCard) btnCard.classList.add("active");
-      if (btnTable) btnTable.classList.remove("active");
       if (gridEl) gridEl.style.display = "grid";
       if (tableEl) tableEl.style.display = "none";
-    } else {
-      if (btnCard) btnCard.classList.remove("active");
-      if (btnTable) btnTable.classList.add("active");
+      if (calEl) calEl.style.display = "none";
+      if (sortSel) sortSel.style.display = "";
+      if (btnCols) btnCols.style.display = "none";
+    } else if (currentViewMode === "table") {
       if (gridEl) gridEl.style.display = "none";
       if (tableEl) tableEl.style.display = "block";
+      if (calEl) calEl.style.display = "none";
+      if (sortSel) sortSel.style.display = "";
+      if (btnCols) btnCols.style.display = isSuperAdmin ? "inline-block" : "none";
+    } else if (currentViewMode === "calendar") {
+      if (gridEl) gridEl.style.display = "none";
+      if (tableEl) tableEl.style.display = "none";
+      if (calEl) calEl.style.display = "block";
+      if (sortSel) sortSel.style.display = "none";
+      if (btnCols) btnCols.style.display = "none";
+      renderMonthlyCalendar();
     }
+  }
+
+  // ==========================================================================
+  // HỆ THỐNG DẠNG LỊCH THÁNG (DƯƠNG LỊCH & CHÂN ÂM LỊCH TÍCH HỢP)
+  // ==========================================================================
+  const nowCalActual = new Date();
+  let calCurrentYear = (nowCalActual.getFullYear() >= 2026 && nowCalActual.getFullYear() <= 2099) ? nowCalActual.getFullYear() : 2026;
+  let calCurrentMonth = nowCalActual.getMonth() + 1; // 1-12
+  let calSelectedDate = {
+    solarDay: nowCalActual.getDate(),
+    solarMonth: nowCalActual.getMonth() + 1,
+    solarYear: calCurrentYear,
+    lunarDay: 1,
+    lunarMonth: 1,
+    lunarYear: calCurrentYear,
+    lunarLeap: 0
+  };
+
+  const AUSPICIOUS_HOURS_MAP = {
+    "Tý": "Tý (23-01), Sửu (01-03), Mão (05-07), Ngọ (11-13), Thân (15-17), Dậu (17-19)",
+    "Ngọ": "Tý (23-01), Sửu (01-03), Mão (05-07), Ngọ (11-13), Thân (15-17), Dậu (17-19)",
+    "Sửu": "Dần (03-05), Mão (05-07), Tỵ (09-11), Thân (15-17), Tuất (19-21), Hợi (21-23)",
+    "Mùi": "Dần (03-05), Mão (05-07), Tỵ (09-11), Thân (15-17), Tuất (19-21), Hợi (21-23)",
+    "Dần": "Tý (23-01), Sửu (01-03), Thìn (07-09), Tỵ (09-11), Mùi (13-15), Tuất (19-21)",
+    "Thân": "Tý (23-01), Sửu (01-03), Thìn (07-09), Tỵ (09-11), Mùi (13-15), Tuất (19-21)",
+    "Mão": "Tý (23-01), Dần (03-05), Mão (05-07), Ngọ (11-13), Mùi (13-15), Dậu (17-19)",
+    "Dậu": "Tý (23-01), Dần (03-05), Mão (05-07), Ngọ (11-13), Mùi (13-15), Dậu (17-19)",
+    "Thìn": "Dần (03-05), Thìn (07-09), Tỵ (09-11), Thân (15-17), Dậu (17-19), Hợi (21-23)",
+    "Tuất": "Dần (03-05), Thìn (07-09), Tỵ (09-11), Thân (15-17), Dậu (17-19), Hợi (21-23)",
+    "Tỵ": "Sửu (01-03), Thìn (07-09), Ngọ (11-13), Mùi (13-15), Tuất (19-21), Hợi (21-23)",
+    "Hợi": "Sửu (01-03), Thìn (07-09), Ngọ (11-13), Mùi (13-15), Tuất (19-21), Hợi (21-23)"
+  };
+
+  function getDayCanChiName(dd, mm, yy) {
+    try {
+      const jd = jdFromDate(dd, mm, yy);
+      const can = CAN_NAMES[(jd + 9) % 10];
+      const chi = CHI_NAMES[(jd + 1) % 12];
+      return `${can} ${chi}`;
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function getAuspiciousHoursForDay(dd, mm, yy) {
+    try {
+      const jd = jdFromDate(dd, mm, yy);
+      const chi = CHI_NAMES[(jd + 1) % 12];
+      return AUSPICIOUS_HOURS_MAP[chi] || "Tý (23-01), Sửu (01-03), Mão (05-07), Ngọ (11-13), Thân (15-17), Dậu (17-19)";
+    } catch (e) {
+      return "Tý (23-01), Sửu (01-03), Mão (05-07), Ngọ (11-13), Thân (15-17), Dậu (17-19)";
+    }
+  }
+
+  function initCalendarDropdowns() {
+    const mSel = document.getElementById("calQuickMonthSelect");
+    const ySel = document.getElementById("calQuickYearSelect");
+    if (mSel && mSel.children.length === 0) {
+      for (let m = 1; m <= 12; m++) {
+        const opt = document.createElement("option");
+        opt.value = m;
+        opt.textContent = `Tháng ${m < 10 ? '0' + m : m}`;
+        mSel.appendChild(opt);
+      }
+    }
+    if (ySel && ySel.children.length === 0) {
+      for (let y = START_YEAR; y <= END_YEAR; y++) {
+        const opt = document.createElement("option");
+        opt.value = y;
+        opt.textContent = `Năm ${y}`;
+        ySel.appendChild(opt);
+      }
+    }
+  }
+
+  function calChangeMonth(delta) {
+    let newM = calCurrentMonth + delta;
+    let newY = calCurrentYear;
+    if (newM < 1) {
+      newM = 12;
+      newY--;
+    } else if (newM > 12) {
+      newM = 1;
+      newY++;
+    }
+    if (newY < START_YEAR) { newY = START_YEAR; newM = 1; }
+    if (newY > END_YEAR) { newY = END_YEAR; newM = 12; }
+
+    calCurrentMonth = newM;
+    calCurrentYear = newY;
+
+    const yearSel = document.getElementById("yearSelect");
+    if (yearSel) yearSel.value = calCurrentYear;
+    const mSel = document.getElementById("solarMonthSelect");
+    if (mSel) mSel.value = String(calCurrentMonth);
+
+    renderMonthlyCalendar();
+  }
+
+  function calGoToday() {
+    const today = new Date();
+    calCurrentYear = (today.getFullYear() >= START_YEAR && today.getFullYear() <= END_YEAR) ? today.getFullYear() : START_YEAR;
+    calCurrentMonth = today.getMonth() + 1;
+
+    const lunar = convertSolar2Lunar(today.getDate(), calCurrentMonth, calCurrentYear, TIME_ZONE);
+    calSelectedDate = {
+      solarDay: today.getDate(),
+      solarMonth: calCurrentMonth,
+      solarYear: calCurrentYear,
+      lunarDay: lunar[0],
+      lunarMonth: lunar[1],
+      lunarYear: lunar[2],
+      lunarLeap: lunar[3]
+    };
+
+    const yearSel = document.getElementById("yearSelect");
+    if (yearSel) yearSel.value = calCurrentYear;
+    const mSel = document.getElementById("solarMonthSelect");
+    if (mSel) mSel.value = String(calCurrentMonth);
+
+    renderMonthlyCalendar();
+  }
+
+  function calJumpMonthYear() {
+    const mSel = document.getElementById("calQuickMonthSelect");
+    const ySel = document.getElementById("calQuickYearSelect");
+    if (mSel && ySel) {
+      calCurrentMonth = parseInt(mSel.value, 10);
+      calCurrentYear = parseInt(ySel.value, 10);
+
+      const yearSel = document.getElementById("yearSelect");
+      if (yearSel) yearSel.value = calCurrentYear;
+      const mainMSel = document.getElementById("solarMonthSelect");
+      if (mainMSel) mainMSel.value = String(calCurrentMonth);
+
+      renderMonthlyCalendar();
+    }
+  }
+
+  function renderMonthlyCalendar() {
+    initCalendarDropdowns();
+    const daysGrid = document.getElementById("calendarDaysGrid");
+    if (!daysGrid) return;
+    daysGrid.innerHTML = "";
+
+    const titleEl = document.getElementById("calMonthTitle");
+    const subTitleEl = document.getElementById("calCanChiSubtitle");
+    const mSel = document.getElementById("calQuickMonthSelect");
+    const ySel = document.getElementById("calQuickYearSelect");
+
+    if (titleEl) titleEl.textContent = `Tháng ${calCurrentMonth < 10 ? '0' + calCurrentMonth : calCurrentMonth}, ${calCurrentYear}`;
+    if (mSel) mSel.value = calCurrentMonth;
+    if (ySel) ySel.value = calCurrentYear;
+
+    // Can Chi của năm và tháng giữa tháng
+    const midLunar = convertSolar2Lunar(15, calCurrentMonth, calCurrentYear, TIME_ZONE);
+    const canChiYear = getCanChiYear(midLunar[2]);
+    if (subTitleEl) subTitleEl.textContent = `Năm ${canChiYear} • Tháng ${midLunar[1]} ÂL`;
+
+    // Lọc danh sách lễ hội theo quyền xem, bộ lọc vùng miền và từ khóa
+    const searchEl = document.getElementById("searchInput");
+    const rawKeyword = (searchEl ? searchEl.value : "").trim();
+    const normKeyword = removeVietnameseTones(rawKeyword);
+
+    const visibleFestivals = getApprovedFestivals().filter(f => {
+      let matchRegion = false;
+      if (currentRegion === "Tất cả") {
+        matchRegion = canViewFestival(f);
+      } else if (currentRegion === "Yêu thích") {
+        matchRegion = isFavorite(f.id) && canViewFestival(f);
+      } else if (currentRegion === "Của tôi") {
+        matchRegion = isMyPrivateEvent(f);
+      } else {
+        matchRegion = (f.region === currentRegion) && canViewFestival(f);
+      }
+      const searchableText = removeVietnameseTones(`${f.name} ${f.location} ${f.region || ""} ${f.lunarLabel || ""} ${f.highlights || ""}`);
+      const matchKeyword = !normKeyword || searchableText.includes(normKeyword);
+      return matchRegion && matchKeyword;
+    });
+
+    // Gom lễ hội theo ngày Dương lịch trong năm calCurrentYear
+    const festMap = {};
+    visibleFestivals.forEach(f => {
+      const info = getFestivalSolarInfo(f, calCurrentYear);
+      if (info && info.solarMonth && info.solarDay) {
+        const key = `${info.solarYear}-${String(info.solarMonth).padStart(2, "0")}-${String(info.solarDay).padStart(2, "0")}`;
+        if (!festMap[key]) festMap[key] = [];
+        festMap[key].push({ fest: f, info: info });
+      }
+    });
+
+    // Ngày đầu tiên của tháng và số ngày
+    const firstDayDate = new Date(calCurrentYear, calCurrentMonth - 1, 1);
+    let startDayOfWeek = firstDayDate.getDay() - 1;
+    if (startDayOfWeek === -1) startDayOfWeek = 6; // Thứ 2 = 0, Chủ Nhật = 6
+
+    const daysInCurrentMonth = new Date(calCurrentYear, calCurrentMonth, 0).getDate();
+    const daysInPrevMonth = new Date(calCurrentYear, calCurrentMonth - 1, 0).getDate();
+
+    const actualNow = new Date();
+    const actualTodayStr = `${actualNow.getFullYear()}-${String(actualNow.getMonth() + 1).padStart(2, "0")}-${String(actualNow.getDate()).padStart(2, "0")}`;
+
+    let selectedFound = false;
+
+    // 1. Render ngày tháng trước (làm mờ)
+    for (let i = startDayOfWeek - 1; i >= 0; i--) {
+      const prevD = daysInPrevMonth - i;
+      const prevM = calCurrentMonth === 1 ? 12 : calCurrentMonth - 1;
+      const prevY = calCurrentMonth === 1 ? calCurrentYear - 1 : calCurrentYear;
+      const lunar = convertSolar2Lunar(prevD, prevM, prevY, TIME_ZONE);
+      const cell = createCalendarCell(prevD, prevM, prevY, lunar, true, festMap, actualTodayStr);
+      daysGrid.appendChild(cell);
+    }
+
+    // 2. Render ngày trong tháng này
+    for (let d = 1; d <= daysInCurrentMonth; d++) {
+      const lunar = convertSolar2Lunar(d, calCurrentMonth, calCurrentYear, TIME_ZONE);
+      const dateStr = `${calCurrentYear}-${String(calCurrentMonth).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+      const cell = createCalendarCell(d, calCurrentMonth, calCurrentYear, lunar, false, festMap, actualTodayStr);
+      daysGrid.appendChild(cell);
+
+      const isMatchingSelected = (
+        calSelectedDate &&
+        calSelectedDate.solarDay === d &&
+        calSelectedDate.solarMonth === calCurrentMonth &&
+        calSelectedDate.solarYear === calCurrentYear
+      );
+      if (isMatchingSelected) {
+        selectedFound = true;
+        selectCalendarDay(d, calCurrentMonth, calCurrentYear, lunar, festMap[dateStr] || []);
+      }
+    }
+
+    // 3. Render ngày tháng sau để làm đầy lưới 35 hoặc 42 ô
+    const totalRendered = startDayOfWeek + daysInCurrentMonth;
+    const nextDaysCount = (totalRendered <= 35) ? (35 - totalRendered) : (42 - totalRendered);
+    for (let n = 1; n <= nextDaysCount; n++) {
+      const nextM = calCurrentMonth === 12 ? 1 : calCurrentMonth + 1;
+      const nextY = calCurrentMonth === 12 ? calCurrentYear + 1 : calCurrentYear;
+      const lunar = convertSolar2Lunar(n, nextM, nextY, TIME_ZONE);
+      const cell = createCalendarCell(n, nextM, nextY, lunar, true, festMap, actualTodayStr);
+      daysGrid.appendChild(cell);
+    }
+
+    if (!selectedFound) {
+      // Mặc định chọn ngày 1 nếu chưa chọn ngày trong tháng này
+      const d1Lunar = convertSolar2Lunar(1, calCurrentMonth, calCurrentYear, TIME_ZONE);
+      const d1Str = `${calCurrentYear}-${String(calCurrentMonth).padStart(2, "0")}-01`;
+      selectCalendarDay(1, calCurrentMonth, calCurrentYear, d1Lunar, festMap[d1Str] || []);
+    }
+  }
+
+  function createCalendarCell(sDay, sMonth, sYear, lunar, isOtherMonth, festMap, actualTodayStr) {
+    const cell = document.createElement("div");
+    const dateStr = `${sYear}-${String(sMonth).padStart(2, "0")}-${String(sDay).padStart(2, "0")}`;
+    const isToday = (dateStr === actualTodayStr);
+    const isSelected = (
+      calSelectedDate &&
+      calSelectedDate.solarDay === sDay &&
+      calSelectedDate.solarMonth === sMonth &&
+      calSelectedDate.solarYear === sYear
+    );
+
+    let cls = "cal-cell";
+    if (isOtherMonth) cls += " other-month";
+    if (isToday) cls += " today";
+    if (isSelected) cls += " selected";
+    cell.className = cls;
+    cell.setAttribute("data-cal-date", dateStr);
+
+    const lunarDay = lunar[0];
+    const lunarMonth = lunar[1];
+    const isFirstDay = (lunarDay === 1);
+    const isFullMoon = (lunarDay === 15);
+
+    let lunarNumHtml = `<span class="cal-lunar-num">${lunarDay}</span>`;
+    if (isFirstDay) {
+      lunarNumHtml = `<span class="cal-lunar-num first-day">01/${String(lunarMonth).padStart(2, "0")}</span>`;
+    } else if (isFullMoon) {
+      lunarNumHtml = `<span class="cal-lunar-num full-moon">🌕 15</span>`;
+    }
+
+    const events = festMap[dateStr] || [];
+    let chipsHtml = "";
+    if (events.length > 0) {
+      chipsHtml = `<div class="cal-event-chips">`;
+      const maxChips = 2;
+      events.slice(0, maxChips).forEach(item => {
+        const isFam = item.fest.isPrivate || item.fest.ownerId || item.fest.region === "Gia đình";
+        const icon = isFam ? "🏡" : "🏮";
+        const chipCls = isFam ? "cal-chip family" : "cal-chip fest";
+        chipsHtml += `<span class="${chipCls}" title="${escapeHTML(item.fest.name)}">${icon} ${escapeHTML(item.fest.name)}</span>`;
+      });
+      if (events.length > maxChips) {
+        chipsHtml += `<span class="cal-chip-more">+${events.length - maxChips} nữa</span>`;
+      }
+      chipsHtml += `</div>`;
+    }
+
+    cell.innerHTML = `
+      <div class="cal-cell-top">
+        <span class="cal-solar-num">${sDay}</span>
+        ${isToday ? '<span class="cal-today-tag">HÔM NAY</span>' : ''}
+      </div>
+      <div class="cal-cell-foot">
+        <div class="cal-lunar-row">
+          <span class="cal-lunar-prefix">ÂL:</span>
+          ${lunarNumHtml}
+        </div>
+        ${chipsHtml}
+      </div>
+    `;
+
+    cell.onclick = () => {
+      selectCalendarDay(sDay, sMonth, sYear, lunar, events);
+    };
+
+    return cell;
+  }
+
+  function selectCalendarDay(sDay, sMonth, sYear, lunar, events = []) {
+    calSelectedDate = {
+      solarDay: sDay,
+      solarMonth: sMonth,
+      solarYear: sYear,
+      lunarDay: lunar[0],
+      lunarMonth: lunar[1],
+      lunarYear: lunar[2],
+      lunarLeap: lunar[3]
+    };
+
+    const targetDateStr = `${sYear}-${String(sMonth).padStart(2, "0")}-${String(sDay).padStart(2, "0")}`;
+    document.querySelectorAll(".cal-cell").forEach(c => {
+      if (c.getAttribute("data-cal-date") === targetDateStr) {
+        c.classList.add("selected");
+      } else {
+        c.classList.remove("selected");
+      }
+    });
+
+    const dt = new Date(sYear, sMonth - 1, sDay);
+    const dayOfWeek = DAY_NAMES[dt.getDay()];
+    const badgeEl = document.getElementById("calInspWeekdayBadge");
+    if (badgeEl) badgeEl.textContent = `${dayOfWeek} (${String(sDay).padStart(2, "0")}/${String(sMonth).padStart(2, "0")})`;
+
+    const solarDayEl = document.getElementById("calInspSolarDay");
+    if (solarDayEl) solarDayEl.textContent = String(sDay).padStart(2, "0");
+    const solarMyEl = document.getElementById("calInspSolarMonthYear");
+    if (solarMyEl) solarMyEl.textContent = `Tháng ${sMonth < 10 ? '0' + sMonth : sMonth} Năm ${sYear}`;
+
+    const lunarDayEl = document.getElementById("calInspLunarDay");
+    if (lunarDayEl) lunarDayEl.textContent = String(lunar[0]).padStart(2, "0");
+    const lunarMEl = document.getElementById("calInspLunarMonth");
+    const leapStr = lunar[3] === 1 ? " (Nhuận)" : "";
+    if (lunarMEl) lunarMEl.textContent = `Tháng ${String(lunar[1]).padStart(2, "0")}${leapStr}`;
+    const lunarYEl = document.getElementById("calInspLunarYear");
+    const canChiY = getCanChiYear(lunar[2]);
+    const canChiD = getDayCanChiName(sDay, sMonth, sYear);
+    if (lunarYEl) lunarYEl.textContent = `Năm ${canChiY} • Ngày ${canChiD} (ÂL)`;
+
+    // Khung giờ hoàng đạo
+    const hoursEl = document.getElementById("calInspAuspiciousHours");
+    if (hoursEl) hoursEl.textContent = getAuspiciousHoursForDay(sDay, sMonth, sYear);
+
+    // Danh sách sự kiện trong ngày
+    const listEl = document.getElementById("calInspEventsList");
+    if (listEl) {
+      if (!events || events.length === 0) {
+        listEl.innerHTML = `
+          <div class="cal-insp-no-events">
+            🍃 Không có lễ hội hay đám giỗ gia đình vào ngày này.
+          </div>
+        `;
+      } else {
+        let evHtml = "";
+        events.forEach(item => {
+          const f = item.fest;
+          const isFam = f.isPrivate || f.ownerId || f.region === "Gia đình";
+          const icon = isFam ? "🏡" : "🏮";
+          const regTag = `<span class="badge ${badgeClass(f.region)}" style="font-size:0.65rem;padding:1px 6px;">${escapeHTML(f.region || "Gia đình")}</span>`;
+          evHtml += `
+            <div class="cal-insp-event-card">
+              <div class="cal-insp-ev-title">
+                <span>${icon} ${escapeHTML(f.name)}</span>
+                ${regTag}
+              </div>
+              <div class="cal-insp-ev-loc">📍 ${escapeHTML(f.location || "Việt Nam")} • Mốc: ${escapeHTML(getCleanLunarLabel(f))}</div>
+              ${f.highlights ? `<div class="cal-insp-ev-hl">${escapeHTML(f.highlights)}</div>` : ''}
+              <div style="margin-top:6px;display:flex;gap:6px;">
+                <button type="button" class="btn" style="padding:3px 8px;font-size:0.7rem;" onclick="addToGoogleCalendarForYear(event, '${escapeHTML(f.id)}', ${sYear})">📅 Lưu Google Calendar</button>
+              </div>
+            </div>
+          `;
+        });
+        listEl.innerHTML = evHtml;
+      }
+    }
+  }
+
+  function openAddFamilyEventForCalendarDate() {
+    if (!currentUser) {
+      showToast("💡 Vui lòng Đăng Nhập để thêm ngày lễ / đám giỗ gia đình!", "info");
+      openUserAuthModal("login");
+      return;
+    }
+    openModal();
+    document.getElementById("festivalModalTitle").textContent = "🏡 Thêm Sự Kiện / Đám Giỗ Gia Đình";
+    selectEventPrivacy("only_me");
+    const locEl = document.getElementById("fLocation");
+    if (locEl && !locEl.value) locEl.value = "Gia đình";
+
+    if (calSelectedDate) {
+      document.getElementById("fCalendarType").value = "lunar";
+      handleCalendarTypeChange();
+      document.getElementById("fLunarDay").value = String(calSelectedDate.lunarDay || 15);
+      document.getElementById("fLunarMonth").value = String(calSelectedDate.lunarMonth || 1);
+    }
+  }
+
+  function openFestivalForCalendarDate() {
+    openModal();
+    if (calSelectedDate) {
+      document.getElementById("fCalendarType").value = "lunar";
+      handleCalendarTypeChange();
+      document.getElementById("fLunarDay").value = String(calSelectedDate.lunarDay || 15);
+      document.getElementById("fLunarMonth").value = String(calSelectedDate.lunarMonth || 1);
+    }
+  }
+
+  function addCalendarDayToGoogleCalendar() {
+    if (!calSelectedDate) return;
+    const { solarDay, solarMonth, solarYear, lunarDay, lunarMonth } = calSelectedDate;
+    const startStr = `${solarYear}${String(solarMonth).padStart(2, "0")}${String(solarDay).padStart(2, "0")}`;
+    const nextDt = new Date(Date.UTC(solarYear, solarMonth - 1, solarDay + 1));
+    const endStr = `${nextDt.getUTCFullYear()}${String(nextDt.getUTCMonth() + 1).padStart(2, "0")}${String(nextDt.getUTCDate()).padStart(2, "0")}`;
+    const title = encodeURIComponent(`Lịch Ngày ${solarDay}/${solarMonth}/${solarYear} (ÂL: ${lunarDay}/${lunarMonth})`);
+    const details = encodeURIComponent(`Đối chiếu lịch: Ngày ${solarDay}/${solarMonth}/${solarYear} Dương Lịch tương ứng ngày ${lunarDay}/${lunarMonth} Âm Lịch.\nPhần mềm: Tra Cứu Lễ Hội Địa Phương Việt Nam`);
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStr}/${endStr}&details=${details}&location=Vi%E1%BB%87t%20Nam`;
+    window.open(url, "_blank", "noopener,noreferrer");
   }
 
   function toggleCardDetail(e, id) {
@@ -7807,6 +9006,16 @@
     const sortMode = document.getElementById("sortSelect") ? document.getElementById("sortSelect").value : "upcoming";
     const rawKeyword = document.getElementById("searchInput").value.trim();
     const normKeyword = removeVietnameseTones(rawKeyword);
+
+    if (year >= 2026 && year <= 2099) {
+      calCurrentYear = year;
+    }
+    if (selectedSolarMonth) {
+      calCurrentMonth = selectedSolarMonth;
+    }
+    if (currentViewMode === "calendar") {
+      renderMonthlyCalendar();
+    }
 
     const isSuperAdmin = checkIsSuperAdminUser();
     const colsCfg = getTableColumnsConfig();
